@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "criteria-18e9d"
+  },
+  "targets": {
+    "criteria-18e9d": {
+      "hosting": {
+        "criteriaa": [
+          "criteriaa"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

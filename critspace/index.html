@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITSPACE — Choose Workspace</title>
+  <link rel="icon" href="shared/icons/logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="shared/shared.css">
+  <style>
+    html, body { overflow: hidden; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 900px 600px at 50% -10%, rgba(240,165,0,0.08), transparent 60%),
+        var(--bg-primary);
+    }
+    .mode-selector-modal {
+      width: min(920px, 92vw);
+    }
+    .modal-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .modal-header h2 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin: 0 0 8px;
+    }
+    .modal-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin: 0;
+    }
+    .mode-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .mode-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 26px 22px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .mode-card:not(.disabled):hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .mode-card.disabled {
+      opacity: 0.55;
+    }
+    .mode-icon {
+      font-size: 30px;
+    }
+    .mode-card h3 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      margin: 0;
+    }
+    .mode-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin: 0;
+      min-height: 60px;
+    }
+    .mode-card .primary-btn {
+      width: 100%;
+      margin-top: 6px;
+    }
+    .coming-soon-badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 3px 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-radius: 999px;
+    }
+    @media (max-width: 760px) {
+      .mode-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <div class="mode-selector-modal">
+    <div class="modal-header">
+      <h2>SELECT WORKSPACE MODE</h2>
+      <p>Choose a workspace to get started.</p>
+    </div>
+    <div class="mode-cards">
+
+      <a href="/critspace/picture" class="mode-card" id="mode-card-ui">
+        <div class="mode-icon">🎨</div>
+        <h3>UI / Picture Editing</h3>
+        <p>Design flyers, posters, social banners, and custom vector graphics — includes the CRITSPACE 3D mode.</p>
+        <span class="primary-btn">Launch Mode</span>
+      </a>
+
+      <div class="mode-card disabled">
+        <div class="coming-soon-badge">Rebuilding</div>
+        <div class="mode-icon">🌐</div>
+        <h3>Website Design</h3>
+        <p>Being rebuilt as its own dedicated module with a proper page manager and live preview. Not ready yet.</p>
+        <span class="primary-btn" disabled>Coming Soon</span>
+      </div>
+
+      <a href="/critspace/video" class="mode-card" id="mode-card-video">
+        <div class="mode-icon">🎬</div>
+        <h3>Video Editing</h3>
+        <p>Full video keyframing, timeline tracks, and motion graphic workflows.</p>
+        <span class="primary-btn">Launch Mode</span>
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>

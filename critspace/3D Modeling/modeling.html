@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/siteCookies.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRITSPACE — Modeling</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="logo">CRITSPACE <span>Modeling</span></div>
+    </nav>
+
+    <div id="app-container">
+        <aside id="sidebar">
+            <div class="panel">
+                <h3>Add Objects</h3>
+                <button id="btn-add-cube">Add Cube</button>
+                <button id="btn-add-sphere">Add Sphere</button>
+            </div>
+            
+            <div class="panel">
+                <h3>Transform Tools</h3>
+                <button id="btn-translate" class="active">Move</button>
+                <button id="btn-rotate">Rotate</button>
+                <button id="btn-scale">Scale</button>
+            </div>
+            
+            <div class="panel info-panel">
+                <p><strong>Controls:</strong></p>
+                <ul>
+                    <li><strong>Left Click:</strong> Select object</li>
+                    <li><strong>Right Click + Drag:</strong> Pan camera</li>
+                    <li><strong>Scroll:</strong> Zoom</li>
+                    <li><strong>Click Background:</strong> Deselect</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main id="viewport"></main>
+    </div>
+
+    <style>
+        /* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0d0d0d;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents scrollbars from 3D canvas */
+}
+
+/* Navigation Bar */
+#navbar {
+    height: 50px;
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #F0A500;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.logo span {
+    color: #F0A500;
+    font-weight: normal;
+}
+
+/* Layout */
+#app-container {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 50px);
+}
+
+/* Sidebar */
+#sidebar {
+    width: 260px;
+    background-color: #121212;
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.panel {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.panel h3 {
+    font-size: 0.9rem;
+    color: #aaaaaa;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #444;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #333;
+    border-color: #F0A500;
+}
+
+button.active {
+    background-color: #F0A500;
+    color: #000000;
+    border-color: #F0A500;
+    font-weight: bold;
+}
+
+/* Info Panel */
+.info-panel {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.info-panel ul {
+    list-style-type: none;
+    margin-top: 8px;
+}
+
+.info-panel li {
+    margin-bottom: 5px;
+}
+
+/* 3D Viewport */
+#viewport {
+    flex: 1;
+    position: relative;
+    background-color: #0a0a0a;
+}
+    </style>
+
+    <script type="module">
+        import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
+// --- 1. CORE SETUP ---
+const viewport = document.getElementById('viewport');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#0a0a0a');
+
+// Camera Setup
+const camera = new THREE.PerspectiveCamera(50, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+camera.position.set(5, 5, 5);
+
+// Renderer Setup
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+viewport.appendChild(renderer.domElement);
+
+// --- 2. ENVIRONMENT & LIGHTING ---
+// Grid Helper (Floor)
+const gridHelper = new THREE.GridHelper(20, 20, '#F0A500', '#333333');
+gridHelper.material.opacity = 0.5;
+gridHelper.material.transparent = true;
+scene.add(gridHelper);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight.position.set(5, 10, 5);
+scene.add(directionalLight);
+
+// Array to hold selectable objects
+const interactableObjects = [];
+
+// Standard Material for new objects (Dark grey with gold-ish shine)
+const defaultMaterial = new THREE.MeshStandardMaterial({
+    color: 0x333333,
+    roughness: 0.4,
+    metalness: 0.6
+});
+
+// --- 3. CONTROLS ---
+// Orbit Controls (Camera Movement)
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.05;
+
+// Transform Controls (Object Manipulation Gizmo)
+const transformControls = new TransformControls(camera, renderer.domElement);
+scene.add(transformControls.getHelper());
+
+// CRITICAL FIX: Disable OrbitControls while dragging an object so the camera doesn't spin
+transformControls.addEventListener('dragging-changed', (event) => {
+    orbitControls.enabled = !event.value;
+});
+
+// --- 4. OBJECT CREATION LOGIC ---
+function spawnObject(geometry) {
+    const mesh = new THREE.Mesh(geometry, defaultMaterial);
+    mesh.position.y = 0.5; // Sit on the grid
+    scene.add(mesh);
+    interactableObjects.push(mesh);
+    
+    // Automatically select the new object
+    transformControls.attach(mesh);
+}
+
+document.getElementById('btn-add-cube').addEventListener('click', () => {
+    spawnObject(new THREE.BoxGeometry(1, 1, 1));
+});
+
+document.getElementById('btn-add-sphere').addEventListener('click', () => {
+    spawnObject(new THREE.SphereGeometry(0.6, 32, 32));
+});
+
+// --- 5. UI TRANSFORM MODES ---
+const transformButtons = {
+    translate: document.getElementById('btn-translate'),
+    rotate: document.getElementById('btn-rotate'),
+    scale: document.getElementById('btn-scale')
+};
+
+function setTransformMode(mode, activeBtnId) {
+    transformControls.setMode(mode);
+    Object.values(transformButtons).forEach(btn => btn.classList.remove('active'));
+    transformButtons[activeBtnId].classList.add('active');
+}
+
+transformButtons.translate.addEventListener('click', () => setTransformMode('translate', 'translate'));
+transformButtons.rotate.addEventListener('click', () => setTransformMode('rotate', 'rotate'));
+transformButtons.scale.addEventListener('click', () => setTransformMode('scale', 'scale'));
+
+// --- 6. RAYCASTING (SELECTING OBJECTS VIA CLICK) ---
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+viewport.addEventListener('mousedown', (event) => {
+    // Only raycast on left click
+    if (event.button !== 0) return;
+
+    // Calculate mouse position relative to viewport
+    const rect = viewport.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    // Check intersections with our objects (ignoring grid and gizmos)
+    const intersects = raycaster.intersectObjects(interactableObjects);
+
+    if (intersects.length > 0) {
+        // If clicking on an object, attach the transform controls to it
+        transformControls.attach(intersects[0].object);
+    } else {
+        // If clicking empty space (and not hovering over the gizmo), detach
+        if (!transformControls.dragging) {
+            transformControls.detach();
+        }
+    }
+});
+
+// --- 7. WINDOW RESIZE HANDLING ---
+window.addEventListener('resize', () => {
+    camera.aspect = viewport.clientWidth / viewport.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+});
+
+// --- 8. RENDER LOOP ---
+function animate() {
+    requestAnimationFrame(animate);
+    orbitControls.update(); // Required for damping
+    renderer.render(scene, camera);
+}
+
+animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+/* ============================================================
+   CRITSPACE — Shared Tokens & Base Styles
+   Used by index.html, picture/picture.html, website/website.html,
+   video/video.html. Module-specific layout lives in each module's
+   own stylesheet — this file only holds what's genuinely shared.
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --bg-primary: #0a0a0c;
+  --bg-secondary: #121216;
+  --panel-bg: #1a1a20;
+  --panel-bg-raised: #202028;
+  --panel-border: #2a2a34;
+
+  /* Accent */
+  --gold: #f0a500;
+  --gold-soft: #f6c04d;
+  --gold-glow: rgba(240, 165, 0, 0.35);
+
+  /* Text */
+  --text: #e9e9ee;
+  --text-muted: #92929e;
+  --text-faint: #5c5c68;
+
+  /* Status */
+  --danger: #e5484d;
+  --success: #3ddc84;
+
+  /* Fonts */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  /* Global scroll lock (Phase 1 §9 / Build Order #2) — CRITSPACE itself
+     never scrolls at the page level. Any scrolling happens inside a
+     specific panel (layers list, dropdowns, etc.), never the whole page. */
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Thin, dark scrollbars for any panel that DOES scroll internally */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--panel-border);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* ----------------------------
+   Shared buttons
+   ---------------------------- */
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(12px);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-faint);
+}
+.glass-btn.active {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+  color: var(--gold-soft);
+}
+.glass-btn img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: var(--gold);
+  border: none;
+  color: #1a1200;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.primary-btn:hover {
+  background: var(--gold-soft);
+}
+.primary-btn:active {
+  transform: scale(0.98);
+}
+.primary-btn:disabled,
+.primary-btn[disabled] {
+  background: var(--panel-border);
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+.primary-btn img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+
+.primary-glow {
+  box-shadow: 0 0 0 1px var(--gold-glow);
+}
+.primary-glow:hover {
+  box-shadow: 0 0 0 1px var(--gold), 0 0 16px var(--gold-glow);
+}
+
+/* ----------------------------
+   Tooltips (data-tooltip attribute)
+   ---------------------------- */
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  width: max-content;
+  max-width: 240px;
+  padding: 7px 10px;
+  background: #05050a;
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 200;
+  text-align: center;
+}
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.sidebar-left [data-tooltip]::after {
+  bottom: auto;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) scale(0.9);
+}
+.sidebar-left [data-tooltip]:hover::after {
+  transform: translateY(-50%) scale(1);
+}
+
+
+/* ----------------------------
+   Simple stub-page layout (website.html / video.html use this)
+   ---------------------------- */
+.stub-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 18px;
+  padding: 40px;
+}
+.stub-page .stub-icon {
+  font-size: 42px;
+}
+.stub-page h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin: 0;
+}
+.stub-page p {
+  color: var(--text-muted);
+  max-width: 420px;
+  line-height: 1.6;
+  margin: 0;
+}
+.stub-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--gold-glow);
+  border: 1px solid var(--gold);
+  color: var(--gold-soft);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

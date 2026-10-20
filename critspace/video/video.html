@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/siteCookies.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITSPACE — Professional Video Editor</title>
+  <link rel="icon" href="../shared/icons/logo.png" type="image/png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../shared/shared.css">
+  <link rel="stylesheet" href="video.css">
+</head>
+<body class="dark-theme">
+
+  <div class="app-layout">
+    <!-- 1. Top Navbar / Menu Bar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <a href="/critspace" class="back-link">← Home</a>
+        <input type="text" class="file-name" id="project-name-input" value="Untitled Video Project">
+      </div>
+      <div class="nav-center">
+        <div class="status-pill active" id="autosave-pill">
+          <span class="indicator-dot"></span>
+          <span>Autosave On</span>
+        </div>
+        <div class="status-pill" id="sync-pill">
+          <span class="indicator-dot"></span>
+          <span id="sync-status">Cloud Sync Ready</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button id="btn-undo" class="glass-btn" title="Undo (Ctrl+Z)">↶</button>
+        <button id="btn-redo" class="glass-btn" title="Redo (Ctrl+Y)">↷</button>
+        <button id="btn-export-modal" class="primary-btn primary-glow">
+          <img src="../../Tools/Critspace Icons/Download.png" alt="Export">
+          <span>Export Video</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="tool-split" class="glass-btn" title="Split Clip at Playhead (S)">✂ Split</button>
+        <button id="tool-delete" class="glass-btn" title="Delete Selected Clip (Delete)">🗑 Delete</button>
+        <button id="tool-duplicate" class="glass-btn" title="Duplicate Clip (Ctrl+D)">🗐 Duplicate</button>
+        <div class="divider"></div>
+        <button id="tool-snap" class="glass-btn active" title="Toggle Snapping (N)">🧲 Snapping</button>
+        <button id="tool-magnet" class="glass-btn active" title="Toggle Magnetic Timeline (M)">🔗 Magnetic</button>
+      </div>
+      <div class="toolbar-group">
+        <button id="tool-marker" class="glass-btn" title="Add Marker at Playhead (P)">📌 Add Marker</button>
+        <div class="divider"></div>
+        <button id="tool-undo-hist" class="glass-btn" title="Project History">⏳ Version History</button>
+        <button id="tool-collab" class="glass-btn" title="Collaboration / Comments">💬 Team Collaboration</button>
+      </div>
+    </div>
+
+    <!-- 3. Tabs Bar -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-panel="media-panel">📁 Media Library</button>
+      <button class="tab-btn" data-panel="audio-panel">🎵 Audio & TTS</button>
+      <button class="tab-btn" data-panel="text-panel">💬 Text & Captions</button>
+      <button class="tab-btn" data-panel="draw-panel">🎨 Drawing & Shapes</button>
+      <button class="tab-btn" data-panel="effects-panel">✨ Effects & Filters</button>
+      <button class="tab-btn" data-panel="transitions-panel">🔀 Transitions</button>
+      <button class="tab-btn" data-panel="ai-panel">🧠 AI Features</button>
+      <button class="tab-btn" data-panel="plugins-panel">🔌 Plugins</button>
+    </div>
+
+    <!-- 4. Middle Workspace -->
+    <div class="middle-workspace">
+      <!-- Left Panel: Library & Tools -->
+      <aside class="library-panel">
+        <!-- Media Panel -->
+        <div class="library-subpanel" id="media-panel">
+          <div class="library-header">
+            <h3>Media Library</h3>
+            <button class="glass-btn" id="btn-import-stock" style="font-size: 10px; padding: 4px 8px;">Load Stock</button>
+          </div>
+          <div class="library-search">
+            <input type="text" class="search-input" id="media-search" placeholder="Search imported clips...">
+          </div>
+          <div class="library-content">
+            <div class="drop-zone" id="media-drop-zone">
+              📁 Drag & Drop files here
+              <span>Supports MP4, MOV, MP3, PNG, JPG, GIF</span>
+            </div>
+            <input type="file" id="file-uploader" multiple accept="video/*,audio/*,image/*" style="display: none;">
+            <div class="assets-grid" id="assets-container">
+              <!-- Dynamically populated assets -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio Panel -->
+        <div class="library-subpanel hidden" id="audio-panel">
+          <div class="library-header">
+            <h3>Audio Library</h3>
+          </div>
+          <div class="library-content">
+            <div class="panel-card audio-recorder-panel">
+              <h4>Voice Recorder</h4>
+              <p>Record voice commentary directly onto the timeline.</p>
+              <div class="prop-row">
+                <button id="btn-record-voice" class="primary-btn" style="width: 100%;">🎙 Record Microphone</button>
+              </div>
+              <span id="recording-status" class="recording-indicator hidden">● RECORDING...</span>
+            </div>
+
+            <div class="panel-card tts-panel">
+              <h4>AI Text-To-Speech</h4>
+              <p>Type text to generate a synthesized voice track.</p>
+              <textarea class="text-area-custom" id="tts-text" placeholder="Type script here..."></textarea>
+              <div class="prop-row" style="margin-top: 8px;">
+                <select id="tts-voice" style="flex: 1; font-size: 11px; padding: 4px;">
+                  <!-- Dynamically populated voices -->
+                </select>
+                <button id="btn-generate-tts" class="primary-btn">Generate</button>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <h4>Stock Music & Sound FX</h4>
+              <div class="transition-item" data-audio-type="beat">
+                <span class="transition-icon">🎵</span>
+                <span class="transition-name">Synth Beats (Stock Track)</span>
+              </div>
+              <div class="transition-item" data-audio-type="ambient">
+                <span class="transition-icon">🎹</span>
+                <span class="transition-name">Ambient Pad (Stock Track)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text & Captions Panel -->
+        <div class="library-subpanel hidden" id="text-panel">
+          <div class="library-header">
+            <h3>Text Overlay & Captions</h3>
+          </div>
+          <div class="library-content">
+            <div class="panel-card">
+              <h4>Add Title Layer</h4>
+              <p>Click below to insert styled text onto the timeline overlay track.</p>
+              <button id="btn-add-text" class="primary-btn" style="width: 100%;">✍ Add Custom Text</button>
+            </div>
+            <div class="panel-card">
+              <h4>AI Auto Captions</h4>
+              <p>Transcribe vocal frequencies into timeline subtitle cards automatically.</p>
+              <button id="btn-auto-captions" class="primary-btn" style="width: 100%;">🎤 Generate Subtitles</button>
+            </div>
+            <div class="panel-card">
+              <h4>SRT Subtitles</h4>
+              <p>Import custom subtitle files to display over video.</p>
+              <button id="btn-import-srt" class="glass-btn" style="width: 100%;">Import SRT File</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drawing & Shapes Panel -->
+        <div class="library-subpanel hidden" id="draw-panel">
+          <div class="library-header">
+            <h3>Vector Shapes & Pen</h3>
+          </div>
+          <div class="library-content">
+            <div class="panel-card">
+              <h4>Canvas Drawing Mode</h4>
+              <p>Enable brush to draw directly over preview frames.</p>
+              <div class="prop-row">
+                <button id="btn-draw-mode" class="glass-btn" style="flex: 1;">🖌 Draw Brush</button>
+                <button id="btn-draw-clear" class="glass-btn">Clear</button>
+              </div>
+              <div class="prop-row" style="margin-top: 8px;">
+                <span class="prop-label">Brush Size</span>
+                <input type="range" id="draw-size" min="1" max="50" value="5">
+              </div>
+              <div class="prop-row">
+                <span class="prop-label">Brush Color</span>
+                <input type="color" id="draw-color" value="#f0a500">
+              </div>
+            </div>
+            <div class="panel-card">
+              <h4>Insert Geometric Shape</h4>
+              <div class="assets-grid">
+                <div class="asset-item shape-btn" data-shape="rect">
+                  <div class="asset-thumb">⬜</div>
+                  <span class="asset-name">Rectangle</span>
+                </div>
+                <div class="asset-item shape-btn" data-shape="circle">
+                  <div class="asset-thumb">⚪</div>
+                  <span class="asset-name">Circle</span>
+                </div>
+                <div class="asset-item shape-btn" data-shape="star">
+                  <div class="asset-thumb">⭐</div>
+                  <span class="asset-name">Star</span>
+                </div>
+                <div class="asset-item shape-btn" data-shape="arrow">
+                  <div class="asset-thumb">➔</div>
+                  <span class="asset-name">Arrow</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Effects Panel -->
+        <div class="library-subpanel hidden" id="effects-panel">
+          <div class="library-header">
+            <h3>Visual FX & Shaders</h3>
+          </div>
+          <div class="library-content" id="effects-container-list">
+            <!-- Dynamically populated effects -->
+          </div>
+        </div>
+
+        <!-- Transitions Panel -->
+        <div class="library-subpanel hidden" id="transitions-panel">
+          <div class="library-header">
+            <h3>Scene Transitions</h3>
+          </div>
+          <div class="library-content" id="transitions-container-list">
+            <!-- Dynamically populated transitions -->
+          </div>
+        </div>
+
+        <!-- AI Features Panel -->
+        <div class="library-subpanel hidden" id="ai-panel">
+          <div class="library-header">
+            <h3>AI Assistants</h3>
+          </div>
+          <div class="library-content">
+            <div class="panel-card ai-script-panel">
+              <h4>AI Video Script Assistant</h4>
+              <p>Input a prompt to generate sequence layout and outline ideas.</p>
+              <textarea class="text-area-custom" id="ai-script-prompt" placeholder="E.g. Travel Vlog in Kyoto..."></textarea>
+              <button id="btn-generate-script" class="primary-btn" style="width: 100%; margin-top: 8px;">Write Script Outline</button>
+            </div>
+            <div class="panel-card">
+              <h4>Smart AI Enhancers</h4>
+              <button id="btn-ai-bg" class="glass-btn" style="width: 100%; margin-bottom: 8px; justify-content: flex-start;">👤 AI Background Removal</button>
+              <button id="btn-ai-obj" class="glass-btn" style="width: 100%; margin-bottom: 8px; justify-content: flex-start;">🧽 AI Object Eraser</button>
+              <button id="btn-ai-enhance" class="glass-btn" style="width: 100%; justify-content: flex-start;">⚡ AI Smart Color Grading</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plugins Panel -->
+        <div class="library-subpanel hidden" id="plugins-panel">
+          <div class="library-header">
+            <h3>Custom Developer Plugins</h3>
+          </div>
+          <div class="library-content plugins-panel">
+            <div class="panel-card">
+              <h4>Load JS Visual Filter</h4>
+              <p>Write custom script that manipulates frame pixels directly.</p>
+              <textarea class="text-area-custom" id="plugin-js-code" style="height: 100px; font-family: monospace;" placeholder="function filter(pixels) {
+  // modify pixels.data here...
+  for(let i=0; i<pixels.data.length; i+=4) {
+    pixels.data[i] = 255 - pixels.data[i]; // invert
+  }
+}"></textarea>
+              <button id="btn-install-plugin" class="primary-btn" style="width: 100%; margin-top: 8px;">Install Custom Filter</button>
+            </div>
+            <div class="panel-card" id="installed-plugins-list">
+              <h4>Installed Filters</h4>
+              <div class="transition-item active-plugin" style="cursor: default;">
+                <span class="transition-icon">🔌</span>
+                <span class="transition-name">Invert Color filter (Default)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Panel: Preview Monitor -->
+      <section class="preview-container">
+        <div class="preview-header">
+          <div class="aspect-ratio-selector">
+            <select id="select-aspect-ratio">
+              <option value="16-9">Horizontal (16:9)</option>
+              <option value="9-16">Vertical Mobile (9:16)</option>
+              <option value="1-1">Square Post (1:1)</option>
+            </select>
+          </div>
+          <div class="preview-resolution-info" style="font-size: 11px; color: var(--text-muted);">
+            Render Quality: <span id="proxy-badge">Proxy Mode</span>
+          </div>
+        </div>
+
+        <div class="preview-monitor ratio-16-9" id="monitor-box">
+          <canvas class="preview-canvas" id="main-editor-canvas"></canvas>
+          <canvas class="drawing-canvas-overlay" id="drawing-overlay-canvas"></canvas>
+        </div>
+
+        <div class="preview-controls">
+          <button class="ctrl-btn" id="btn-frame-prev" title="Frame Backward (Left Arrow)">◀</button>
+          <button class="ctrl-btn play-btn" id="btn-play-pause" title="Play / Pause (Space)">▶</button>
+          <button class="ctrl-btn" id="btn-frame-next" title="Frame Forward (Right Arrow)">▶</button>
+          <div class="preview-timecode">
+            <span class="current" id="time-current">00:00.00</span> / <span id="time-total">00:30.00</span>
+          </div>
+          <button class="ctrl-btn" id="btn-fullscreen-toggle" title="Full Screen View">⛶</button>
+        </div>
+      </section>
+
+      <!-- Right Panel / Bottom Split Panel: Clip Inspector / Properties -->
+      <aside class="inspector-section" id="inspector-panel">
+        <div class="inspector-tabs">
+          <button class="inspector-tab-btn active" data-inspect-tab="transform-tab">Transform</button>
+          <button class="inspector-tab-btn" data-inspect-tab="color-tab">Color Adjust</button>
+          <button class="inspector-tab-btn" data-inspect-tab="audio-edit-tab">Audio Options</button>
+          <button class="inspector-tab-btn" data-inspect-tab="bezier-tab">Keyframe Easing</button>
+        </div>
+
+        <div class="inspector-content-panel" id="inspector-tab-content">
+          <!-- Dynamically populated based on active tab & selected clip -->
+          <div class="empty-state" id="inspector-empty-state">
+            Select a timeline clip to adjust position, color grading, volume and curves.
+          </div>
+
+          <!-- Tab Content 1: Transform -->
+          <div class="inspector-subtab-content" id="transform-tab">
+            <div class="prop-row">
+              <span class="prop-label">Position X</span>
+              <div class="prop-value">
+                <button class="keyframe-toggle-btn" data-prop="x" title="Toggle Keyframe">⬡</button>
+                <input type="number" id="prop-pos-x" value="0">
+              </div>
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Position Y</span>
+              <div class="prop-value">
+                <button class="keyframe-toggle-btn" data-prop="y" title="Toggle Keyframe">⬡</button>
+                <input type="number" id="prop-pos-y" value="0">
+              </div>
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Scale (%)</span>
+              <div class="prop-value">
+                <button class="keyframe-toggle-btn" data-prop="scale" title="Toggle Keyframe">⬡</button>
+                <input type="range" id="prop-scale" min="10" max="400" value="100">
+                <input type="number" id="prop-scale-num" min="10" max="400" value="100">
+              </div>
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Rotation (°)</span>
+              <div class="prop-value">
+                <button class="keyframe-toggle-btn" data-prop="rotation" title="Toggle Keyframe">⬡</button>
+                <input type="range" id="prop-rotation" min="0" max="360" value="0">
+                <input type="number" id="prop-rotation-num" min="0" max="360" value="0">
+              </div>
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Opacity (%)</span>
+              <div class="prop-value">
+                <button class="keyframe-toggle-btn" data-prop="opacity" title="Toggle Keyframe">⬡</button>
+                <input type="range" id="prop-opacity" min="0" max="100" value="100">
+              </div>
+            </div>
+            <div class="prop-row text-property hidden">
+              <span class="prop-label">Text String</span>
+              <input type="text" id="prop-text-content" style="width: 120px; font-size: 11px;" value="">
+            </div>
+          </div>
+
+          <!-- Tab Content 2: Color Adjust -->
+          <div class="inspector-subtab-content hidden" id="color-tab">
+            <div class="prop-row">
+              <span class="prop-label">Brightness</span>
+              <input type="range" id="prop-brightness" min="50" max="150" value="100">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Contrast</span>
+              <input type="range" id="prop-contrast" min="50" max="150" value="100">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Saturation</span>
+              <input type="range" id="prop-saturation" min="0" max="200" value="100">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Temperature</span>
+              <input type="range" id="prop-temp" min="-50" max="50" value="0">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Chroma Key (Green)</span>
+              <input type="checkbox" id="prop-chromakey">
+            </div>
+          </div>
+
+          <!-- Tab Content 3: Audio Options -->
+          <div class="inspector-subtab-content hidden" id="audio-edit-tab">
+            <div class="prop-row">
+              <span class="prop-label">Volume</span>
+              <input type="range" id="prop-volume" min="0" max="100" value="100">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Playback Speed</span>
+              <select id="prop-speed">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1.0x (Normal)</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2.0x</option>
+                <option value="4">4.0x</option>
+                <option value="8">8.0x</option>
+              </select>
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Equalizer (Bass)</span>
+              <input type="range" id="prop-equalizer-bass" min="-10" max="10" value="0">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Equalizer (Treble)</span>
+              <input type="range" id="prop-equalizer-treble" min="-10" max="10" value="0">
+            </div>
+            <div class="prop-row">
+              <span class="prop-label">Reverb (Echo Space)</span>
+              <input type="range" id="prop-reverb" min="0" max="100" value="0">
+            </div>
+          </div>
+
+          <!-- Tab Content 4: Bezier Keyframe Easing -->
+          <div class="inspector-subtab-content hidden" id="bezier-tab">
+            <div class="prop-row">
+              <span class="prop-label">Easing Preset</span>
+              <select id="easing-preset-select">
+                <option value="linear">Linear (Constant Speed)</option>
+                <option value="ease-in">Ease In (Accelerate)</option>
+                <option value="ease-out">Ease Out (Decelerate)</option>
+                <option value="ease-in-out">Ease In-Out</option>
+                <option value="custom">Custom Bezier</option>
+              </select>
+            </div>
+            <div class="prop-row">
+              <div class="easing-graph-container">
+                <canvas class="easing-canvas" id="easing-preview-canvas"></canvas>
+              </div>
+              <p style="font-size: 10px; color: var(--text-muted); margin: 0; line-height: 1.3;">
+                Controls keyframe transition curves for smooth motion graphics.
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- 5. Bottom Timeline Grid -->
+    <footer class="timeline-section">
+      <!-- Timeline Header / Navigation Tools -->
+      <div class="timeline-header">
+        <div class="timeline-tools">
+          <span style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Timeline Tracks</span>
+          <div class="divider"></div>
+          <span class="preview-timecode" style="font-size: 11px;">Current: <span id="ruler-hover-time">00:00.00</span></span>
+        </div>
+        <div class="timeline-zoom">
+          <span>🔍</span>
+          <input type="range" id="timeline-zoom-slider" min="10" max="250" value="100">
+        </div>
+      </div>
+
+      <!-- Scrollable Track list and Timeline Canvas -->
+      <div class="timeline-body">
+        <!-- Track Labels Side -->
+        <div class="track-headers" id="timeline-track-headers-box">
+          <!-- Dynamically populated track headers -->
+        </div>
+
+        <!-- Scrolling clips & Ruler Area -->
+        <div class="tracks-container-scroll" id="timeline-scroll-box">
+          <div class="tracks-content-wrapper" id="timeline-tracks-content" style="width: 3000px;">
+            <!-- Time Ruler -->
+            <div class="time-ruler" id="timeline-ruler">
+              <div class="ruler-ticks" id="timeline-ticks-container">
+                <!-- Ticks are generated dynamically -->
+              </div>
+            </div>
+
+            <!-- Track rows container -->
+            <div class="track-rows-list" id="timeline-rows-container">
+              <!-- Dynamically populated track rows with clips inside -->
+            </div>
+
+            <!-- Playhead scrubber vertical indicator -->
+            <div class="playhead" id="timeline-playhead">
+              <div class="playhead-head"></div>
+            </div>
+
+            <!-- Markers visual layer -->
+            <div class="timeline-markers-track" id="timeline-markers-track">
+              <!-- Markers are generated dynamically -->
+            </div>
+
+            <!-- Visual Snapping Helper Line -->
+            <div class="snap-guide" id="timeline-snap-guide"></div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Export Overlays -->
+  <div class="export-overlay hidden" id="export-popup">
+    <div class="export-modal">
+      <h3>Exporting High-Res Master</h3>
+      <p style="font-size:12px; color: var(--text-muted);">Encoding timelines, overlays and Web Audio elements into output stream...</p>
+      <div class="export-progress-bar">
+        <div class="export-progress-fill" id="export-progress-bar-fill"></div>
+      </div>
+      <div class="export-status-text" id="export-progress-status">Preparing Canvas Recorder (0%)...</div>
+      <button class="primary-btn" id="btn-cancel-export" style="margin-top: 16px; background: var(--danger); color: #fff;">Cancel Export</button>
+    </div>
+  </div>
+
+  <!-- Real Code Libraries (Web Audio / Animation helpers) -->
+  <script type="module" src="video.js"></script>
+</body>
+</html>

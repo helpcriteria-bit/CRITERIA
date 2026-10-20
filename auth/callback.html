@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connecting GitHub — CRITERIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #09090b;
+      color: #f4f4f5;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(240,165,0,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card {
+      background: rgba(18,18,22,0.8);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.18em;
+      margin-bottom: 2rem;
+      color: #fff;
+    }
+    .dot { width: 7px; height: 7px; background: #f0a500; border-radius: 50%; box-shadow: 0 0 10px #f0a500; }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 3px solid rgba(255,255,255,0.06);
+      border-top-color: #f0a500;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .status-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
+    .desc { font-size: 0.875rem; color: #a1a1aa; line-height: 1.5; }
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(240,165,0,0.12);
+      border: 1px solid rgba(240,165,0,0.3);
+      border-radius: 999px;
+      padding: 8px 16px 8px 10px;
+      margin-top: 1.25rem;
+      font-weight: 600;
+    }
+    .avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+    .error-wrap {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1.25rem;
+      color: #ef4444;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      display: none;
+      text-align: left;
+    }
+    .progress-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      margin-top: 1.5rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f0a500, #ffd166);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .step-label { font-size: 0.72rem; color: #71717a; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.5rem; }
+    /* Fallback username entry */
+    .username-form { display: none; margin-top: 1.5rem; text-align: left; }
+    .label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #71717a; margin-bottom: 6px; display: block; }
+    .input {
+      width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 11px 14px; font-size: 0.9rem; color: #fff; outline: none;
+      font-family: inherit; transition: border-color 0.2s;
+    }
+    .input:focus { border-color: #f0a500; box-shadow: 0 0 0 3px rgba(240,165,0,0.1); }
+    .btn-primary {
+      width: 100%; background: #f0a500; color: #000; font-weight: 700; border: none;
+      border-radius: 10px; padding: 12px; font-size: 0.9rem; cursor: pointer;
+      font-family: inherit; margin-top: 0.75rem; transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand"><div class="dot"></div>CRITERIA</div>
+    <div id="spinner-el" class="spinner"></div>
+    <div id="status-icon" class="status-icon" style="display:none;"></div>
+    <div id="title-el" class="title">Connecting GitHub...</div>
+    <div id="desc-el" class="desc">Authorizing your GitHub account with CRITERIA.</div>
+    <div id="user-chip" style="display:none;"></div>
+    <div id="error-wrap" class="error-wrap"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="step-label" id="step-label">Initiating...</div>
+
+    <!-- Fallback: manual username entry if backend exchange unavailable -->
+    <div class="username-form" id="username-form">
+      <label class="label" for="gh-handle">Your GitHub Username</label>
+      <input type="text" class="input" id="gh-handle" placeholder="e.g. octocat (no @ symbol)" autocomplete="off" />
+      <button class="btn-primary" onclick="submitHandle()">Link GitHub Account</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC5PXHOl3UYhsWImZBKXYXbikYASWVC-7Y",
+      authDomain: "criteria-18e9d.firebaseapp.com",
+      projectId: "criteria-18e9d",
+      storageBucket: "criteria-18e9d.firebasestorage.app",
+      messagingSenderId: "427729441325",
+      appId: "1:427729441325:web:43a77167bd1f9fc5c65ea4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let authCode = '';
+    const $ = id => document.getElementById(id);
+
+    function setProgress(pct, label) {
+      $('progress').style.width = pct + '%';
+      $('step-label').textContent = label;
+    }
+
+    function showSuccess(title, desc) {
+      $('spinner-el').style.display = 'none';
+      $('status-icon').textContent = '✓';
+      $('status-icon').style.cssText = 'display:block;font-size:2.5rem;color:#22c55e;margin-bottom:0.75rem;';
+      $('title-el').style.color = '#22c55e';
+      $('title-el').textContent = title;
+      $('desc-el').textContent = desc;
+    }
+
+    function showError(msg) {
+      $('spinner-el').style.display = 'none';
+      $('status-icon').textContent = '✗';
+      $('status-icon').style.cssText = 'display:block;font-size:2.5rem;color:#ef4444;margin-bottom:0.75rem;';
+      $('title-el').style.color = '#ef4444';
+      $('title-el').textContent = 'Authorization Failed';
+      $('desc-el').textContent = 'Unable to complete GitHub connection.';
+      const box = $('error-wrap');
+      box.textContent = msg;
+      box.style.display = 'block';
+    }
+
+    function showUserChip(username, avatarUrl) {
+      const chip = $('user-chip');
+      chip.innerHTML = `
+        ${avatarUrl ? `<img src="${avatarUrl}" class="avatar" onerror="this.style.display='none'" alt="@${username}"/>` : ''}
+        <span>@${username}</span>
+      `;
+      chip.style.display = 'inline-flex';
+    }
+
+    async function persistToFirestore(username, avatarUrl) {
+      return new Promise(resolve => {
+        onAuthStateChanged(auth, async (user) => {
+          if (user?.uid) {
+            try {
+              await setDoc(doc(db, 'users', user.uid), {
+                githubConnected: true,
+                githubUsername: username,
+                githubAvatar: avatarUrl || null,
+                githubLinkedAt: serverTimestamp()
+              }, { merge: true });
+            } catch(e) {
+              console.warn('Firestore write failed:', e);
+            }
+          }
+          resolve();
+        });
+        // Timeout so we don't block
+        setTimeout(resolve, 3000);
+      });
+    }
+
+    async function saveAndFinish(username, avatarUrl, repos = []) {
+      const clean = (username || '').replace(/^@/, '').trim();
+      if (!clean) { showError('Received empty GitHub username. Please try again.'); return; }
+
+      setProgress(75, 'Saving connection...');
+
+      // Save to localStorage
+      localStorage.setItem('criteria_github_connected', 'true');
+      localStorage.setItem('criteria_github_username', clean);
+      if (avatarUrl) localStorage.setItem('criteria_github_avatar', avatarUrl);
+      if (authCode) localStorage.setItem('criteria_github_code', authCode);
+      if (repos && repos.length > 0) localStorage.setItem('criteria_github_repos', JSON.stringify(repos));
+      localStorage.setItem('criteria_github_linked_at', new Date().toISOString());
+
+      setProgress(90, 'Syncing to profile...');
+      await persistToFirestore(clean, avatarUrl);
+
+      showUserChip(clean, avatarUrl);
+      setProgress(100, 'Done');
+
+      // Notify opener window if opened as popup
+      let notifiedOpener = false;
+      try {
+        if (window.opener && !window.opener.closed) {
+          window.opener.postMessage({
+            type: 'GITHUB_AUTH_SUCCESS',
+            username: clean,
+            avatar: avatarUrl,
+            code: authCode,
+            repos: repos
+          }, '*');
+          if (typeof window.opener.handleGithubConnected === 'function') {
+            window.opener.handleGithubConnected({ username: clean, avatar: avatarUrl, code: authCode, repos: repos });
+          }
+          notifiedOpener = true;
+        }
+      } catch(err) {
+        console.warn('Opener communication failed:', err);
+      }
+
+      const isPopup = notifiedOpener || Boolean(window.opener) || (window.name === 'criteria_github_auth') || (window.history.length <= 2 && window.menubar && !window.menubar.visible);
+
+      if (isPopup) {
+        showSuccess('Connected!', 'Your GitHub account has been linked. Closing window...');
+        setTimeout(() => {
+          try { window.close(); } catch(e) {}
+          // Fallback if browser prevents script close
+          setTimeout(() => {
+            if (!window.closed) {
+              window.location.href = '/profile?github=connected';
+            }
+          }, 600);
+        }, 600);
+      } else {
+        showSuccess('Connected!', 'Your GitHub account has been linked. Returning to profile...');
+        setTimeout(() => {
+          window.location.href = '/profile?github=connected';
+        }, 800);
+      }
+    }
+
+    // Fallback: user types their handle manually
+    window.submitHandle = async function() {
+      const input = $('gh-handle');
+      const handle = (input.value || '').trim().replace(/^@/, '');
+      if (!handle) { input.focus(); return; }
+
+      const btn = input.nextElementSibling;
+      btn.textContent = 'Verifying...';
+      btn.disabled = true;
+
+      try {
+        // Verify the handle exists on GitHub via public API
+        const resp = await fetch('/api/github/verify-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: handle })
+        });
+        const data = await resp.json().catch(() => ({}));
+        const finalUser = data.success ? data.username : handle;
+        const finalAvatar = data.avatar || ('https://github.com/' + handle + '.png');
+        await saveAndFinish(finalUser, finalAvatar);
+      } catch(err) {
+        // Even if verification fails, accept the user's handle
+        await saveAndFinish(handle, 'https://github.com/' + handle + '.png');
+      }
+    };
+
+    async function run() {
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get('error');
+
+      if (error) {
+        const desc = params.get('error_description') || error;
+        showError('GitHub denied access: ' + desc);
+        setTimeout(() => {
+          if (window.opener && !window.opener.closed) {
+            window.close();
+          } else {
+            window.location.href = '/profile';
+          }
+        }, 2500);
+        return;
+      }
+
+      const code = params.get('code');
+      const state = params.get('state');
+
+      if (!code) {
+        showError('No authorization code returned from GitHub.');
+        setTimeout(() => { window.location.href = '/profile'; }, 2500);
+        return;
+      }
+
+      authCode = code;
+      setProgress(30, 'Received authorization code...');
+
+      // Try server-side token exchange
+      try {
+        setProgress(50, 'Exchanging code with GitHub...');
+        const resp = await fetch('/api/github/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, state })
+        });
+        const data = await resp.json().catch(() => ({}));
+
+        if (data.success && data.username) {
+          await saveAndFinish(data.username, data.avatar, data.repos || []);
+          return;
+        }
+
+        if (data.error === 'bad_verification_code') {
+          // Code is expired or already used — this can happen if page reloads
+          showError('The authorization code expired (GitHub codes are single-use). Please go back and try connecting again.');
+          setTimeout(() => { window.location.href = '/profile'; }, 4000);
+          return;
+        }
+
+        // Secret missing or other error — show manual entry
+        $('spinner-el').style.display = 'none';
+        $('title-el').textContent = 'Almost there!';
+        $('desc-el').textContent = 'Enter your GitHub username to complete linking your account.';
+        $('username-form').style.display = 'block';
+        setProgress(60, 'Manual confirmation needed');
+        $('gh-handle').focus();
+
+      } catch(err) {
+        console.error('Token exchange error:', err);
+        // Network error or dev-server unavailable — show manual entry
+        $('spinner-el').style.display = 'none';
+        $('title-el').textContent = 'Almost there!';
+        $('desc-el').textContent = 'Enter your GitHub username to complete linking.';
+        $('username-form').style.display = 'block';
+        setProgress(60, 'Confirm your username');
+        $('gh-handle').focus();
+      }
+    }
+
+    run();
+  </script>
+</body>
+</html>

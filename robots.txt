@@ -1,0 +1,25 @@
+User-agent: Googlebot
+Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
+Disallow: /admin-login
+
+User-agent: Googlebot-Image
+Allow: /Tools/
+Allow: /favicon.ico
+Allow: /*.png$
+Allow: /*.jpeg$
+Allow: /*.jpg$
+Allow: /*.svg$
+
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
+Disallow: /admin-login
+
+Sitemap: https://criteriaa.web.app/sitemap.xml

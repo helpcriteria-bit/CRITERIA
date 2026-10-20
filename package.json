@@ -1,0 +1,13 @@
+{
+  "name": "criteria",
+  "version": "1.0.0",
+  "description": "Criteria website and web app",
+  "scripts": {
+    "start": "node dev-server.js",
+    "dev": "node dev-server.js",
+    "serve": "node dev-server.js"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

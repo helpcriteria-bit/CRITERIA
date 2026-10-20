@@ -1,0 +1,2293 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="/siteCookies.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agent Portal — CRITERIA</title>
+  <link rel="icon" href="Tools/Logo White.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+  :root {
+    --gold: #f0a500;
+    --gold-hover: #ffb81c;
+    --gold-dim: #c98a00;
+    --gold-glow: rgba(240, 165, 0, 0.16);
+    --gold-border: rgba(240, 165, 0, 0.28);
+    --bg: #07070a;
+    --bg-2: #0e0e13;
+    --bg-3: #14141c;
+    --bg-card: #0f0f15;
+    --text: #f5f5f5;
+    --text-2: #a1a1aa;
+    --text-3: #52525b;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.16);
+    --success: #22c55e;
+    --success-glow: rgba(34, 197, 94, 0.15);
+    --error: #ef4444;
+    --error-glow: rgba(239, 68, 68, 0.15);
+    --warn: #f59e0b;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-lg: 22px;
+    --sidebar-w: 260px;
+    --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--gold); color: #000; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+  /* Ambient radial background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 10% 20%, rgba(240, 165, 0, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.35;
+  }
+
+  /* ── DEADLINE TIMER BAR ── */
+  #deadline-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 44px; background: rgba(14, 14, 19, 0.95);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gold-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    display: none; align-items: center; justify-content: center; gap: 0.85rem;
+    font-family: var(--font-display); font-size: 0.82rem; font-weight: 600;
+  }
+  #deadline-bar.show { display: flex; }
+  #deadline-bar.urgent {
+    border-bottom-color: rgba(239, 68, 68, 0.6);
+    background: rgba(28, 10, 10, 0.96);
+    box-shadow: 0 4px 25px rgba(239, 68, 68, 0.25);
+  }
+  #deadline-bar.warning {
+    border-bottom-color: rgba(245, 158, 11, 0.6);
+    background: rgba(26, 18, 8, 0.96);
+  }
+  .deadline-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 10px var(--gold);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  #deadline-bar.urgent .deadline-dot { background: var(--error); box-shadow: 0 0 10px var(--error); }
+  #deadline-bar.warning .deadline-dot { background: var(--warn); box-shadow: 0 0 10px var(--warn); }
+  .deadline-label { color: var(--text-2); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; }
+  .deadline-time { color: var(--gold); font-size: 0.95rem; font-weight: 800; letter-spacing: 0.04em; }
+  #deadline-bar.urgent .deadline-time { color: var(--error); }
+  #deadline-bar.warning .deadline-time { color: var(--warn); }
+  .deadline-pill {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 2px 10px; border-radius: 100px; font-size: 0.72rem; color: var(--text);
+    max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ── AUTH SCREEN ── */
+  #auth-screen {
+    position: fixed; inset: 0; z-index: 500; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; padding: 2rem;
+  }
+  #auth-screen.hidden { display: none; }
+  .auth-wrap {
+    width: min(500px, 100%); background: var(--bg-card);
+    border: 1px solid var(--border-hover); border-radius: 28px;
+    overflow: hidden; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 40px var(--gold-glow);
+    position: relative; z-index: 2;
+  }
+  .auth-panel { padding: 2.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .auth-brand {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.2em;
+  }
+  .auth-brand-logo { display: flex; align-items: center; gap: 10px; color: var(--text); }
+  .logo-dot { width: 7px; height: 7px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 10px var(--gold); animation: pulse-dot 2.5s ease-in-out infinite; }
+  .auth-badge { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; padding: 3px 9px; border-radius: 100px; background: var(--gold-glow); color: var(--gold); border: 1px solid var(--gold-border); }
+  @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.5; } }
+  .auth-title { font-family: var(--font-display); font-weight: 800; font-size: 1.8rem; line-height: 1.1; letter-spacing: -0.01em; }
+  .auth-subtitle { font-size: 0.86rem; color: var(--text-2); line-height: 1.6; }
+  .auth-tabs { display: flex; background: var(--bg-2); border-radius: 100px; padding: 4px; border: 1px solid var(--border); }
+  .auth-tab {
+    flex: 1; text-align: center; padding: 10px; border-radius: 100px;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
+    letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+    color: var(--text-3); transition: all 0.25s; border: none; background: transparent;
+  }
+  .auth-tab.active { background: var(--bg-3); color: var(--text); border: 1px solid var(--border-hover); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .auth-panel-content { display: none; flex-direction: column; gap: 1.1rem; }
+  .auth-panel-content.active { display: flex; }
+  .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); }
+  .auth-input {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+    color: var(--text); font-family: var(--font-body); font-size: 0.9rem;
+    padding: 12px 16px; outline: none; width: 100%; transition: all var(--transition);
+  }
+  .auth-input:focus { border-color: var(--gold-border); box-shadow: 0 0 16px var(--gold-glow); background: var(--bg-3); }
+  .auth-input::placeholder { color: var(--text-3); }
+
+  /* area checkboxes */
+  .area-checks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .area-check-label {
+    display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px;
+    border: 1px solid var(--border); border-radius: 100px; cursor: pointer;
+    font-size: 0.78rem; font-weight: 600; color: var(--text-2); background: var(--bg-2);
+    transition: all 0.2s; user-select: none;
+  }
+  .area-check-label svg { vertical-align: middle; flex-shrink: 0; }
+  .area-check-label:hover { border-color: var(--gold-border); color: var(--gold); background: var(--bg-3); }
+  .area-check-label input { width: 15px; height: 15px; margin: 0; accent-color: var(--gold); flex-shrink: 0; }
+  .area-check-label:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .area-check-label.checked { border-color: var(--gold); background: var(--gold-glow); color: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
+
+  .auth-btn {
+    width: 100%; background: var(--gold); color: #000; border: none;
+    border-radius: 100px; padding: 14px; font-family: var(--font-display);
+    font-weight: 800; font-size: 0.92rem; letter-spacing: 0.08em;
+    cursor: pointer; transition: all var(--transition); box-shadow: 0 4px 20px var(--gold-glow);
+  }
+  .auth-btn:hover:not(:disabled) { background: var(--gold-hover); transform: translateY(-1px); box-shadow: 0 6px 25px rgba(240, 165, 0, 0.35); }
+  .auth-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+  .auth-google-btn {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--bg-2); border: 1px solid var(--border-hover); border-radius: 100px;
+    padding: 13px; cursor: pointer; font-family: var(--font-display); font-weight: 700;
+    font-size: 0.84rem; color: var(--text); transition: all var(--transition);
+  }
+  .auth-google-btn:hover { border-color: var(--gold-border); background: var(--bg-3); }
+  .auth-divider { display: flex; align-items: center; gap: 1rem; font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; }
+  .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .auth-error {
+    font-size: 0.8rem; color: var(--error); padding: 11px 16px;
+    background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 12px; display: none; line-height: 1.5;
+  }
+  .auth-error.show { display: block; }
+  .verify-notice { text-align: center; padding: 2.5rem 1.5rem; display: none; flex-direction: column; align-items: center; gap: 1rem; }
+  .verify-notice.show { display: flex; }
+  .verify-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--gold-glow); border: 1px solid var(--gold-border); display: flex; align-items: center; justify-content: center; color: var(--gold); }
+  .verify-title { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+  .verify-text { font-size: 0.88rem; color: var(--text-2); line-height: 1.65; max-width: 320px; }
+
+  /* ── APP SHELL ── */
+  .app-shell { display: flex; min-height: 100vh; position: relative; z-index: 2; }
+  .app-shell.with-timer { padding-top: 44px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w); flex-shrink: 0; background: var(--bg-2);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
+    overflow-y: auto; transition: transform 0.3s ease;
+  }
+  .sidebar.with-timer { top: 44px; height: calc(100vh - 44px); }
+  .sidebar-top { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 1rem; letter-spacing: 0.22em; color: var(--text); }
+  .sidebar-badge { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; padding: 2px 8px; border-radius: 100px; background: var(--gold-glow); color: var(--gold); border: 1px solid var(--gold-border); }
+  .sidebar-user { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .sb-avatar-wrap { display: flex; align-items: center; gap: 0.875rem; }
+  .sb-avatar {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--gold-glow);
+    border: 2px solid var(--gold-border); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 800; font-size: 0.92rem; color: var(--gold);
+    overflow: hidden; flex-shrink: 0;
+  }
+  .sb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .sb-name { font-family: var(--font-display); font-weight: 800; font-size: 0.92rem; margin-bottom: 2px; }
+  .sb-email { font-size: 0.72rem; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+  .sb-role {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 0.68rem; font-weight: 700;
+    color: var(--success); margin-top: 4px; background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.25); padding: 2px 8px; border-radius: 100px;
+  }
+  .sb-role-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); }
+  .sidebar-nav { padding: 1rem 0.75rem; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .nav-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-3); padding: 0.5rem 0.75rem; margin-top: 0.5rem; }
+  .nav-item {
+    display: flex; align-items: center; gap: 0.85rem; padding: 0.75rem 0.85rem;
+    border-radius: var(--radius-sm); text-decoration: none; color: var(--text-2);
+    font-size: 0.86rem; font-weight: 600; transition: all var(--transition);
+    cursor: pointer; position: relative; border: none; background: none; width: 100%;
+  }
+  .nav-item:hover { color: var(--text); background: var(--bg-3); }
+  .nav-item.active { color: var(--gold); background: var(--gold-glow); font-weight: 700; }
+  .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--gold); border-radius: 2px; }
+  .nav-icon { width: 20px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nav-icon svg { vertical-align: middle; }
+  .nav-badge { margin-left: auto; background: var(--error); color: #fff; font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: 100px; min-width: 18px; text-align: center; }
+  .sidebar-bottom { padding: 1rem 0.75rem; border-top: 1px solid var(--border); }
+  .nav-item.danger { color: var(--error); }
+  .nav-item.danger:hover { background: var(--error-glow); color: var(--error); }
+
+  /* ── MAIN ── */
+  .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+  .topbar {
+    position: sticky; top: 0; z-index: 40; padding: 0 2.5rem; height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(7, 7, 10, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar.with-timer { top: 44px; }
+  .topbar-title { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.02em; }
+  .topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+  .tb-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
+    border-radius: 100px; font-family: var(--font-display); font-weight: 700;
+    font-size: 0.78rem; border: none; cursor: pointer; transition: all var(--transition);
+    text-decoration: none;
+  }
+  .tb-btn.primary { background: var(--gold); color: #000; box-shadow: 0 4px 15px var(--gold-glow); }
+  .tb-btn.primary:hover { background: var(--gold-hover); transform: translateY(-1px); }
+  .tb-btn.ghost { background: var(--bg-card); color: var(--text-2); border: 1px solid var(--border); }
+  .tb-btn.ghost:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-3); }
+  .page-content { padding: 2.25rem 2.5rem 4rem; max-width: 1200px; }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 1.6rem; transition: all var(--transition); position: relative;
+  }
+  .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+  .stat-card.highlight { border-color: var(--gold-border); background: var(--gold-glow); }
+  .stat-icon-wrap {
+    width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 1rem; color: var(--text-2);
+  }
+  .stat-card.highlight .stat-icon-wrap { background: var(--gold-glow); border-color: var(--gold-border); color: var(--gold); }
+  .stat-value { font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1; margin-bottom: 0.35rem; }
+  .stat-card.highlight .stat-value { color: var(--gold); }
+  .stat-label { font-size: 0.78rem; color: var(--text-2); font-weight: 500; }
+
+  /* ── ASSIGNMENT CARDS ── */
+  .work-grid { display: grid; gap: 1.25rem; }
+  .work-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 1.6rem; transition: all var(--transition); position: relative; overflow: hidden;
+  }
+  .work-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+  .work-card.active-work { border-color: var(--gold-border); }
+  .work-card.active-work::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--gold); }
+  .work-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.85rem; }
+  .work-card-title { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; margin-bottom: 3px; }
+  .work-card-meta { font-size: 0.75rem; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+  .work-card-body {
+    font-size: 0.88rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1.15rem;
+    display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .work-card-footer { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px;
+    border-radius: 100px; font-size: 0.72rem; font-weight: 600; color: var(--text-2);
+    background: var(--bg-2); border: 1px solid var(--border);
+  }
+  .tag.gold { background: var(--gold-glow); border-color: var(--gold-border); color: var(--gold); }
+  .tag.warn { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: var(--warn); }
+  .tag svg { vertical-align: middle; }
+  .work-card-actions { display: flex; gap: 0.65rem; margin-left: auto; flex-wrap: wrap; }
+
+  /* ── STATUS BADGES ── */
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .b-in_progress { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
+  .b-completed { background: rgba(129, 140, 248, 0.12); color: #818cf8; border: 1px solid rgba(129, 140, 248, 0.25); }
+  .b-submitted { background: rgba(168, 85, 247, 0.12); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.25); }
+  .b-under_review { background: rgba(96, 165, 250, 0.12); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.25); }
+  .b-preview_sent { background: var(--gold-glow); color: var(--gold); border: 1px solid var(--gold-border); }
+  .b-revision { background: rgba(251, 191, 36, 0.12); color: var(--warn); border: 1px solid rgba(251, 191, 36, 0.25); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 18px; border-radius: 100px; border: none; font-family: var(--font-display);
+    font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: all var(--transition);
+    white-space: nowrap; text-decoration: none;
+  }
+  .btn-gold { background: var(--gold); color: #000; box-shadow: 0 2px 10px var(--gold-glow); }
+  .btn-gold:hover { background: var(--gold-hover); transform: translateY(-1px); }
+  .btn-ghost { background: var(--bg-2); color: var(--text-2); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-3); }
+  .btn-green { background: var(--success-glow); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); }
+  .btn-green:hover { background: rgba(34, 197, 94, 0.25); }
+  .btn-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+  .btn-blue:hover { background: rgba(59, 130, 246, 0.25); }
+
+  /* ── MODAL ── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 300; display: flex; align-items: center;
+    justify-content: center; padding: 1.5rem; background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(20px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    width: min(900px, 100%); background: var(--bg-card); border: 1px solid var(--border-hover);
+    border-radius: 26px; overflow: hidden; display: grid; grid-template-columns: 1.15fr 0.85fr;
+    max-height: 88vh; transform: translateY(16px); transition: transform 0.35s ease;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+  }
+  .overlay.open .modal { transform: translateY(0); }
+  .modal-col { padding: 2rem; overflow-y: auto; }
+  .modal-col:first-child { border-right: 1px solid var(--border); }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem;
+  }
+  .modal-title { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+  .modal-close {
+    background: none; border: none; color: var(--text-3); font-size: 1.1rem;
+    cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; transition: all var(--transition);
+  }
+  .modal-close:hover { background: var(--bg-3); color: var(--text); }
+  .detail-row { margin-bottom: 1.25rem; }
+  .detail-row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .detail-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.35rem; }
+  .detail-value { font-size: 0.92rem; color: var(--text); font-weight: 500; }
+  .detail-desc {
+    font-size: 0.9rem; color: var(--text-2); line-height: 1.7; background: var(--bg-2);
+    border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem;
+  }
+  .att-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.85rem; margin-top: 0.6rem; }
+  .att-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.2s; }
+  .att-card:hover { border-color: var(--gold-border); }
+  .att-card img, .att-card video { width: 100%; height: 95px; object-fit: cover; background: #000; }
+  .att-name { padding: 0.5rem 0.6rem; font-size: 0.72rem; color: var(--text-2); word-break: break-all; flex: 1; }
+  .att-open { font-size: 0.72rem; color: var(--gold); padding: 0 0.6rem 0.6rem; text-decoration: none; display: block; font-weight: 600; }
+  .field-input {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 16px; color: var(--text); font-family: var(--font-body);
+    font-size: 0.9rem; outline: none; transition: border-color var(--transition);
+  }
+  .field-input:focus { border-color: var(--gold-border); box-shadow: 0 0 15px var(--gold-glow); }
+  .field-textarea {
+    width: 100%; min-height: 95px; background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 16px; color: var(--text); font-family: var(--font-body);
+    font-size: 0.9rem; resize: vertical; outline: none; transition: border-color var(--transition);
+  }
+  .field-textarea:focus { border-color: var(--gold-border); box-shadow: 0 0 15px var(--gold-glow); }
+  .modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+  /* upload zone inside modal */
+  .upload-zone-sm {
+    background: var(--bg-2); border: 2px dashed var(--border); border-radius: 14px;
+    padding: 1.75rem 1.25rem; text-align: center; cursor: pointer; transition: all var(--transition); margin-top: 0.75rem;
+  }
+  .upload-zone-sm:hover, .upload-zone-sm.drag-over { border-color: var(--gold); background: var(--bg-3); box-shadow: 0 0 20px var(--gold-glow); }
+  .upload-zone-sm-icon { color: var(--gold); margin-bottom: 0.5rem; display: flex; justify-content: center; }
+  .upload-zone-sm-text { font-size: 0.84rem; color: var(--text-2); }
+  .upload-progress { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.85rem; overflow: hidden; display: none; }
+  .upload-progress.show { display: block; }
+  .upload-progress-bar { height: 100%; background: linear-gradient(to right, var(--gold-dim), var(--gold)); width: 0%; transition: width 0.25s ease; }
+  .file-list-sm { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.85rem; }
+  .file-item-sm {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem;
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; font-size: 0.82rem;
+  }
+  .file-item-remove { cursor: pointer; color: var(--error); margin-left: auto; font-size: 1rem; padding: 2px 6px; }
+
+  /* ── CHAT ── */
+  .chat-wrap { display: flex; flex-direction: column; height: 100%; min-height: 420px; }
+  #chat-area { width: 100%; max-width: 100%; min-width: 0; }
+  #active-chat { height: min(660px, calc(100dvh - 220px)) !important; min-height: 360px; min-width: 0; }
+  .chat-header {
+    padding: 1.1rem 1.5rem; background: var(--bg-2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; border-radius: 14px 14px 0 0;
+  }
+  .chat-header-left { flex: 1; }
+  .chat-header-title { font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; margin-bottom: 3px; }
+  .chat-status-line { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; color: var(--text-3); font-weight: 500; }
+  .chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+  .chat-status-dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
+  .chat-status-dot.offline { background: var(--error); }
+  .chat-messages {
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+    gap: 0.75rem; padding: 1.25rem; background: var(--bg-2); min-height: 0; width: 100%; box-sizing: border-box;
+  }
+  .chat-msg { max-width: min(78%, 720px); padding: 0.8rem 1.1rem; border-radius: 14px; font-size: 0.86rem; line-height: 1.55; box-sizing: border-box; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .chat-msg.from-admin { background: var(--gold-glow); border: 1px solid var(--gold-border); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .chat-msg.from-agent { background: var(--bg-3); border: 1px solid var(--border); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-msg-content { display: flex; align-items: flex-start; gap: 6px; flex-direction: column; min-width: 0; }
+  .chat-msg.from-agent .chat-msg-content { align-items: flex-end; }
+  .chat-sender { font-size: 0.68rem; color: var(--text-3); margin-bottom: 2px; font-weight: 700; }
+  .chat-msg-text { word-break: break-word; }
+  .chat-msg-status { font-size: 0.72rem; margin-top: 3px; display: inline-flex; align-items: center; gap: 4px; }
+  .chat-msg-read { color: var(--gold); }
+  .chat-msg-unread { color: var(--text-3); }
+  .chat-typing { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.25rem; font-size: 0.8rem; color: var(--text-2); align-self: flex-start; }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: typing-bounce 1.4s infinite; }
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-7px); opacity: 1; } }
+  .chat-input-row { display: flex; align-items: center; gap: 0.75rem; width: 100%; min-width: 0; box-sizing: border-box; }
+  .chat-input {
+    flex: 1; min-width: 0; background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 11px 16px; color: var(--text); font-family: var(--font-body);
+    font-size: 0.9rem; outline: none; transition: border-color var(--transition);
+  }
+  .chat-input:focus { border-color: var(--gold-border); box-shadow: 0 0 15px var(--gold-glow); }
+  .chat-scroll-controls { display: flex; gap: 0.5rem; }
+  .chat-scroll-btn {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 100px;
+    color: var(--text-2); padding: 0.45rem 0.85rem; font-size: 0.72rem; cursor: pointer;
+    transition: all var(--transition); font-weight: 600;
+  }
+  .chat-scroll-btn:hover { background: var(--bg-3); border-color: var(--gold-border); color: var(--text); }
+  @media(max-width:640px) {
+    #active-chat { height: min(660px, calc(100dvh - 190px)) !important; min-height: 320px; }
+    .chat-header { padding: 0.9rem 1rem; gap: 0.75rem; }
+    .chat-messages { padding: 0.85rem; }
+    .chat-msg { max-width: 92%; padding: 0.7rem 0.85rem; }
+    #chat-input-row { padding: 0.75rem !important; gap: 0.5rem; }
+    .chat-scroll-controls { gap: 0.35rem; }
+    .chat-scroll-btn { padding: 0.4rem 0.6rem; }
+  }
+
+  /* ── ANALYTICS SECTION ── */
+  .a-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+  .a-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.6rem; transition: all var(--transition); }
+  .a-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .a-title { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 0.6rem; font-weight: 700; }
+  .a-val { font-family: var(--font-display); font-weight: 800; font-size: 1.8rem; margin-bottom: 0.35rem; }
+  .a-label { font-size: 0.78rem; color: var(--text-2); }
+
+  /* ── CHART ── */
+  .chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.75rem; }
+  .chart-title { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; margin-bottom: 0.25rem; }
+  .chart-sub { font-size: 0.75rem; color: var(--text-3); margin-bottom: 1.5rem; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding-bottom: 30px; position: relative; }
+  .bar-chart::after { content: ''; position: absolute; bottom: 28px; left: 0; right: 0; height: 1px; background: var(--border); }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
+  .bar-track { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+  .bar-fill {
+    width: 100%; border-radius: 8px 8px 3px 3px; background: linear-gradient(to top, var(--gold-dim), var(--gold));
+    border: 1px solid var(--gold-border); position: relative; overflow: hidden; min-height: 4px;
+    transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .bar-fill:hover { background: var(--gold-hover); box-shadow: 0 0 16px var(--gold-glow); }
+  .bar-label { font-size: 0.7rem; font-weight: 600; color: var(--text-3); white-space: nowrap; }
+
+  /* ── PROFILE SECTION ── */
+  .profile-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.75rem; }
+  .profile-card-header { padding: 1.6rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .profile-card-title { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; margin-bottom: 3px; }
+  .profile-card-sub { font-size: 0.8rem; color: var(--text-3); }
+  .profile-card-body { padding: 2rem; }
+  .profile-review-status { margin: 1rem 2rem 0; padding: 0.85rem 1rem; border: 1px solid var(--border); border-radius: 8px; color: var(--text-2); background: var(--bg-2); font-size: 0.82rem; line-height: 1.5; }
+  .profile-review-status.pending { color: var(--warn); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+  .profile-review-status.rejected { color: var(--error); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.08); }
+  .profile-review-status.approved { color: var(--success); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); }
+  .profile-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+  .form-group.full { grid-column: 1 / -1; }
+  .profile-photo-control { display: flex; align-items: center; gap: 1rem; }
+  .profile-photo-preview { width: 72px; height: 72px; flex: 0 0 72px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--gold-border); border-radius: 50%; background: var(--gold-glow); color: var(--gold); font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; }
+  .profile-photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-crop-overlay { position: fixed; inset: 0; z-index: 600; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.86); backdrop-filter: blur(14px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s ease, visibility 0.2s ease; }
+  .profile-crop-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+  .profile-crop-modal { width: min(440px,100%); max-height: min(92dvh,760px); overflow-y: auto; padding: 1.5rem; border: 1px solid var(--border-hover); border-radius: var(--radius-lg); background: var(--bg-card); box-shadow: 0 24px 70px rgba(0,0,0,0.65); }
+  .profile-crop-title { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+  .profile-crop-subtitle { margin: 0.25rem 0 1rem; color: var(--text-3); font-size: 0.78rem; }
+  .profile-crop-viewport { position: relative; width: min(100%,360px); aspect-ratio: 1; margin: 0 auto; overflow: hidden; border-radius: 12px; background: #080808; cursor: grab; touch-action: none; }
+  .profile-crop-viewport.dragging { cursor: grabbing; }
+  .profile-crop-image { position: absolute; top: 50%; left: 50%; max-width: none; max-height: none; user-select: none; pointer-events: none; }
+  .profile-crop-guide { position: absolute; z-index: 1; inset: 4%; border: 1px solid rgba(255,255,255,0.45); border-radius: 50%; pointer-events: none; box-shadow: 0 0 0 999px rgba(0,0,0,0.18); }
+  .profile-crop-controls { margin-top: 1rem; }
+  .profile-crop-zoom-label { display: flex; justify-content: space-between; color: var(--text-2); font-size: 0.75rem; margin-bottom: 0.35rem; }
+  .profile-crop-zoom { width: 100%; accent-color: var(--gold); }
+  .profile-crop-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
+  .profile-crop-rotate { display: flex; gap: 0.5rem; }
+  .form-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); }
+  .form-input {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+    color: var(--text); font-family: var(--font-body); font-size: 0.9rem; padding: 12px 16px;
+    outline: none; width: 100%; transition: all var(--transition);
+  }
+  .form-input:focus { border-color: var(--gold-border); box-shadow: 0 0 16px var(--gold-glow); background: var(--bg-3); }
+  .form-input::placeholder { color: var(--text-3); }
+  .form-hint { font-size: 0.72rem; color: var(--text-3); margin-top: 3px; }
+  .verify-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 100px; margin-top: 0.5rem; }
+  .verify-badge.ok { background: var(--success-glow); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); }
+  .verify-badge.no { background: var(--error-glow); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .save-btn {
+    background: var(--gold); color: #000; border: none; border-radius: 100px;
+    padding: 13px 32px; font-family: var(--font-display); font-weight: 800; font-size: 0.88rem;
+    cursor: pointer; transition: all var(--transition); box-shadow: 0 4px 15px var(--gold-glow);
+  }
+  .save-btn:hover { background: var(--gold-hover); transform: translateY(-1px); }
+
+  /* ── TOAST ── */
+  .toast-layer { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 9997; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; pointer-events: none; }
+  .toast {
+    background: var(--bg-card); border: 1px solid var(--border-hover); border-radius: 100px;
+    padding: 12px 22px; font-size: 0.86rem; font-weight: 600; display: flex; align-items: center;
+    gap: 10px; opacity: 0; transform: translateY(-30px); transition: all 0.35s var(--transition);
+    pointer-events: auto; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.gold { border-color: var(--gold-border); color: var(--gold); }
+  .toast.success { border-color: rgba(34, 197, 94, 0.4); color: var(--success); }
+  .toast.error { border-color: rgba(239, 68, 68, 0.4); color: var(--error); }
+  .toast-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  @media(max-width: 960px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .modal { grid-template-columns: 1fr; max-height: calc(100vh - 2rem); }
+    .modal-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .a-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media(max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; }
+    .page-content { padding: 1.5rem; }
+    .profile-form-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .a-grid { grid-template-columns: 1fr; }
+  }
+  </style>
+  </head>
+  <body>
+
+  <!-- ═══════════════════════════════
+      DEADLINE TIMER BAR
+  ═══════════════════════════════ -->
+  <div id="deadline-bar">
+    <div class="deadline-dot"></div>
+    <span class="deadline-icon" style="display:inline-flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </span>
+    <span class="deadline-label">Active Deadline</span>
+    <span class="deadline-time" id="deadline-countdown">—</span>
+    <span class="deadline-label" id="deadline-project-name"></span>
+  </div>
+
+  <!-- ═══════════════════════════════
+      AUTH SCREEN
+  ═══════════════════════════════ -->
+  <div id="auth-screen">
+    <div class="auth-wrap">
+      <div class="auth-panel" id="auth-panel-main">
+        <div class="auth-brand"><div class="logo-dot"></div>CRITERIA AGENTS</div>
+        <div>
+          <div class="auth-title">Agent Portal</div>
+          <div class="auth-subtitle">Restricted portal for certified studio talent. Sign in using your administrator-assigned credentials.</div>
+        </div>
+
+        <!-- SIGN IN (Username & Password Only) -->
+        <div class="auth-panel-content active" id="panel-signin">
+          <div class="auth-error" id="signin-error"></div>
+          <div class="field-group">
+            <label class="field-label">Agent Username</label>
+            <div style="position:relative;">
+              <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:700;font-size:0.95rem;">@</span>
+              <input type="text" class="auth-input" id="si-username" placeholder="agent_username" style="padding-left:34px;" autocomplete="username" spellcheck="false" autoCapitalize="none" onkeydown="if(event.key==='Enter')document.getElementById('si-pass').focus()"/>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Password</label>
+            <input type="password" class="auth-input" id="si-pass" placeholder="Enter assigned password" autocomplete="current-password" onkeydown="if(event.key==='Enter')agentSignIn()"/>
+          </div>
+          <button class="auth-btn" id="agent-signin-btn" onclick="agentSignIn()">Sign In to Agent Portal →</button>
+          <div style="text-align:center;font-size:0.75rem;color:var(--text-3);margin-top:0.75rem;line-height:1.6;">
+            <span style="display:inline-flex;align-items:center;gap:5px;color:var(--gold);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Studio Issued Credentials Only
+            </span><br>
+            <span>Agent accounts are created exclusively by Studio Administrators.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+      APP
+  ═══════════════════════════════ -->
+  <div class="app-shell" id="app-shell" style="display:none;">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <a href="/" class="sidebar-logo"><div class="logo-dot"></div>CRITERIA</a>
+      </div>
+      <div class="sidebar-user">
+        <div class="sb-avatar-wrap">
+          <div class="sb-avatar" id="sb-avatar"><span id="sb-initials">A</span></div>
+          <div style="min-width:0;">
+            <div class="sb-name" id="sb-name">Agent</div>
+            <div class="sb-email" id="sb-email">—</div>
+            <div class="sb-role"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-right:5px;"></span>Verified Creator</div>
+          </div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+        <button class="nav-item active" data-sec="dashboard" onclick="switchSection('dashboard',this)">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          </span>
+          Dashboard
+        </button>
+        <button class="nav-item" data-sec="work" onclick="switchSection('work',this)">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </span>
+          My Work
+        </button>
+        <button class="nav-item" data-sec="chat" onclick="switchSection('chat',this)">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          Chat <span class="nav-badge" id="chat-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-item" data-sec="analytics" onclick="switchSection('analytics',this)">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </span>
+          Analytics
+        </button>
+        <div class="nav-label">Account</div>
+        <button class="nav-item" data-sec="profile" onclick="switchSection('profile',this)">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          Profile
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item danger" onclick="agentSignOut()">
+          <span class="nav-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </span>
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar" id="topbar">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-right">
+          <button class="tb-btn ghost" onclick="switchSection('work',document.querySelector('[data-sec=work]'))">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            My Work
+          </button>
+        </div>
+      </div>
+
+      <div class="page-content">
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="sec-dashboard">
+          <div style="margin-bottom:1.75rem;">
+            <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-3);margin-bottom:0.35rem;">Overview</div>
+            <div style="font-family:var(--font-display);font-weight:800;font-size:1.9rem;">Welcome, <span style="color:var(--gold);" id="greeting-name">Agent</span></div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card highlight">
+              <div class="stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div class="stat-value" id="d-total">0</div>
+              <div class="stat-label">Total Received</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="stat-value" id="d-completed">0</div>
+              <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
+              </div>
+              <div class="stat-value" id="d-income">₹0</div>
+              <div class="stat-label">Total Income</div>
+            </div>
+          </div>
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);font-family:var(--font-display);font-weight:700;font-size:0.92rem;">Active Assignments</div>
+            <div id="dash-active-work" style="padding:0;"></div>
+          </div>
+        </div>
+
+        <!-- MY WORK -->
+        <div class="section" id="sec-work">
+          <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:1.4rem;">My Work</div>
+            <div style="display:flex;gap:0.5rem;">
+              <button class="btn btn-ghost" style="font-size:0.75rem;" id="filter-all" onclick="filterWork('all',this)">All</button>
+              <button class="btn btn-ghost" style="font-size:0.75rem;" id="filter-active" onclick="filterWork('in_progress',this)">Active</button>
+              <button class="btn btn-ghost" style="font-size:0.75rem;" id="filter-done" onclick="filterWork('completed',this)">Completed</button>
+            </div>
+          </div>
+          <div class="work-grid" id="work-grid">
+            <div style="color:var(--text-3);padding:2rem;text-align:center;">No assignments yet.</div>
+          </div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="section" id="sec-chat">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:1.4rem;margin-bottom:1.5rem;">Chat with Admin</div>
+          <div id="chat-empty-state" style="margin-bottom:1.5rem;">
+            <div class="chat-empty-title" style="font-weight:600;margin-bottom:1rem;">Open chat for a work assignment</div>
+            <div id="chat-assignments-list" class="work-grid"></div>
+          </div>
+          <div id="chat-area" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:none;">
+            <div id="active-chat" style="display:flex;flex-direction:column;height:400px;">
+              <div class="chat-header">
+                <div class="chat-header-left">
+                  <div class="chat-header-title" id="chat-work-title">Chat</div>
+                  <div class="chat-status-line">
+                    <span class="chat-status-dot online" id="chat-status-dot"></span>
+                    <span id="chat-admin-status">Admin is online</span>
+                  </div>
+                </div>
+                <div class="chat-scroll-controls">
+                  <button type="button" class="chat-scroll-btn" onclick="scrollChatTop()">Top</button>
+                  <button type="button" class="chat-scroll-btn" onclick="scrollChatBottom()">Bottom</button>
+                </div>
+              </div>
+              <div class="chat-messages" id="chat-msgs"></div>
+              <div id="admin-typing-indicator" style="display:none;">
+                <div class="chat-typing">
+                  <span>Admin is typing</span>
+                  <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-input-row" id="chat-input-row" style="padding:1rem 1.5rem;background:var(--bg-2);border-top:1px solid var(--border);">
+                <input class="chat-input" id="chat-msg-input" placeholder="Type message…" onkeydown="if(event.key==='Enter')sendAgentMsg();else setTypingStatus(true)" onblur="setTypingStatus(false)"/>
+                <button class="btn btn-gold" id="agent-chat-send" onclick="sendAgentMsg()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div class="section" id="sec-analytics">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:1.4rem;margin-bottom:1.5rem;">Analytics</div>
+          <div class="a-grid">
+            <div class="a-card"><div class="a-title">Total Received</div><div class="a-val" id="a-total">0</div><div class="a-label">all assignments</div></div>
+            <div class="a-card"><div class="a-title">Completed</div><div class="a-val" id="a-completed">0</div><div class="a-label">finished works</div></div>
+            <div class="a-card"><div class="a-title">Total Income</div><div class="a-val" id="a-income">₹0</div><div class="a-label">earned so far</div></div>
+            <div class="a-card"><div class="a-title">Completion Rate</div><div class="a-val" id="a-rate">0%</div><div class="a-label">success ratio</div></div>
+            <div class="a-card"><div class="a-title">Rating</div><div class="a-val" id="a-rating" style="display:flex;align-items:center;min-height:2.2rem;">—</div><div class="a-label">set by admin</div></div>
+            <div class="a-card"><div class="a-title">This Month</div><div class="a-val" id="a-month">0</div><div class="a-label">assignments received</div></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Monthly Work Volume</div>
+            <div class="chart-sub">Assignments received per month</div>
+            <div class="bar-chart" id="analytics-bar"></div>
+          </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="section" id="sec-profile">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:1.4rem;margin-bottom:1.5rem;">Profile Settings</div>
+
+          <div class="profile-card">
+            <div class="profile-card-header">
+              <div>
+                <div class="profile-card-title">Personal Details</div>
+                <div class="profile-card-sub">Update your name, contact and area of work</div>
+              </div>
+            </div>
+            <div class="profile-review-status" id="profile-review-status" role="status" aria-live="polite">
+              Profile details, specialties, and profile photos are reviewed by an administrator before going live.
+            </div>
+            <div class="profile-card-body">
+              <div class="profile-form-grid">
+                <div class="form-group">
+                  <label class="form-label">Agent Username</label>
+                  <input type="text" class="form-input" id="p-username" readonly style="opacity:0.8;color:var(--gold);font-weight:700;letter-spacing:0.02em;background:var(--bg-3);"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-input" id="p-name" placeholder="Your full name"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Age</label>
+                  <input type="number" class="form-input" id="p-age" placeholder="Age" min="16" max="99"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <input type="text" class="form-input" id="p-gender" placeholder="Gender"/>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">Place / Location</label>
+                  <input type="text" class="form-input" id="p-place" placeholder="City, Region"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" class="form-input" id="p-phone" placeholder="+91 98765 43210"/>
+                  <span class="form-hint" id="p-phone-hint"></span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">WhatsApp Number</label>
+                  <input type="tel" class="form-input" id="p-whatsapp" placeholder="+91 98765 43210"/>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">Email</label>
+                  <input type="text" class="form-input" id="p-email" placeholder="contact@email.com"/>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">Bio</label>
+                  <input type="text" class="form-input" id="p-bio" placeholder="Short description" maxlength="120"/>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label" for="p-photo">Profile Picture</label>
+                  <div class="profile-photo-control">
+                    <div class="profile-photo-preview" id="profile-photo-preview" aria-label="Profile picture preview"></div>
+                    <div>
+                      <input type="file" id="p-photo" accept="image/jpeg,image/png,image/webp" hidden onchange="handleProfilePhotoChange(event)"/>
+                      <button type="button" class="tb-btn ghost" onclick="document.getElementById('p-photo').click()">Choose Picture</button>
+                      <div class="form-hint">JPG, PNG, or WebP up to 5 MB. The new picture stays pending until approved.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label" style="margin-bottom:0.6rem;">Specialties <span style="font-weight:400;text-transform:none;letter-spacing:0;">Select one or more; changes need admin approval.</span></label>
+                  <div class="area-checks" id="profile-area-checks">
+                    <label class="area-check-label">
+                      <input type="checkbox" value="poster" onchange="this.closest('.area-check-label').classList.toggle('checked',this.checked)"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                      Poster & Graphics
+                    </label>
+                    <label class="area-check-label">
+                      <input type="checkbox" value="logo" onchange="this.closest('.area-check-label').classList.toggle('checked',this.checked)"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                      Logo & Branding
+                    </label>
+                    <label class="area-check-label">
+                      <input type="checkbox" value="thumbnail" onchange="this.closest('.area-check-label').classList.toggle('checked',this.checked)"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                      Thumbnails
+                    </label>
+                    <label class="area-check-label">
+                      <input type="checkbox" value="website" onchange="this.closest('.area-check-label').classList.toggle('checked',this.checked)"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                      Websites
+                    </label>
+                    <label class="area-check-label">
+                      <input type="checkbox" value="video" onchange="this.closest('.area-check-label').classList.toggle('checked',this.checked)"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                      Video Editing
+                    </label>
+                    <label class="area-check-label">
+                      <input type="checkbox" value="ui" onchange="this.closest('.area-check-label').classList.toggle('checked',this.checked)"/>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                      UI / Presentations
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button class="save-btn" style="margin-top:1.5rem;" onclick="saveProfile()">Save Profile</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- WORK DETAIL MODAL -->
+  <div class="overlay" id="work-overlay" onclick="handleWorkOverlay(event)">
+    <div class="modal" id="work-modal">
+      <div class="modal-col">
+        <div class="modal-header">
+          <div class="modal-title" id="work-modal-title">Work Details</div>
+          <button class="modal-close" onclick="closeWorkModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="work-modal-left"></div>
+      </div>
+      <div class="modal-col">
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.9rem;margin-bottom:1rem;">Submit Deliverable</div>
+        <div id="work-modal-right"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-layer" id="toast-layer"></div>
+
+  <div class="profile-crop-overlay" id="profile-crop-overlay" aria-hidden="true" onclick="if(event.target===this)closeProfileCrop()">
+    <div class="profile-crop-modal" role="dialog" aria-modal="true" aria-labelledby="profile-crop-title">
+      <div class="profile-crop-title" id="profile-crop-title">Adjust Profile Picture</div>
+      <div class="profile-crop-subtitle">Drag to reposition, zoom to frame, or rotate before submitting for review.</div>
+      <div class="profile-crop-viewport" id="profile-crop-viewport">
+        <img class="profile-crop-image" id="profile-crop-image" alt="Profile picture crop preview" draggable="false"/>
+        <div class="profile-crop-guide" aria-hidden="true"></div>
+      </div>
+      <div class="profile-crop-controls">
+        <div class="profile-crop-zoom-label"><label for="profile-crop-zoom">Zoom</label><span id="profile-crop-zoom-value">1.0x</span></div>
+        <input class="profile-crop-zoom" id="profile-crop-zoom" type="range" min="100" max="300" value="100" oninput="updateProfileCropZoom(this.value)"/>
+      </div>
+      <div class="profile-crop-actions">
+        <div class="profile-crop-rotate">
+          <button type="button" class="tb-btn ghost" onclick="rotateProfileCrop(-90)" aria-label="Rotate left">Rotate Left</button>
+          <button type="button" class="tb-btn ghost" onclick="rotateProfileCrop(90)" aria-label="Rotate right">Rotate Right</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;">
+          <button type="button" class="tb-btn ghost" onclick="closeProfileCrop()">Cancel</button>
+          <button type="button" class="tb-btn primary" id="profile-crop-apply" onclick="applyProfileCrop()">Use Picture</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+  import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import {
+    getAuth, onAuthStateChanged, signOut, reload,
+    signInAnonymously, updateProfile
+  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc,
+    collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, where, getDocs
+  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import {
+    getStorage, ref as storageRef, uploadBytes, getDownloadURL
+  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+
+  // ════════════════════════════════
+  // AGENT FIREBASE CONFIG
+  // ══════════════════════════════�    // ════════════════════════════════
+  // AGENT FIREBASE CONFIG
+  // ════════════════════════════════
+  const agentConfig = {
+    apiKey:            "AIzaSyC5PXHOl3UYhsWImZBKXYXbikYASWVC-7Y",
+    authDomain:        "criteria-18e9d.firebaseapp.com",
+    projectId:         "criteria-18e9d",
+    storageBucket:     "criteria-18e9d.firebasestorage.app",
+    messagingSenderId: "427729441325",
+    appId:             "1:427729441325:web:2fb16b7edd3cda9dc65ea4",
+    measurementId:     "G-ZW3M475J6L"
+  };
+
+  const agentApp  = initializeApp(agentConfig, 'agent-portal');
+  const auth      = getAuth(agentApp);
+  const db        = getFirestore(agentApp);
+  const storage   = getStorage(agentApp);
+
+  // ── STATE ──
+  let currentUser   = null;
+  let agentData     = {};
+  let profilePhotoFile = null;
+  let profilePhotoPreviewUrl = '';
+  let profileCropCandidate = null;
+  let profileCropSourceUrl = '';
+  let profileCropZoom = 1;
+  let profileCropRotation = 0;
+  let profileCropOffsetX = 0;
+  let profileCropOffsetY = 0;
+  let profileCropDragStart = null;
+  let agentProfileUnsub = null;
+  let lastProfileReviewSignature = null;
+  let assignments   = [];
+  let workFilter    = 'all';
+  let activeChatId  = null;
+  let chatUnsub     = null;
+  let presenceHeartbeat = null;
+  let deadlineTimer = null;
+  let submitFiles   = [];
+
+  // ── VECTOR SVG ICON DICTIONARY ──
+  const SVG_ICONS = {
+    check: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><polyline points="20 6 9 17 4 12"/></svg>`,
+    doubleCheck: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><polyline points="18 6 9 17 4 12"/><polyline points="22 10 15 17 13 15"/></svg>`,
+    checkCircle: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    xCircle: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    clock: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    briefcase: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+    fileText: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+    gem: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>`,
+    eye: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    zap: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    palette: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>`,
+    film: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>`,
+    image: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`,
+    layout: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`,
+    globe: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    messageSquare: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    package: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>`,
+    uploadCloud: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>`,
+    download: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+    refresh: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19"/></svg>`,
+    starFilled: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="#f0a500" stroke="#f0a500" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    starOutline: `<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="{cls}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+  };
+
+  window.downloadAsset = async function(url, filename = 'asset') {
+    try {
+      showToast('Starting file download…', 'gold');
+      const res = await fetch(url, { mode: 'cors' });
+      if (!res.ok) throw new Error('Fetch failed');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename || 'downloaded-asset';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
+      showToast('Download started successfully!', 'success');
+    } catch(err) {
+      // Direct link fallback
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'downloaded-asset';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
+  function getIcon(name, size = 16, className = '') {
+    const tpl = SVG_ICONS[name] || SVG_ICONS['fileText'];
+    return tpl.replace(/\{size\}/g, String(size)).replace(/\{cls\}/g, className);
+  }
+
+  function renderStars(rating = 5) {
+    const full = Math.round(Math.min(5, Math.max(0, rating)));
+    let s = '<span style="display:inline-flex;align-items:center;gap:3px;">';
+    for (let i = 0; i < 5; i++) {
+      s += getIcon(i < full ? 'starFilled' : 'starOutline', 14);
+    }
+    return s + '</span>';
+  }
+
+  const SERVICE_LABELS = { poster:'Poster & Graphics', logo:'Logo & Branding', thumbnail:'Thumbnails', website:'Websites', video:'Video Editing', ui:'UI / Presentations' };
+  const SERVICE_ICON_KEYS = { poster:'palette', logo:'palette', thumbnail:'zap', website:'globe', video:'film', ui:'layout' };
+  const STATUS_META = {
+    in_progress:['b-in_progress','In Progress'], completed:['b-completed','Completed'],
+    submitted:['b-submitted','Submitted'], under_review:['b-under_review','Under Review'],
+    preview_sent:['b-preview_sent','Preview Sent'], revision:['b-revision','Revision'],
+  };
+
+  // ── AGENT AUTH & SESSION ──
+  async function initAgentAuth() {
+    const sessionStr = localStorage.getItem('criteria_agent_session');
+    if (!sessionStr) {
+      showAuthScreen();
+      return;
+    }
+    try {
+      const session = JSON.parse(sessionStr);
+      if (!session || !session.agentId) {
+        localStorage.removeItem('criteria_agent_session');
+        showAuthScreen();
+        return;
+      }
+      // Ensure Firebase auth session is active before querying Firestore
+      if (!auth.currentUser) {
+        await signInAnonymously(auth);
+      }
+      const snap = await getDoc(doc(db, 'agents', session.agentId));
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.status === 'suspended' || data.status === 'inactive') {
+          localStorage.removeItem('criteria_agent_session');
+          showAuthError('signin', 'Account is deactivated. Please contact studio administration.');
+          showAuthScreen();
+          return;
+        }
+        currentUser = {
+          uid: snap.id,
+          displayName: data.name || session.username || 'Agent',
+          email: data.email || '',
+          username: data.username || session.username || 'agent'
+        };
+        agentData = data;
+        showApp();
+      } else {
+        localStorage.removeItem('criteria_agent_session');
+        showAuthScreen();
+      }
+    } catch(err) {
+      console.warn('Session verification notice:', err);
+      localStorage.removeItem('criteria_agent_session');
+      showAuthScreen();
+    }
+  }
+
+  initAgentAuth();
+
+  function showAuthScreen() {
+    document.getElementById('auth-screen').classList.remove('hidden');
+    document.getElementById('app-shell').style.display = 'none';
+  }
+
+  function showApp() {
+    document.getElementById('auth-screen').classList.add('hidden');
+    document.getElementById('app-shell').style.display = 'flex';
+    populateUI();
+    listenAssignments();
+    listenNotifications();
+    listenAgentProfileReview();
+    startAgentPresence();
+  }
+
+  function updateAgentPresence(isOnline) {
+    if (!currentUser?.uid) return Promise.resolve();
+    return updateDoc(doc(db, 'agents', currentUser.uid), {
+      isOnline,
+      lastActive: serverTimestamp()
+    }).catch(e => console.error('Error updating online status:', e));
+  }
+
+  function startAgentPresence() {
+    if (!currentUser?.uid) return;
+    if (presenceHeartbeat) clearInterval(presenceHeartbeat);
+    updateAgentPresence(!document.hidden);
+    presenceHeartbeat = setInterval(() => updateAgentPresence(!document.hidden), 30000);
+  }
+
+  function listenAgentProfileReview() {
+    if (!currentUser?.uid) return;
+    if (agentProfileUnsub) agentProfileUnsub();
+    agentProfileUnsub = onSnapshot(doc(db, 'agents', currentUser.uid), snap => {
+      if (!snap.exists()) return;
+      const remoteData = snap.data();
+      const reviewSignature = JSON.stringify([
+        remoteData.profileUpdateStatus || '',
+        remoteData.pendingProfileUpdate?.requestedAt || '',
+        remoteData.profileReviewedAt || '',
+        remoteData.profileReviewMessage || ''
+      ]);
+      agentData = { ...agentData, ...remoteData };
+      if (reviewSignature === lastProfileReviewSignature) return;
+      const isInitialSnapshot = lastProfileReviewSignature === null;
+      lastProfileReviewSignature = reviewSignature;
+      populateUI();
+      if (!isInitialSnapshot && remoteData.profileUpdateStatus === 'approved') showToast('Your profile update was approved.', 'success');
+      if (!isInitialSnapshot && remoteData.profileUpdateStatus === 'rejected') showToast('Your profile update needs changes. Check the profile note.', 'error');
+    }, error => console.error('Agent profile review listener failed:', error));
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (currentUser?.uid) updateAgentPresence(!document.hidden);
+  });
+  window.addEventListener('pagehide', () => {
+    if (currentUser?.uid) updateAgentPresence(false);
+  });
+
+  // ── LOAD AGENT DATA ──
+  async function loadAgentData() {
+    try {
+      const snap = await getDoc(doc(db, 'agents', currentUser.uid));
+      agentData  = snap.exists() ? snap.data() : {};
+    } catch(e) { agentData = {}; }
+  }
+
+  // ── POPULATE UI ──
+  function populateUI() {
+    const name     = agentData.name || currentUser.displayName || 'Agent';
+    const profileSource = agentData.pendingProfileUpdate || agentData;
+    const username = agentData.username || currentUser.username || '';
+    const email    = agentData.email || currentUser.email || '';
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('sb-name').textContent     = name;
+    document.getElementById('sb-email').textContent    = username ? `@${username}` : email;
+    document.getElementById('sb-initials').textContent = initials;
+    document.getElementById('greeting-name').textContent = name.split(' ')[0];
+    const approvedPhotoURL = agentData.photoURL || currentUser.photoURL;
+    const sidebarAvatar = document.getElementById('sb-avatar');
+    if (approvedPhotoURL) {
+      const avatarImage = document.createElement('img');
+      avatarImage.src = approvedPhotoURL;
+      avatarImage.alt = 'Profile picture';
+      sidebarAvatar.replaceChildren(avatarImage);
+    } else {
+      sidebarAvatar.textContent = initials;
+    }
+    // Profile fields
+    if (document.getElementById('p-username')) document.getElementById('p-username').value = username ? `@${username}` : '—';
+    if (document.getElementById('p-name')) document.getElementById('p-name').value         = profileSource.name || name;
+    if (document.getElementById('p-age')) document.getElementById('p-age').value           = profileSource.age || '';
+    if (document.getElementById('p-gender')) document.getElementById('p-gender').value     = profileSource.gender || '';
+    if (document.getElementById('p-place')) document.getElementById('p-place').value       = profileSource.place || '';
+    if (document.getElementById('p-phone')) document.getElementById('p-phone').value       = profileSource.phone || '';
+    if (document.getElementById('p-whatsapp')) document.getElementById('p-whatsapp').value = profileSource.whatsapp || '';
+    if (document.getElementById('p-email')) document.getElementById('p-email').value       = profileSource.email || email;
+    if (document.getElementById('p-bio')) document.getElementById('p-bio').value           = profileSource.bio || '';
+
+    // Area checks in profile
+    const areas = profileSource.areas || [];
+    document.querySelectorAll('#profile-area-checks .area-check-label').forEach(label => {
+      const input = label.querySelector('input');
+      input.checked = areas.includes(input.value);
+      label.classList.toggle('checked', input.checked);
+    });
+    if (!profilePhotoFile) updateProfilePhotoPreview(profileSource.photoURL || agentData.photoURL || currentUser.photoURL || '');
+    updateProfileReviewStatus();
+  }
+
+  function updateProfilePhotoPreview(photoURL) {
+    const preview = document.getElementById('profile-photo-preview');
+    if (!preview) return;
+    preview.replaceChildren();
+    if (photoURL) {
+      const image = document.createElement('img');
+      image.src = photoURL;
+      image.alt = 'Selected profile picture';
+      preview.appendChild(image);
+    } else {
+      preview.textContent = (agentData.name || currentUser?.displayName || 'A').split(' ').map(part => part[0]).join('').toUpperCase().slice(0, 2);
+    }
+  }
+
+  window.handleProfilePhotoChange = function(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+      showToast('Choose a JPG, PNG, or WebP image up to 5 MB.', 'error');
+      return;
+    }
+    if (profileCropSourceUrl) URL.revokeObjectURL(profileCropSourceUrl);
+    profileCropCandidate = file;
+    profileCropSourceUrl = URL.createObjectURL(file);
+    const image = document.getElementById('profile-crop-image');
+    image.onload = () => {
+      profileCropZoom = 1;
+      profileCropRotation = 0;
+      profileCropOffsetX = 0;
+      profileCropOffsetY = 0;
+      document.getElementById('profile-crop-zoom').value = 100;
+      document.getElementById('profile-crop-zoom-value').textContent = '1.0x';
+      applyProfileCropTransform();
+      const overlay = document.getElementById('profile-crop-overlay');
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+    };
+    image.onerror = () => {
+      closeProfileCrop();
+      showToast('The selected picture could not be opened.', 'error');
+    };
+    image.src = profileCropSourceUrl;
+  };
+
+  function getProfileCropMetrics() {
+    const image = document.getElementById('profile-crop-image');
+    const viewport = document.getElementById('profile-crop-viewport');
+    const width = image.naturalWidth;
+    const height = image.naturalHeight;
+    const radians = profileCropRotation * Math.PI / 180;
+    const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
+    const rotatedHeight = Math.abs(height * Math.cos(radians)) + Math.abs(width * Math.sin(radians));
+    const baseScale = Math.max(viewport.clientWidth / rotatedWidth, viewport.clientHeight / rotatedHeight);
+    return { image, viewport, baseScale, rotatedWidth, rotatedHeight };
+  }
+
+  function applyProfileCropTransform() {
+    const { image, viewport, baseScale, rotatedWidth, rotatedHeight } = getProfileCropMetrics();
+    if (!image.naturalWidth || !viewport.clientWidth) return;
+    const displayWidth = rotatedWidth * baseScale * profileCropZoom;
+    const displayHeight = rotatedHeight * baseScale * profileCropZoom;
+    profileCropOffsetX = Math.max((viewport.clientWidth - displayWidth) / 2, Math.min((displayWidth - viewport.clientWidth) / 2, profileCropOffsetX));
+    profileCropOffsetY = Math.max((viewport.clientHeight - displayHeight) / 2, Math.min((displayHeight - viewport.clientHeight) / 2, profileCropOffsetY));
+    image.style.width = `${image.naturalWidth * baseScale}px`;
+    image.style.height = `${image.naturalHeight * baseScale}px`;
+    image.style.transform = `translate(-50%,-50%) translate(${profileCropOffsetX}px,${profileCropOffsetY}px) rotate(${profileCropRotation}deg) scale(${profileCropZoom})`;
+  }
+
+  window.updateProfileCropZoom = function(value) {
+    profileCropZoom = Number(value) / 100;
+    document.getElementById('profile-crop-zoom-value').textContent = `${profileCropZoom.toFixed(1)}x`;
+    applyProfileCropTransform();
+  };
+
+  window.rotateProfileCrop = function(degrees) {
+    profileCropRotation = (profileCropRotation + degrees + 360) % 360;
+    applyProfileCropTransform();
+  };
+
+  window.closeProfileCrop = function() {
+    const overlay = document.getElementById('profile-crop-overlay');
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.getElementById('profile-crop-viewport').classList.remove('dragging');
+    document.getElementById('profile-crop-image').removeAttribute('src');
+    if (profileCropSourceUrl) URL.revokeObjectURL(profileCropSourceUrl);
+    profileCropSourceUrl = '';
+    profileCropCandidate = null;
+    profileCropDragStart = null;
+  };
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.getElementById('profile-crop-overlay').classList.contains('open')) closeProfileCrop();
+  });
+
+  const profileCropViewport = document.getElementById('profile-crop-viewport');
+  profileCropViewport.addEventListener('pointerdown', event => {
+    if (!profileCropCandidate) return;
+    profileCropDragStart = { x: event.clientX, y: event.clientY, offsetX: profileCropOffsetX, offsetY: profileCropOffsetY };
+    profileCropViewport.classList.add('dragging');
+    profileCropViewport.setPointerCapture(event.pointerId);
+  });
+  profileCropViewport.addEventListener('pointermove', event => {
+    if (!profileCropDragStart) return;
+    profileCropOffsetX = profileCropDragStart.offsetX + event.clientX - profileCropDragStart.x;
+    profileCropOffsetY = profileCropDragStart.offsetY + event.clientY - profileCropDragStart.y;
+    applyProfileCropTransform();
+  });
+  profileCropViewport.addEventListener('pointerup', () => {
+    profileCropDragStart = null;
+    profileCropViewport.classList.remove('dragging');
+  });
+  profileCropViewport.addEventListener('pointercancel', () => {
+    profileCropDragStart = null;
+    profileCropViewport.classList.remove('dragging');
+  });
+
+  window.applyProfileCrop = async function() {
+    if (!profileCropCandidate) return;
+    const applyButton = document.getElementById('profile-crop-apply');
+    applyButton.disabled = true;
+    try {
+      const { image, viewport, baseScale } = getProfileCropMetrics();
+      const size = 512;
+      const ratio = size / viewport.clientWidth;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = size;
+      const context = canvas.getContext('2d');
+      context.translate(size / 2 + profileCropOffsetX * ratio, size / 2 + profileCropOffsetY * ratio);
+      context.rotate(profileCropRotation * Math.PI / 180);
+      context.scale(baseScale * profileCropZoom * ratio, baseScale * profileCropZoom * ratio);
+      context.drawImage(image, -image.naturalWidth / 2, -image.naturalHeight / 2);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+      if (!blob) throw new Error('Could not prepare the cropped picture.');
+
+      profilePhotoFile = new File([blob], 'profile-picture.jpg', { type: 'image/jpeg' });
+      if (profilePhotoPreviewUrl) URL.revokeObjectURL(profilePhotoPreviewUrl);
+      profilePhotoPreviewUrl = URL.createObjectURL(profilePhotoFile);
+      updateProfilePhotoPreview(profilePhotoPreviewUrl);
+      closeProfileCrop();
+      showToast('Picture cropped. Save your profile to send it for approval.', 'success');
+    } catch (error) {
+      showToast(error.message || 'Could not crop the selected picture.', 'error');
+    } finally {
+      applyButton.disabled = false;
+    }
+  };
+
+  function updateProfileReviewStatus() {
+    const status = document.getElementById('profile-review-status');
+    const saveButton = document.querySelector('#sec-profile .save-btn');
+    const pending = agentData.pendingProfileUpdate;
+    if (!status) return;
+
+    if (pending) {
+      status.className = 'profile-review-status pending';
+      status.textContent = 'Your profile update is awaiting admin approval. Your currently approved details, specialties, and picture remain active until review.';
+    } else if (agentData.profileUpdateStatus === 'rejected') {
+      status.className = 'profile-review-status rejected';
+      status.textContent = `Your last profile update was not approved.${agentData.profileReviewMessage ? ` Admin note: ${agentData.profileReviewMessage}` : ''} You can edit and submit it again.`;
+    } else if (agentData.profileUpdateStatus === 'approved') {
+      status.className = 'profile-review-status approved';
+      status.textContent = 'Your profile update was approved and is now active.';
+    } else {
+      status.className = 'profile-review-status';
+      status.textContent = 'Profile changes are reviewed by an administrator before going live.';
+    }
+
+    if (saveButton) {
+      saveButton.disabled = Boolean(pending);
+      saveButton.textContent = pending ? 'Awaiting Admin Approval' : 'Send Profile for Approval';
+    }
+    document.querySelectorAll('#sec-profile input:not(#p-username)').forEach(input => {
+      input.disabled = Boolean(pending);
+    });
+    const photoButton = document.querySelector('#sec-profile .profile-photo-control button');
+    if (photoButton) photoButton.disabled = Boolean(pending);
+    const areaChecks = document.getElementById('profile-area-checks');
+    if (areaChecks) areaChecks.style.pointerEvents = pending ? 'none' : '';
+  }
+
+  // ── LISTEN ASSIGNMENTS ──
+  function listenAssignments() {
+    const q = query(collection(db, `agents/${currentUser.uid}/assignments`), orderBy('assignedAt','desc'));
+    onSnapshot(q, snap => {
+      assignments = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      renderDashboard();
+      renderWorkGrid(workFilter);
+      renderChatList();
+      renderAnalytics();
+      startDeadlineTimer();
+    });
+  }
+
+  // ── LISTEN NOTIFICATIONS (chat unread + submission status) ──
+  function listenNotifications() {
+    onSnapshot(collection(db,`agents/${currentUser.uid}/notifications`), snap => {
+      const unread = snap.docs.filter(d=>!d.data().read).length;
+      const badge  = document.getElementById('chat-badge');
+      if (unread > 0) { badge.textContent = unread; badge.style.display=''; }
+      else badge.style.display='none';
+      
+      // Handle submission status notifications
+      snap.docs.forEach(doc => {
+        const notif = doc.data();
+        if (!notif.read && (notif.type === 'submission_accepted' || notif.type === 'submission_rejected' || notif.type === 'submission_revision')) {
+          const colorMap = {
+            submission_accepted: 'success',
+            submission_rejected: 'error',
+            submission_revision: 'gold'
+          };
+          const messages = {
+            submission_accepted: 'Your submission was accepted!',
+            submission_rejected: 'Your submission was rejected.',
+            submission_revision: 'Admin requested a revision.'
+          };
+          
+          // Show toast notification
+          showToast(notif.message || messages[notif.type] || 'Submission update', colorMap[notif.type]);
+          
+          // Mark as read
+          updateDoc(doc.ref, { read: true }).catch(e => console.error('Error marking notif as read:', e));
+        }
+      });
+    });
+  }
+
+  // ── DASHBOARD ──
+  function renderDashboard() {
+    const total     = assignments.length;
+    const completed = assignments.filter(a=>a.status==='completed').length;
+    const income    = agentData.totalIncome || 0;
+    document.getElementById('d-total').textContent     = total;
+    document.getElementById('d-completed').textContent = completed;
+    document.getElementById('d-income').textContent    = '₹'+income.toLocaleString('en-IN');
+
+    const active = assignments.filter(a=>a.status==='in_progress');
+    const dashEl = document.getElementById('dash-active-work');
+    if (!active.length) {
+      dashEl.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);">No active assignments.</div>';
+      return;
+    }
+    dashEl.innerHTML = active.map(a => `
+      <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;" onclick="openWorkModal('${a.id}')">
+        <div>
+          <div style="font-family:var(--font-display);font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:8px;">
+            ${getIcon(SERVICE_ICON_KEYS[a.services?.[0]]||'palette', 14)}
+            ${escHtml(a.title||'Work')}
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-3);margin-top:2px;">${SERVICE_LABELS[a.services?.[0]]||'—'} · Assigned ${fmtDate(a.assignedAt)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          ${a.deadline?`<span style="font-size:0.75rem;color:var(--warn);display:inline-flex;align-items:center;gap:4px;">${getIcon('clock', 12)} Due ${a.deadline}</span>`:''}
+          ${badge(a.status||'in_progress')}
+          <button class="btn btn-ghost" style="font-size:0.75rem;padding:6px 12px;" onclick="event.stopPropagation();openWorkModal('${a.id}')">
+            ${getIcon('eye', 13)} Open
+          </button>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── WORK GRID ──
+  window.filterWork = function(filter, btn) {
+    workFilter = filter;
+    document.querySelectorAll('[id^=filter-]').forEach(b=>b.classList.remove('btn-gold'));
+    if (btn) btn.classList.add('btn-gold');
+    renderWorkGrid(filter);
+  };
+
+  function renderWorkGrid(filter) {
+    const grid = document.getElementById('work-grid');
+    let list   = assignments;
+    if (filter !== 'all') list = assignments.filter(a => a.status === filter);
+    if (!list.length) {
+      grid.innerHTML = `<div style="color:var(--text-3);padding:2rem;text-align:center;">${filter==='all'?'No assignments yet.':'No '+filter+' assignments.'}</div>`;
+      return;
+    }
+    grid.innerHTML = list.map(a => `
+      <div class="work-card ${a.status==='in_progress'?'active-work':''}">
+        <div class="work-card-header">
+          <div>
+            <div class="work-card-title">${escHtml(a.title||'Untitled')}</div>
+            <div class="work-card-meta">${escHtml(a.clientName||'Client')} · ${fmtDate(a.assignedAt)}</div>
+          </div>
+          <div>${badge(a.status||'in_progress')}</div>
+        </div>
+        <div class="work-card-body">${escHtml(a.description||'No description.')}</div>
+        <div class="work-card-footer">
+          <span class="tag">${getIcon(SERVICE_ICON_KEYS[a.services?.[0]]||'palette', 12)} ${SERVICE_LABELS[a.services?.[0]]||'—'}</span>
+          ${a.deadline?`<span class="tag warn">${getIcon('clock', 12)} Due: ${a.deadline}</span>`:''}
+          ${a.budget?`<span class="tag gold">${getIcon('gem', 12)} ${a.budgetCurrency||'INR'} ${Number(a.budget).toLocaleString('en-IN')}</span>`:''}
+          <div class="work-card-actions">
+            <button class="btn btn-ghost" onclick="openWorkModal('${a.id}')">${getIcon('eye', 13)} View Details</button>
+            ${a.chatEnabled?`<button class="btn btn-blue" onclick="openChatDirect('${a.id}')">${getIcon('messageSquare', 13)} Chat</button>`:''}
+            ${a.status==='in_progress'?`<button class="btn btn-green" onclick="openWorkModal('${a.id}')">${getIcon('checkCircle', 13)} Submit Work</button>`:''}
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── WORK MODAL ──
+  window.openWorkModal = function(assignId) {
+    const a = assignments.find(x=>x.id===assignId);
+    if (!a) return;
+    submitFiles = [];
+    document.getElementById('work-modal-title').textContent = a.title||'Work Details';
+
+    // Attachments from admin & client
+    const attHtml = (a.attachments||[]).length ? `
+      <div class="detail-row">
+        <div class="detail-label">Reference Files & Client Assets (${a.attachments.length})</div>
+        <div class="att-grid">${a.attachments.map((f, fIdx)=>{
+          const ext=(f.name||'').split('.').pop().toLowerCase();
+          const isVid=['mp4','mov','webm','ogg'].includes(ext);
+          const isImg=['jpg','jpeg','png','gif','webp','svg'].includes(ext);
+          const fileName = f.name || `asset_${fIdx+1}`;
+          return `
+            <div class="att-card">
+              ${isVid ? `<video controls muted playsinline src="${f.url}" style="width:100%;height:90px;object-fit:cover;"></video>`
+                : isImg ? `<img src="${f.url}" alt="${escHtml(fileName)}" loading="lazy"/>`
+                : `<div style="height:90px;display:flex;align-items:center;justify-content:center;color:var(--text-3);background:var(--bg-3);">${getIcon('fileText', 32)}</div>`}
+              <div class="att-name">${escHtml(fileName)}</div>
+              <div style="display:flex;gap:4px;margin-top:6px;">
+                <a href="${f.url}" target="_blank" rel="noopener" class="att-open" style="flex:1;text-align:center;">Open ↗</a>
+                <button type="button" class="att-open" onclick="downloadAsset('${f.url}', '${escHtml(fileName)}')" style="flex:1;background:var(--gold-glow);color:var(--gold);border-color:var(--gold-border);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:3px;" title="Download file">${getIcon('download', 11)} Download</button>
+              </div>
+            </div>`;
+        }).join('')}</div>
+      </div>` : '';
+
+    // Extract image URLs from project description
+    const descImgRegex = /https?:\/\/[^\s"'<>]+\.(?:jpg|jpeg|png|webp|gif|svg|avif)(?:\?[^\s"'<>]*)?|https?:\/\/res\.cloudinary\.com\/[^\s"'<>]+|https?:\/\/images\.unsplash\.com\/[^\s"'<>]+|https?:\/\/i\.imgur\.com\/[^\s"'<>]+/gi;
+    const descImages = Array.from(new Set((a.description || '').match(descImgRegex) || []));
+    const descImgsHtml = descImages.length ? `
+      <div class="detail-row">
+        <div class="detail-label" style="color:var(--gold);display:flex;align-items:center;gap:6px;">
+          ${getIcon('image', 13)} Images Sent in Description (${descImages.length})
+        </div>
+        <div class="att-grid">
+          ${descImages.map((imgUrl, i) => `
+            <div class="att-card">
+              <img src="${imgUrl}" alt="Description Image ${i+1}" loading="lazy" style="height:90px;object-fit:cover;width:100%;border-radius:6px;"/>
+              <div class="att-name" style="margin-top:4px;">Description Ref #${i+1}</div>
+              <div style="display:flex;gap:4px;margin-top:6px;">
+                <a href="${imgUrl}" target="_blank" rel="noopener" class="att-open" style="flex:1;text-align:center;">Open ↗</a>
+                <button type="button" class="att-open" onclick="downloadAsset('${imgUrl}', 'client_reference_${i+1}.jpg')" style="flex:1;background:var(--gold-glow);color:var(--gold);border-color:var(--gold-border);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:3px;" title="Download image">${getIcon('download', 11)} Download</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : '';
+
+    document.getElementById('work-modal-left').innerHTML = `
+      <div class="detail-row two">
+        <div><div class="detail-label">Request ID</div><div class="detail-value">${a.requestRef||a.requestId||'—'}</div></div>
+        <div><div class="detail-label">Status</div><div class="detail-value">${badge(a.status||'in_progress')}</div></div>
+      </div>
+      <div class="detail-row two">
+        <div><div class="detail-label">Service</div><div class="detail-value">${SERVICE_LABELS[a.services?.[0]]||a.services?.[0]||'—'}</div></div>
+        <div><div class="detail-label">Assigned</div><div class="detail-value">${fmtDate(a.assignedAt)}</div></div>
+      </div>
+      <div class="detail-row two">
+        <div><div class="detail-label">Budget</div><div class="detail-value">${a.budget?(a.budgetCurrency||'INR')+' '+Number(a.budget).toLocaleString('en-IN'):'—'}</div></div>
+        <div><div class="detail-label">Deadline</div><div class="detail-value" style="color:${a.deadline?'var(--warn)':'var(--text)'};">${a.deadline||'None'}</div></div>
+      </div>
+      <div class="detail-row"><div class="detail-label">Brief / Description</div><div class="detail-desc">${escHtml(a.description||'—')}</div></div>
+      ${a.clientRevision ? `
+        <div class="detail-row">
+          <div class="detail-label" style="color:var(--warn);">Client Revision Request</div>
+          <div class="detail-desc" style="border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.08);">
+            <div><strong>Deliverable:</strong> ${escHtml(a.clientRevision.file || 'Entire project')}</div>
+            <div><strong>Product area:</strong> ${escHtml(a.clientRevision.area || 'Overall')}</div>
+            <div style="margin-top:0.5rem;"><strong>Client message:</strong> ${escHtml(a.clientRevision.message || 'None')}</div>
+            <div style="margin-top:0.5rem;"><strong>Requested changes:</strong> ${escHtml(a.clientRevision.instructions || '—')}</div>
+          </div>
+        </div>` : ''}
+      ${a.adminMessage?`<div class="detail-row"><div class="detail-label">Message from Admin</div><div class="detail-desc" style="border-color:var(--gold-border);background:var(--gold-glow);">${escHtml(a.adminMessage)}</div></div>`:''}
+      ${attHtml}
+      ${descImgsHtml}`;
+
+    // Right: submit deliverable
+    const isComplete = a.status === 'completed';
+    document.getElementById('work-modal-right').innerHTML = isComplete ? `
+      <div style="text-align:center;padding:2rem;color:var(--success);">
+        <div style="display:flex;justify-content:center;margin-bottom:0.75rem;color:var(--success);">${getIcon('checkCircle', 48)}</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:1.1rem;">Work Submitted</div>
+        <div style="font-size:0.85rem;color:var(--text-2);margin-top:0.5rem;">Admin has been notified. Thank you!</div>
+      </div>` : `
+      <div class="detail-row">
+        <div class="detail-label">Notes for Admin</div>
+        <textarea class="field-textarea" id="submit-notes" placeholder="Any notes, context, or special instructions for the admin…"></textarea>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Upload Deliverable Files</div>
+        <div class="upload-zone-sm" id="submit-upload-zone" onclick="document.getElementById('submit-file-input').click()">
+          <div class="upload-zone-sm-icon">${getIcon('uploadCloud', 32)}</div>
+          <div class="upload-zone-sm-text">Click or drag files here · Images, Videos, ZIP, PDF</div>
+        </div>
+        <input type="file" id="submit-file-input" multiple accept="image/*,video/*,.pdf,.zip,.psd,.ai,.fig,.sketch" style="display:none;" onchange="handleSubmitFiles(event)"/>
+        <div class="upload-progress" id="submit-progress"><div class="upload-progress-bar" id="submit-progress-bar"></div></div>
+        <div class="file-list-sm" id="submit-file-list"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-gold" onclick="submitWork('${a.id}')">${getIcon('package', 14)} Submit to Admin</button>
+        <button class="btn btn-ghost" onclick="closeWorkModal()">Cancel</button>
+      </div>`;
+
+    // Upload zone drag events
+    setTimeout(() => {
+      const uz = document.getElementById('submit-upload-zone');
+      if (!uz) return;
+      uz.addEventListener('dragover', e=>{e.preventDefault();uz.classList.add('drag-over');});
+      uz.addEventListener('dragleave', ()=>uz.classList.remove('drag-over'));
+      uz.addEventListener('drop', e=>{e.preventDefault();uz.classList.remove('drag-over');handleSubmitFiles({target:{files:e.dataTransfer.files}});});
+    }, 100);
+
+    document.getElementById('work-overlay').classList.add('open');
+  };
+
+  window.closeWorkModal = () => document.getElementById('work-overlay').classList.remove('open');
+  window.handleWorkOverlay = e => { if (e.target===document.getElementById('work-overlay')) closeWorkModal(); };
+
+  // ── CLOUDINARY CONFIG ──
+  const CLOUDINARY_CLOUD_NAME = 'du2knnrre'; // Replace with your Cloudinary cloud name
+  const CLOUDINARY_UPLOAD_PRESET = 'criteria_uploads'; // Replace with your unsigned upload preset
+  const MAX_FILE_SIZE = 600 * 1024 * 1024; // 600MB in bytes
+
+  // Handle file selection
+  window.handleSubmitFiles = function(e) {
+    const newFiles = Array.from(e.target.files || []);
+    const maxFileSize = 600 * 1024 * 1024; // 600MB
+    
+    for (let f of newFiles) {
+      // Check individual file size
+      if (f.size > maxFileSize) {
+        showToast(`File "${f.name}" exceeds 600MB limit. Skipped.`, 'error');
+        continue;
+      }
+      submitFiles.push(f);
+    }
+    
+    // Check total size
+    const totalSize = submitFiles.reduce((sum, f) => sum + f.size, 0);
+    if (totalSize > maxFileSize) {
+      showToast('Total file size exceeds 600MB. Please remove some files.', 'error');
+    }
+    
+    renderSubmitFileList();
+    if (e.target.id==='submit-file-input') e.target.value='';
+  };
+
+  function renderSubmitFileList() {
+    const list = document.getElementById('submit-file-list');
+    if (!list) return;
+    const totalSize = submitFiles.reduce((sum, f) => sum + f.size, 0);
+    const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+    list.innerHTML = (submitFiles.length > 0 ? `<div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0.5rem;">Total: ${totalSizeMB}MB / 600MB</div>` : '') + submitFiles.map((f,i)=>{
+      const sizeMB = (f.size / (1024 * 1024)).toFixed(2);
+      const icon = f.type.startsWith('video') ? getIcon('film', 16) : f.type.startsWith('image') ? getIcon('image', 16) : getIcon('fileText', 16);
+      return `
+      <div class="file-item-sm">
+        <span style="display:inline-flex;align-items:center;color:var(--gold);">${icon}</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><span title="${f.name}">${f.name}</span> <span style="color:var(--text-3);font-size:0.75rem;">(${sizeMB}MB)</span></span>
+        <span class="file-item-remove" onclick="removeSubmitFile(${i})" title="Remove">${getIcon('xCircle', 14)}</span>
+      </div>`;
+    }).join('');
+  }
+  window.removeSubmitFile = i => { submitFiles.splice(i,1); renderSubmitFileList(); };
+
+  // Submit work to Cloudinary
+  window.submitWork = async function(assignId) {
+    const a     = assignments.find(x=>x.id===assignId);
+    const notes = document.getElementById('submit-notes')?.value.trim() || '';
+    if (!submitFiles.length && !notes) { showToast('Upload files or add notes before submitting.','error'); return; }
+
+    const submitBtn = document.querySelector('#work-modal-right .btn-gold');
+    if (submitBtn) { submitBtn.disabled=true; submitBtn.textContent='Uploading…'; }
+
+    try {
+      // Validate file sizes
+      const totalSize = submitFiles.reduce((sum, f) => sum + f.size, 0);
+      if (totalSize > MAX_FILE_SIZE) {
+        showToast('Total file size exceeds 600MB limit.','error');
+        if (submitBtn) { submitBtn.disabled=false; submitBtn.innerHTML=getIcon('package',14)+' Submit to Admin'; }
+        return;
+      }
+
+      // Upload files to Cloudinary
+      const fileUrls = [];
+      const progressBar = document.getElementById('submit-progress');
+      const progressFill = document.getElementById('submit-progress-bar');
+      if (progressBar) progressBar.classList.add('show');
+
+      for (let i=0; i<submitFiles.length; i++) {
+        const file = submitFiles[i];
+        const progressPercent = Math.round((i/submitFiles.length)*80);
+        if (progressFill) progressFill.style.width = progressPercent+'%';
+        
+        // Upload to Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        formData.append('folder', `agent-deliverables/${currentUser.uid}/${assignId}`);
+
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error?.message || `Upload failed for ${file.name}`);
+        }
+
+        const data = await response.json();
+        fileUrls.push({
+          name: file.name,
+          url: data.secure_url,
+          type: file.type,
+          cloudinaryId: data.public_id,
+          size: file.size
+        });
+
+        const nextProgress = Math.round(((i+1)/submitFiles.length)*85);
+        if (progressFill) progressFill.style.width = nextProgress+'%';
+      }
+
+      if (progressFill) progressFill.style.width = '90%';
+
+      // Update assignment status
+      await updateDoc(doc(db,`agents/${currentUser.uid}/assignments`,assignId), {
+        status:       'completed',
+        completedAt:  new Date().toISOString(),
+        deliverables: fileUrls,
+        agentNotes:   notes
+      });
+
+      // Sync deliverables directly to root request doc so admin sees it instantly
+      const rootReqId = a.requestId || a.requestRef;
+      if (rootReqId) {
+        try {
+          await updateDoc(doc(db, 'requests', rootReqId), {
+            agentDeliverables: fileUrls,
+            agentNotes: notes,
+            agentStatus: 'work_submitted',
+            deliverablesSubmittedAt: new Date().toISOString(),
+            assignedAgentName: agentData.name || currentUser.displayName || 'Agent',
+            assignedAgentId: currentUser.uid
+          });
+        } catch(reqErr) {
+          console.warn('Sync to request doc notice:', reqErr);
+        }
+      }
+
+      // Update agent stats
+      await updateDoc(doc(db,'agents',currentUser.uid), {
+        completedCount: (agentData.completedCount||0) + 1
+      });
+
+      // Write notification to admin
+      await addDoc(collection(db,`agents/${currentUser.uid}/notifications`), {
+        type:       'work_submitted_by_agent',
+        message:    `Agent submitted work for "${a.title||'Untitled'}" (${fileUrls.length} file(s))`,
+        requestId:  a.requestId,
+        assignId,
+        agentId:    currentUser.uid,
+        agentName:  agentData.name || currentUser.displayName || 'Agent',
+        filesCount: fileUrls.length,
+        totalSize:  fileUrls.reduce((sum,f)=>sum+f.size, 0),
+        timestamp:  serverTimestamp(),
+        read:       false,
+        forAdmin:   true
+      });
+
+      if (progressFill) progressFill.style.width = '100%';
+      await new Promise(r => setTimeout(r, 500)); // Show 100% for a moment
+      closeWorkModal();
+      showToast(`Work submitted! ${fileUrls.length} file(s) uploaded successfully.`,'success');
+      submitFiles = [];
+    } catch(e) {
+      console.error('Submit work error:', e);
+      showToast('Upload failed: '+(e.message||'Unknown error'),'error');
+      if (submitBtn) { submitBtn.disabled=false; submitBtn.innerHTML=getIcon('package',14)+' Submit to Admin'; }
+    }
+  };
+
+  // ── CHAT ──
+  function renderChatList() {
+    const container = document.getElementById('chat-assignments-list');
+    const chatAble  = assignments.filter(a=>a.chatEnabled);
+    if (!chatAble.length) {
+      container.innerHTML = '<div style="font-size:0.82rem;color:var(--text-3);padding:2rem;text-align:center;">No chat-enabled assignments yet.</div>';
+      return;
+    }
+    container.innerHTML = chatAble.map(a=>`
+      <div class="work-card">
+        <div>
+          <div class="work-card-header">
+            <div>
+              <div class="work-card-title">${escHtml(a.title||'Work')}</div>
+              <div class="work-card-meta">${escHtml(a.clientName||'Client')} · ${fmtDate(a.assignedAt)}</div>
+            </div>
+          </div>
+          <div class="work-card-body">${escHtml(a.description||'No description available.')}</div>
+        </div>
+        <div class="work-card-actions">
+          <button class="btn btn-blue" onclick="openChatDirect('${a.id}')">${getIcon('messageSquare', 13)} Chat</button>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  window.openChatDirect = function(assignId) {
+    const a = assignments.find(x=>x.id===assignId);
+    if (!a) return;
+    switchSection('chat', document.querySelector('[data-sec=chat]'));
+    document.getElementById('chat-empty-state').style.display = 'none';
+    document.getElementById('chat-area').style.display = 'block';
+    if (!a.chatEnabled) {
+      document.getElementById('chat-area').style.display = 'none';
+      alert('Chat is not enabled for this assignment.');
+      return;
+    }
+    activeChatId = assignId;
+    document.getElementById('chat-work-title').textContent = escHtml(a.title||'Work');
+    setTypingStatus(false);
+    // Unsubscribe previous listener
+    if (chatUnsub) chatUnsub();
+    chatUnsub = onSnapshot(
+      query(collection(db,`agents/${currentUser.uid}/chat`), orderBy('timestamp','asc')),
+      snap => {
+        const msgs = document.getElementById('chat-msgs');
+        if (!msgs) return;
+        const filteredDocs = snap.docs.filter(d => {
+          const m = d.data();
+          return m.assignId === assignId || (m.assignId == null && m.sender === 'admin');
+        });
+        msgs.innerHTML = filteredDocs.length ? filteredDocs.map(d=>{
+          const m = d.data();
+          const isAdmin = m.sender==='admin';
+          const readStatus = m.read ? `<span class="chat-msg-read" style="display:inline-flex;align-items:center;gap:3px;">${getIcon('doubleCheck', 13)} Seen</span>` : `<span class="chat-msg-unread" style="display:inline-flex;align-items:center;gap:3px;">${getIcon('check', 13)} Sent</span>`;
+          return `<div class="chat-msg ${isAdmin?'from-admin':'from-agent'}">
+            <div class="chat-sender">${isAdmin?'Admin':'You'}</div>
+            <div class="chat-msg-content">
+              <div class="chat-msg-text">${escHtml(m.text||'')}</div>
+              ${!isAdmin?`<div class="chat-msg-status">${readStatus}</div>`:''}
+            </div>
+          </div>`;
+        }).join('') : '<div style="margin:auto;color:var(--text-3);font-size:0.82rem;text-align:center;">No messages yet. Send a message to the admin to get started.</div>';
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+    );
+    const q = query(collection(db,`agents/${currentUser.uid}/chat`), where('sender','==','admin'), where('read','==',false));
+    getDocs(q).then(snap => {
+      snap.docs.forEach(doc => {
+        updateDoc(doc.ref, { read: true }).catch(e => console.error('Error marking as read:', e));
+      });
+    }).catch(e => console.error('Error fetching messages:', e));
+    addDoc(collection(db,`agents/${currentUser.uid}/notifications`), {
+      type:'chat_read', read:true, timestamp:serverTimestamp()
+    });
+  };
+
+  window.scrollChatTop = function() {
+    const msgs = document.getElementById('chat-msgs');
+    if (msgs) msgs.scrollTop = 0;
+  };
+
+  window.scrollChatBottom = function() {
+    const msgs = document.getElementById('chat-msgs');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  };
+
+  window.sendAgentMsg = async function() {
+    if (!activeChatId) return;
+    const input = document.getElementById('chat-msg-input');
+    const text  = input?.value.trim();
+    if (!text) return;
+    const sendButton = document.getElementById('agent-chat-send');
+    if (input) input.disabled = true;
+    if (sendButton) { sendButton.disabled = true; sendButton.textContent = 'Sending…'; }
+    try {
+      await addDoc(collection(db,`agents/${currentUser.uid}/chat`), {
+        sender:'agent', text, timestamp:serverTimestamp(), assignId:activeChatId, read:false
+      });
+      if (input) input.value = '';
+      const q = query(collection(db,`agents/${currentUser.uid}/chat`), where('sender','==','admin'), where('read','==',false));
+      const snap = await getDocs(q);
+      snap.docs.forEach(doc => {
+        updateDoc(doc.ref, { read: true }).catch(e => console.error('Error marking as read:', e));
+      });
+    } catch(e) {
+      console.error('Agent chat send failed:', e);
+      showToast('Message was not sent. Check the connection and try again.', 'error');
+    } finally {
+      if (input) { input.disabled = false; input.focus(); }
+      if (sendButton) { sendButton.disabled = false; sendButton.textContent = 'Send'; }
+    }
+  };
+
+  window.setTypingStatus = async function(isTyping) {
+    if (!activeChatId) return;
+    const a = assignments.find(x=>x.id===activeChatId);
+    if (!a) return;
+    try {
+      const chatStatusRef = doc(db, `agents/${currentUser.uid}/chatStatus/${activeChatId}`);
+      await setDoc(chatStatusRef, {
+        agentId: currentUser.uid,
+        assignId: activeChatId,
+        isTyping: isTyping,
+        lastSeen: serverTimestamp(),
+        isOnline: true
+      });
+      // Also update the agent's lastActive timestamp
+      await updateDoc(doc(db, 'agents', currentUser.uid), { lastActive: serverTimestamp() });
+    } catch(e) { console.error('Error updating typing status:', e); }
+  };
+
+  // ── ANALYTICS ──
+  function renderAnalytics() {
+    const total     = assignments.length;
+    const completed = assignments.filter(a=>a.status==='completed').length;
+    const income    = agentData.totalIncome || 0;
+    const thisMonth = assignments.filter(a=>{
+      if (!a.assignedAt) return false;
+      const d=new Date(a.assignedAt), n=new Date();
+      return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
+    }).length;
+    document.getElementById('a-total').textContent     = total;
+    document.getElementById('a-completed').textContent = completed;
+    document.getElementById('a-income').textContent    = '₹'+income.toLocaleString('en-IN');
+    document.getElementById('a-rate').textContent      = total?Math.round((completed/total)*100)+'%':'0%';
+    document.getElementById('a-rating').innerHTML      = agentData.rating!=null ? renderStars(agentData.rating) : '—';
+    document.getElementById('a-month').textContent     = thisMonth;
+    buildBarChart(buildMonthCounts(), 'analytics-bar');
+  }
+
+  function buildMonthCounts() {
+    const result = [];
+    for (let i=5; i>=0; i--) {
+      const d = new Date(); d.setMonth(d.getMonth()-i);
+      const label = d.toLocaleString('default',{month:'short'});
+      const count = assignments.filter(a=>{
+        if (!a.assignedAt) return false;
+        const ad=new Date(a.assignedAt);
+        return ad.getMonth()===d.getMonth()&&ad.getFullYear()===d.getFullYear();
+      }).length;
+      result.push({month:label,val:count});
+    }
+    return result;
+  }
+
+  function buildBarChart(data, id) {
+    const max=Math.max(...data.map(d=>d.val),1);
+    const el=document.getElementById(id); if(!el)return;
+    el.innerHTML=data.map(d=>`<div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="height:${Math.max(4,Math.round((d.val/max)*100))}%"></div></div><div class="bar-label">${d.month}</div></div>`).join('');
+  }
+
+  // ── DEADLINE TIMER ──
+  function startDeadlineTimer() {
+    if (deadlineTimer) clearInterval(deadlineTimer);
+    const active = assignments.filter(a=>a.status==='in_progress'&&a.deadline);
+    if (!active.length) {
+      document.getElementById('deadline-bar').classList.remove('show');
+      document.querySelectorAll('.with-timer').forEach(el=>el.classList.remove('with-timer'));
+      return;
+    }
+    // Pick the soonest deadline
+    const soonest = active.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline))[0];
+    document.getElementById('deadline-project-name').textContent = soonest.title||'';
+    document.getElementById('deadline-bar').classList.add('show');
+    document.getElementById('sidebar').classList.add('with-timer');
+    document.getElementById('topbar').classList.add('with-timer');
+    document.getElementById('app-shell').classList.add('with-timer');
+
+    function tick() {
+      const deadline = new Date(soonest.deadline+'T23:59:59');
+      const now      = new Date();
+      const diff     = deadline - now;
+      const bar      = document.getElementById('deadline-bar');
+      if (diff <= 0) {
+        document.getElementById('deadline-countdown').textContent = 'DEADLINE PASSED';
+        bar.className = 'show urgent';
+        return;
+      }
+      const days  = Math.floor(diff/(1000*60*60*24));
+      const hrs   = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+      const mins  = Math.floor((diff%(1000*60))/(1000*60));
+      const secs  = Math.floor((diff%(1000*60))/1000);
+      const label = days>0 ? `${days}d ${hrs}h ${mins}m` : `${hrs}h ${mins}m ${secs}s`;
+      document.getElementById('deadline-countdown').textContent = label;
+      bar.className = diff < 86400000 ? 'show urgent' : diff < 259200000 ? 'show warning' : 'show';
+    }
+    tick();
+    deadlineTimer = setInterval(tick, 1000);
+  }
+
+  // ── SAVE PROFILE ──
+  window.saveProfile = async function() {
+    if (!currentUser) return;
+    if (agentData.pendingProfileUpdate) {
+      showToast('Your current profile update is still awaiting admin approval.', 'error');
+      return;
+    }
+    const name     = document.getElementById('p-name').value.trim();
+    const bio      = document.getElementById('p-bio').value.trim();
+    const phone    = document.getElementById('p-phone').value.trim();
+    const whatsapp = document.getElementById('p-whatsapp').value.trim();
+    const email    = document.getElementById('p-email').value.trim();
+    const age      = document.getElementById('p-age')?.value?.trim();
+    const gender   = document.getElementById('p-gender')?.value?.trim();
+    const place    = document.getElementById('p-place')?.value?.trim();
+    const areas    = getCheckedAreas('#profile-area-checks');
+
+    if (!name) { showToast('Name is required.', 'error'); return; }
+    if (!areas.length) { showToast('Select at least one specialty.', 'error'); return; }
+    const saveButton = document.querySelector('#sec-profile .save-btn');
+    saveButton.disabled = true;
+    saveButton.textContent = profilePhotoFile ? 'Uploading Picture…' : 'Sending for Approval…';
+    try {
+      let photoURL = agentData.photoURL || currentUser.photoURL || '';
+      if (profilePhotoFile) {
+        const formData = new FormData();
+        formData.append('file', profilePhotoFile);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        formData.append('folder', `agent-profile-photos/${currentUser.uid}`);
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error?.message || 'Profile picture upload failed.');
+        photoURL = result.secure_url;
+      }
+      const pendingProfileUpdate = {
+        name, bio, phone, whatsapp, email, areas, photoURL,
+        age: age ? Number(age) || age : null,
+        gender: gender || '',
+        place: place || '',
+        requestedAt: new Date().toISOString()
+      };
+
+      await updateDoc(doc(db, 'agents', currentUser.uid), {
+        pendingProfileUpdate,
+        profileUpdateStatus: 'pending',
+        profileReviewMessage: ''
+      });
+      profilePhotoFile = null;
+      document.getElementById('p-photo').value = '';
+      if (profilePhotoPreviewUrl) URL.revokeObjectURL(profilePhotoPreviewUrl);
+      profilePhotoPreviewUrl = '';
+      agentData = { ...agentData, pendingProfileUpdate, profileUpdateStatus: 'pending', profileReviewMessage: '' };
+      updateProfilePhotoPreview(pendingProfileUpdate.photoURL);
+      updateProfileReviewStatus();
+      showToast('Profile sent to admin for approval.', 'success');
+    } catch(e) {
+      showToast(e.message, 'error');
+      updateProfileReviewStatus();
+    }
+  };
+
+  function getCheckedAreas(selector) {
+    return Array.from(document.querySelectorAll(`${selector} input[type="checkbox"]:checked`))
+      .map(input => input.value);
+  }
+
+  // ── AGENT SIGN IN (Username & Password Only) ──
+  window.agentSignIn = async function() {
+    clearAuthError('signin');
+    const username = (document.getElementById('si-username')?.value || '').trim().toLowerCase();
+    const pass     = (document.getElementById('si-pass')?.value || '').trim();
+
+    if (!username || !pass) {
+      showAuthError('signin', 'Please enter your username and password.');
+      return;
+    }
+
+    const btn = document.getElementById('agent-signin-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Verifying credentials…';
+    }
+
+    try {
+      // Ensure authenticated session for Firestore security rules
+      try {
+        if (!auth.currentUser) await signInAnonymously(auth);
+      } catch(authErr) {
+        console.warn('Anonymous auth note:', authErr);
+      }
+
+      let matchedDoc = null;
+      // 1. Query by username field in Firestore agents collection
+      const q = query(collection(db, 'agents'), where('username', '==', username));
+      const snap = await getDocs(q);
+
+      if (!snap.empty) {
+        matchedDoc = snap.docs[0];
+      } else {
+        if (username.toLowerCase() !== username) {
+          try {
+            const qLower = query(collection(db, 'agents'), where('username', '==', username.toLowerCase()));
+            const snapLower = await getDocs(qLower);
+            if (!snapLower.empty) matchedDoc = snapLower.docs[0];
+          } catch(e) {}
+        }
+        if (!matchedDoc) {
+          // Fallback: direct doc checks (prefixed or bare username)
+          const d1 = await getDoc(doc(db, 'agents', 'agent_' + username));
+          if (d1.exists()) {
+            matchedDoc = d1;
+          } else {
+            const d2 = await getDoc(doc(db, 'agents', username));
+            if (d2.exists()) matchedDoc = d2;
+          }
+        }
+      }
+
+      if (!matchedDoc) {
+        throw new Error('Invalid agent username or password.');
+      }
+
+      const agent = matchedDoc.data();
+      if (agent.password !== pass) {
+        throw new Error('Invalid agent username or password.');
+      }
+
+      if (agent.status === 'suspended' || agent.status === 'inactive') {
+        throw new Error('This agent account is deactivated. Please contact your studio administrator.');
+      }
+
+      currentUser = {
+        uid: matchedDoc.id,
+        displayName: agent.name || username,
+        email: agent.email || '',
+        username: agent.username || username
+      };
+      agentData = agent;
+
+      localStorage.setItem('criteria_agent_session', JSON.stringify({
+        agentId: matchedDoc.id,
+        username: agent.username || username,
+        loginAt: Date.now()
+      }));
+
+      showApp();
+      showToast(`Welcome back, ${agent.name || username}!`, 'gold');
+
+    } catch(err) {
+      showAuthError('signin', err.message || 'Sign in failed.');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Sign In to Agent Portal →';
+      }
+    }
+  };
+
+  window.agentSignOut = async function() {
+    if (chatUnsub) chatUnsub();
+    if (agentProfileUnsub) agentProfileUnsub();
+    if (presenceHeartbeat) clearInterval(presenceHeartbeat);
+    if (deadlineTimer) clearInterval(deadlineTimer);
+    // Mark agent as offline before signing out
+    if (currentUser) {
+      try {
+        await updateDoc(doc(db, 'agents', currentUser.uid), { isOnline: false, lastActive: serverTimestamp() });
+      } catch(e) { console.error('Error updating offline status:', e); }
+    }
+    localStorage.removeItem('criteria_agent_session');
+    try { await signOut(auth); } catch(e) {}
+    currentUser = null;
+    agentData = {};
+    window.location.reload();
+  };
+
+  function showAuthError(panel, msg) {
+    const el = document.getElementById(panel+'-error');
+    if (el) { el.textContent=msg; el.classList.add('show'); }
+  }
+  function clearAuthError(panel) {
+    const el = document.getElementById(panel+'-error');
+    if (el) { el.textContent=''; el.classList.remove('show'); }
+  }
+
+  // ── SECTION SWITCH ──
+  window.switchSection = function(name, btn) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sec-'+name).classList.add('active');
+    document.querySelectorAll('.nav-item[data-sec]').forEach(b=>b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const titles={dashboard:'Dashboard',work:'My Work',chat:'Chat',analytics:'Analytics',profile:'Profile'};
+    document.getElementById('topbar-title').textContent = titles[name]||name;
+  };
+
+  // ── TOAST ──
+  window.showToast = function(msg, type='gold') {
+    const layer=document.getElementById('toast-layer');
+    if (!layer) return;
+    const t=document.createElement('div');
+    t.className=`toast ${type}`;
+    t.innerHTML=`<span class="toast-dot"></span>${msg}`;
+    layer.appendChild(t);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+    setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},4000);
+  };
+
+  // ── HELPERS ──
+  function badge(status) {
+    const[cls,label]=STATUS_META[status]||['b-in_progress','In Progress'];
+    return `<span class="badge ${cls}"><span class="badge-dot"></span>${label}</span>`;
+  }
+  function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmtDate(ts){
+    if (!ts) return '—';
+    if (typeof ts==='string') { const d=new Date(ts); return isNaN(d.getTime())?ts:d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }
+    const d=ts.toDate?ts.toDate():new Date(ts.seconds?ts.seconds*1000:ts);
+    return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  }
+  </script>
+</body>
+</html>

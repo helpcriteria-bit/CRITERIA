@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/siteCookies.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITSPACE — Picture Editor</title>
+  <link rel="icon" href="../../Tools/Logo No BG.png" type="image/png">
+
+  <!-- Core Dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+
+  <!-- Base Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../shared/shared.css">
+  <link rel="stylesheet" href="picture.css">
+</head>
+<body class="dark-theme">
+
+  <!-- 3D Background Container (CRITSPACE 3D mode) -->
+  <div id="three-container"></div>
+  <button id="btn-exit-3d" class="glass-btn primary-glow" style="position: fixed; top: 20px; right: 20px; z-index: 99999; display: none;">✕ Exit 3D Mode</button>
+
+  <div class="app-layout" id="app-layout">
+
+    <!-- Top Navbar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <a href="/critspace" class="back-link">← Home</a>
+        <div class="file-name" contenteditable="true">Untitled Design</div>
+      </div>
+      <div class="nav-center">
+        <button id="btn-lookup" class="glass-btn primary-glow">
+          <span class="icon">⬡</span> 3D Lookup Mode
+        </button>
+      </div>
+      <div class="nav-right">
+        <div class="download-dropdown-container">
+          <button id="btn-download" class="glass-btn primary-glow"><img src="../../Tools/Critspace Icons/Download.png" alt="Download"><span>Download</span></button>
+          <div class="download-dropdown" id="download-dropdown">
+            <button onclick="triggerDownload('png')">Download PNG</button>
+            <button onclick="triggerDownload('jpg')">Download JPG</button>
+            <button id="btn-download-pdf" onclick="triggerDownload('pdf')">Download PDF</button>
+          </div>
+        </div>
+        <button id="btn-fullscreen" class="glass-btn" data-tooltip="Full Screen — unlocks all keyboard shortcuts and more">⛶ Full Screen</button>
+        <button class="primary-btn"><img src="../../Tools/Critspace Icons/Save.png" alt="Save"><span>Save to Account</span></button>
+      </div>
+    </header>
+
+    <div class="main-workspace">
+      <!-- Collapsible Floating Toggles -->
+      <button id="btn-toggle-left" class="toggle-sidebar-btn left-toggle" title="Toggle Tools Menu">◀</button>
+      <button id="btn-toggle-right" class="toggle-sidebar-btn right-toggle" title="Toggle Properties Panel">▶</button>
+
+      <!-- Left Sidebar: Tools -->
+      <aside class="sidebar-left" id="sidebar-left">
+        <ul class="tool-list">
+          <li class="tool-item active" data-tool="select" data-tooltip="Select — Select, move, scale, and edit shapes (V)"><span class="t-icon"><img src="../../Tools/Critspace Icons/selection.png" alt="Select"></span></li>
+          <li class="tool-item" data-tool="size" data-tooltip="Paper Size — Adjust page scale and website sizes (S)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Resize.png" alt="Paper Size"></span></li>
+          <li class="tool-item" data-tool="bg" data-tooltip="Background — Choose colors, gradients, and custom themes (O)"><span class="t-icon"><img src="../../Tools/Critspace Icons/B.png" alt="Background"></span></li>
+          <li class="tool-item" data-tool="shapes" data-tooltip="Shapes — Add rectangles, stars, polygons, and flowcharts (P)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Shapes.png" alt="Shapes"></span></li>
+          <li class="tool-item" data-tool="text" data-tooltip="Text — Drag & draw custom text frames (T)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Text.png" alt="Text"></span></li>
+          <li class="tool-item" data-tool="draw" data-tooltip="AI Pen — Draw smooth circles, lines, and curves (N)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Pen.png" alt="AI Pen"></span></li>
+          <li class="tool-item" data-tool="bucket" data-tooltip="Paint Bucket — Apply custom styles and patterns (K)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Paint-Bucket.png" alt="Paint Bucket"></span></li>
+          <li class="tool-item" data-tool="templates" data-tooltip="Templates — Load ready-to-edit layouts (L)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Templates.png" alt="Templates"></span></li>
+          <li class="tool-item" data-tool="upload" data-tooltip="Upload — Drag directly onto canvas or choose a file (U)"><span class="t-icon"><img src="../../Tools/Critspace Icons/Upload.png" alt="Upload"></span></li>
+        </ul>
+      </aside>
+
+      <!-- Center: Canvas Area -->
+      <main class="canvas-container-wrapper" id="canvas-wrapper">
+        <div class="canvas-stage" id="canvas-stage">
+          <canvas id="crit-canvas"></canvas>
+          <div id="artboard-frame"></div>
+        </div>
+        <!-- Reserved for Phase 2 rulers/guides -->
+        <div id="brochure-guides" class="guides-overlay"></div>
+      </main>
+
+      <!-- Right Sidebar: Properties -->
+      <aside class="sidebar-right" id="sidebar-right">
+        <div class="sidebar-right-content">
+          <div class="panel-header">Properties</div>
+          <div class="panel-content" id="prop-content">
+            <p class="empty-state">Select an object to edit its properties, or choose a tool from the left.</p>
+          </div>
+        </div>
+        <!-- Layers Panel -->
+        <div class="layers-panel" id="layers-panel-container">
+          <div class="panel-header" style="border-top: 1px solid var(--panel-border);">Layers</div>
+          <div class="layers-list-wrapper">
+            <div class="layers-list" id="layers-list-content">
+              <p class="empty-layers">No layers available</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <input type="file" id="file-upload" accept="image/*" style="display:none;">
+
+  <script type="module" src="picture.js"></script>
+</body>
+</html>

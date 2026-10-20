@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // USERS — client accounts, profiles and metadata
+    match /users/{userId} {
+      allow read, write: if request.auth != null || true;
+
+      // User notifications subcollection
+      match /notifications/{notifId} {
+        allow read, write: if true;
+      }
+    }
+
+    // SETTINGS — user preferences and studio display configurations
+    match /settings/{userId} {
+      allow read, write: if true;
+    }
+
+    // REQUESTS — client project briefs, watermarked previews & handover deliverables
+    match /requests/{reqId} {
+      allow read, write: if true;
+
+      // Request notifications / public feedback subcollection
+      match /notifications/{notifId} {
+        allow read, write: if true;
+      }
+    }
+
+    // META — sequence counter docs (e.g. meta/requests)
+    match /meta/{docId} {
+      allow read, write: if true;
+    }
+
+    // AGENTS — directory, credentials lookup, profiles and online status
+    match /agents/{agentId} {
+      allow read, write: if true;
+
+      // Agent assignments subcollection
+      match /assignments/{assignId} {
+        allow read, write: if true;
+      }
+
+      // Agent notifications subcollection
+      match /notifications/{notifId} {
+        allow read, write: if true;
+      }
+
+      // Agent-admin real-time chat subcollection
+      match /chat/{msgId} {
+        allow read, write: if true;
+      }
+
+      // Agent chat status subcollection
+      match /chatStatus/{statusId} {
+        allow read, write: if true;
+      }
+    }
+
+    // AI CHAT SESSIONS — public assistant widget session state
+    match /chatSessions/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // MAIL LOGS — automated EmailJS dispatch logs & audit records
+    match /mail_logs/{logId} {
+      allow read, write: if true;
+    }
+
+  }
+}

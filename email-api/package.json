@@ -1,0 +1,17 @@
+{
+  "name": "criteria-email-api",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file=.env server.js",
+    "check": "node --check server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "nodemailer": "^10.1.2"
+  }
+}

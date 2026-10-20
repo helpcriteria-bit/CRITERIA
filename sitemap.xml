@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+
+  <!-- CRITERIA Homepage & Studio Showcase -->
+  <url>
+    <loc>https://criteriaa.web.app/</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+
+    <!-- Images for Google Image Search & SERP Snippet Rotation -->
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/G_Thumbnail.jpeg</image:loc>
+      <image:title>CRITERIA Creative Studio Portfolio Showcase</image:title>
+      <image:caption>Full-service creative studio for web design, logos, graphics, and UI/UX</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Poster.jpeg</image:loc>
+      <image:title>CRITERIA Posters and Brand Graphics</image:title>
+      <image:caption>Event posters, social media visuals, brand graphics, and print artwork</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Website.jpeg</image:loc>
+      <image:title>CRITERIA Modern Web Design and Custom Development</image:title>
+      <image:caption>Fast, mobile-optimized, custom responsive websites for startups and small businesses</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Logo.jpeg</image:loc>
+      <image:title>CRITERIA Logo Design and Brand Identity</image:title>
+      <image:caption>Professional logo design, wordmarks, icons, color palettes, and typography guidance</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/UI-Presentations.jpeg</image:loc>
+      <image:title>CRITERIA UI/UX and Presentation Design</image:title>
+      <image:caption>App mockups, pitch decks, and digital product designs</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Thumbnail.jpeg</image:loc>
+      <image:title>CRITERIA High CTR Thumbnail Design</image:title>
+      <image:caption>High click-through-rate YouTube thumbnails and promotional visuals</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Videos.jpeg</image:loc>
+      <image:title>CRITERIA Video Editing and Motion Graphics</image:title>
+      <image:caption>Short-form video editing, reels, YouTube edits, and motion graphics</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/og-image.png</image:loc>
+      <image:title>CRITERIA Creative Studio — Web Design &amp; Branding</image:title>
+      <image:caption>Professional design services with preview before payment</image:caption>
+    </image:image>
+
+    <!-- Videos for Google Video Search Indexing & Rich SERP Snippets -->
+    <video:video>
+      <video:thumbnail_loc>https://criteriaa.web.app/Tools/Website.jpeg</video:thumbnail_loc>
+      <video:title>CRITERIA Modern Web Design and Development Showcase</video:title>
+      <video:description>Watch CRITERIA's custom responsive web design in action, built for speed and visual excellence.</video:description>
+      <video:content_loc>https://criteriaa.web.app/Tools/webdesign.mp4</video:content_loc>
+      <video:publication_date>2026-10-20T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://criteriaa.web.app/Tools/Poster.jpeg</video:thumbnail_loc>
+      <video:title>CRITERIA Event Poster and Visual Motion Showcase</video:title>
+      <video:description>Creative event posters and dynamic motion graphics designed by CRITERIA.</video:description>
+      <video:content_loc>https://criteriaa.web.app/Tools/event%20poster.mp4</video:content_loc>
+      <video:publication_date>2026-10-20T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://criteriaa.web.app/Tools/G_Thumbnail.jpeg</video:thumbnail_loc>
+      <video:title>CRITERIA Startup Launch and Creative Vision</video:title>
+      <video:description>Startup rocket animation representing fast project turnaround and digital acceleration.</video:description>
+      <video:content_loc>https://criteriaa.web.app/Tools/Startup%20rocket%20animation.mp4</video:content_loc>
+      <video:publication_date>2026-10-20T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <!-- Start Project / Submit Brief Page (Google Sitelink Action Target) -->
+  <url>
+    <loc>https://criteriaa.web.app/submit</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/G_Thumbnail.jpeg</image:loc>
+      <image:title>Start a Project with CRITERIA</image:title>
+      <image:caption>Submit your design project and get a free preview within 24 to 48 hours before you pay</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Submit%20the%20details.jpeg</image:loc>
+      <image:title>CRITERIA Project Submission Workflow</image:title>
+      <image:caption>Simple 5-step form to start your project with zero upfront risk</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Poster.jpeg</image:loc>
+      <image:title>Start a Poster or Graphic Design Project</image:title>
+      <image:caption>Custom posters and marketing collateral</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Website.jpeg</image:loc>
+      <image:title>Start a Web Design Project</image:title>
+      <image:caption>Responsive websites and modern landing pages</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/Logo.jpeg</image:loc>
+      <image:title>Start a Logo and Branding Project</image:title>
+      <image:caption>Full brand identity and wordmarks</image:caption>
+    </image:image>
+  </url>
+
+</urlset>
