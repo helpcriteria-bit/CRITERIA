@@ -6847,6 +6847,7 @@ RESPONSE MANDATE:
       container.querySelectorAll('.crit-tour-action-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
+          btn.setAttribute('data-consumed', 'true');
           const tid = btn.getAttribute('data-tour');
           if (typeof CritTour !== 'undefined') {
             CritTour.start(tid);
@@ -6955,10 +6956,94 @@ RESPONSE MANDATE:
   /* ============================================================
      SEND & REPLY FLOW
   ============================================================ */
+  function getPendingTourFromChat() {
+    const msgs = document.getElementById("crit-messages");
+    if (!msgs) return null;
+    const tourBtns = msgs.querySelectorAll(".crit-tour-action-btn:not([data-consumed='true'])");
+    if (!tourBtns || tourBtns.length === 0) return null;
+    const lastBtn = tourBtns[tourBtns.length - 1];
+    const tourId = lastBtn.getAttribute("data-tour") || "interactive-build";
+    return { tourId, btn: lastBtn };
+  }
+
+  function isDemoAffirmation(rawText) {
+    const clean = String(rawText || '').toLowerCase().trim().replace(/[!.,?]+$/, '').trim();
+    if (!clean) return false;
+
+    // Content questions about specific topics should not be hijacked as demo affirmations
+    const topicKeywords = ['price', 'pricing', 'cost', 'rate', 'portfolio', 'work', 'founder', 'sunder', 'refund', 'policy', 'review', 'dashboard', 'settings', 'profile', 'critspace'];
+    if (topicKeywords.some(kw => clean.includes(kw))) {
+      return false;
+    }
+
+    // Exact affirmative phrases
+    const exactAffirmations = [
+      "yes", "yeah", "yep", "yup", "sure", "ok", "okay", "k", "kk", "alright",
+      "all right", "definitely", "absolutely", "certainly", "of course", "y",
+      "let's go", "lets go", "let's do it", "lets do it", "do it", "go ahead",
+      "proceed", "start", "begin", "continue", "ready", "i am ready", "i'm ready",
+      "show me", "show", "show me how", "yes show me", "please show me",
+      "start demo", "start the demo", "run demo", "run the demo", "launch demo",
+      "open demo", "start walkthrough", "start the walkthrough", "start tour",
+      "take tour", "take the tour", "take guided tour", "guided tour",
+      "take me there", "guide me", "show it to me", "show it", "show this",
+      "start it", "let's start", "lets start", "yes please", "sure please"
+    ];
+    if (exactAffirmations.includes(clean)) return true;
+
+    // Regex pattern matching "yes show me", "sure start demo", "please show me how", etc.
+    const pattern = /^(yes|yeah|yep|yup|sure|ok|okay|alright|all right|please)?[\s,]*(show\s*me(\s*how)?|start\s*(the\s*)?demo|begin\s*(the\s*)?demo|run\s*(the\s*)?demo|launch\s*(the\s*)?demo|continue\s*(the\s*)?demo|proceed(\s*with\s*(the\s*)?demo)?|start\s*(the\s*)?(walkthrough|tour)|take\s*(the\s*)?tour|show\s*it|do\s*it|let'?s\s*(go|do\s*it|start)|take\s*me\s*there|guide\s*me)[\s,]*(please)?$/i;
+    if (pattern.test(clean)) return true;
+
+    // Concise phrases (<= 6 words) asking to show or start
+    const wordCount = clean.split(/\s+/).length;
+    if (wordCount <= 6 && /\b(show me|start (the )?demo|begin (the )?demo|start (the )?walkthrough|continue (the )?demo|proceed with (the )?demo|show me how|start it)\b/i.test(clean)) {
+      return true;
+    }
+
+    return false;
+  }
+
   function doSend() {
     const input = document.getElementById("crit-input");
     const text = input.value.trim();
     if (!text || isTyping) return;
+
+    // If chat box previously presented a demo button to click, and instead of clicking
+    // the user asks "show me", "start the demo", or an affirmative response, start the demo!
+    const pendingTour = getPendingTourFromChat();
+    if (pendingTour && isDemoAffirmation(text)) {
+      input.value = "";
+      input.style.height = "auto";
+      document.getElementById("crit-send").disabled = true;
+      isTyping = true;
+      appendMessage("user", text);
+      addMessageToState("user", text);
+
+      if (pendingTour.btn) {
+        pendingTour.btn.setAttribute("data-consumed", "true");
+      }
+
+      setTimeout(() => {
+        isTyping = false;
+        const startReplies = [
+          "Starting your interactive walkthrough right now! 🚀",
+          "Right away! 🎨 Launching the interactive walkthrough now...",
+          "Here we go! Taking control to guide you through live... ✨",
+          "Let's do this! Starting the demo now... 💡"
+        ];
+        const reply = startReplies[Math.floor(Math.random() * startReplies.length)];
+        appendMessage("bot", reply, "", true);
+        addMessageToState("bot", reply);
+
+        setTimeout(() => {
+          if (typeof CritTour !== 'undefined') {
+            CritTour.start(pendingTour.tourId);
+          }
+        }, 450);
+      }, 300);
+      return;
+    }
 
     // Check direct walkthrough, build-it-for-me & project start intents
     const lower = text.toLowerCase();
