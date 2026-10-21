@@ -5,7 +5,10 @@
   "scripts": {
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
-    "serve": "node dev-server.js"
+    "serve": "node dev-server.js",
+    "open:admin": "start http://localhost:5501/admin",
+    "open:agent": "start http://localhost:5501/agent",
+    "open": "start http://localhost:5501/"
   },
   "devDependencies": {
     "live-server": "^1.2.2"
