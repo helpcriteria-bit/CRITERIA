@@ -268,50 +268,61 @@
       box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
     }
     .crit-header-actions {
-      display: flex; gap: 6px; align-items: center;
+      display: flex; gap: 8px; align-items: center;
       flex-shrink: 0;
     }
     #crit-clear {
-      padding: 5px 9px;
-      border: 1px solid rgba(255,255,255,0.1);
+      padding: 5px 11px;
+      height: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.05);
-      color: #e4e4e7;
+      color: #cbd5e1;
       border-radius: 8px;
       font-size: 11px;
       font-family: 'DM Sans', sans-serif;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #crit-clear:hover {
       background: rgba(240,165,0,0.15);
       border-color: rgba(240,165,0,0.4);
       color: #f0a500;
+      transform: translateY(-1px);
+    }
+    #crit-clear:active {
+      transform: scale(0.95);
     }
     #crit-header-close {
       width: 28px; height: 28px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: rgba(255,255,255,0.6);
-      font-size: 13px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #94a3b8;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+      flex-shrink: 0;
     }
     #crit-header-close:hover {
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      border-color: rgba(255,255,255,0.25);
+      background: rgba(240,165,0,0.18);
+      color: #f0a500;
+      border-color: rgba(240,165,0,0.45);
+      transform: scale(1.06);
+    }
+    #crit-header-close:active {
+      transform: scale(0.92);
     }
     .crit-mobile-bar {
       display: none;
     }
     #crit-header-close .crit-close-txt {
-      display: none;
+      display: none !important;
     }
     #crit-header-close .crit-close-x {
-      display: inline-block;
+      display: none !important;
     }
 
     #crit-messages {
@@ -506,21 +517,19 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        flex-direction: column !important;
-        gap: 4px !important;
-        padding: max(10px, env(safe-area-inset-top, 10px)) 16px 6px !important;
-        background: rgba(18, 18, 24, 0.98) !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding: max(8px, env(safe-area-inset-top, 8px)) 0 4px !important;
+        background: transparent !important;
+        border: none !important;
         cursor: pointer !important;
         user-select: none !important;
         -webkit-tap-highlight-color: transparent !important;
         flex-shrink: 0 !important;
       }
       .crit-mobile-handle {
-        width: 44px !important;
-        height: 4.5px !important;
-        background: rgba(255, 255, 255, 0.4) !important;
-        border-radius: 10px !important;
+        width: 38px !important;
+        height: 4px !important;
+        background: rgba(255, 255, 255, 0.28) !important;
+        border-radius: 99px !important;
         transition: background 0.2s, transform 0.2s !important;
       }
       .crit-mobile-bar:hover .crit-mobile-handle,
@@ -529,62 +538,65 @@
         transform: scaleX(1.15) !important;
       }
       .crit-mobile-close-label {
-        font-size: 10px !important;
-        font-family: 'Syne', sans-serif !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.08em !important;
-        text-transform: uppercase !important;
-        color: rgba(255, 255, 255, 0.5) !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 4px !important;
-      }
-      .crit-mobile-bar:hover .crit-mobile-close-label,
-      .crit-mobile-bar:active .crit-mobile-close-label {
-        color: #f0a500 !important;
+        display: none !important;
       }
 
       #crit-header {
         height: auto !important;
         min-height: 48px !important;
-        padding: 8px 14px !important;
+        padding: 10px 14px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+      }
+      .crit-header-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-shrink: 0 !important;
+      }
+      #crit-clear {
+        padding: 5px 10px !important;
+        height: 28px !important;
+        border-radius: 8px !important;
+        font-size: 11px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         flex-shrink: 0 !important;
       }
       #crit-header-close {
-        display: flex !important;
+        display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 5px !important;
-        min-width: 36px !important;
-        height: 34px !important;
-        padding: 0 10px !important;
-        border-radius: 100px !important;
-        background: rgba(240, 165, 0, 0.18) !important;
-        border: 1px solid #f0a500 !important;
-        color: #f0a500 !important;
-        font-family: 'Syne', sans-serif !important;
-        font-size: 11px !important;
-        font-weight: 700 !important;
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        color: #e2e8f0 !important;
         cursor: pointer !important;
-        box-shadow: 0 0 12px rgba(240, 165, 0, 0.25) !important;
+        box-shadow: none !important;
         touch-action: manipulation !important;
         flex-shrink: 0 !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
       }
+      #crit-header-close:hover,
       #crit-header-close:active {
-        background: #f0a500 !important;
-        color: #000 !important;
-        transform: scale(0.94) !important;
+        background: rgba(240, 165, 0, 0.2) !important;
+        color: #f0a500 !important;
+        border-color: #f0a500 !important;
+        transform: scale(0.95) !important;
       }
       #crit-header-close .crit-close-txt {
-        display: inline-block !important;
-        font-size: 10.5px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.05em !important;
+        display: none !important;
       }
       #crit-header-close .crit-close-x {
-        font-size: 13px !important;
-        line-height: 1 !important;
+        display: none !important;
       }
       #crit-messages {
         flex: 1 1 auto !important;
@@ -6541,9 +6553,8 @@ RESPONSE MANDATE:
     root.innerHTML = `
       <div id="crit-backdrop"></div>
       <div id="crit-window" role="dialog" aria-label="CRITERIA AI chat" data-lenis-prevent="true">
-        <div id="crit-mobile-bar" class="crit-mobile-bar" role="button" aria-label="Close chat" title="Tap to close chat">
+                <div id="crit-mobile-bar" class="crit-mobile-bar" role="button" aria-label="Close chat" title="Tap to close chat">
           <div class="crit-mobile-handle"></div>
-          <span class="crit-mobile-close-label">✕ Tap to Close</span>
         </div>
         <div id="crit-header">
           <div class="crit-avatar">
@@ -6559,7 +6570,11 @@ RESPONSE MANDATE:
           </div>
           <div class="crit-header-actions">
             <button id="crit-clear" type="button" title="Start a fresh conversation">Clear</button>
-            <button id="crit-header-close" type="button" aria-label="Close chat" title="Close chat"><span class="crit-close-txt">Close</span><span class="crit-close-x">✕</span></button>
+            <button id="crit-header-close" type="button" aria-label="Close chat" title="Close chat">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6L6 18M6 6l12 12"></path>
+              </svg>
+            </button>
           </div>
         </div>
         <div id="crit-messages" data-lenis-prevent="true"></div>
