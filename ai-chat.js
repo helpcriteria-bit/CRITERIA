@@ -515,30 +515,49 @@
       }
       .crit-mobile-bar {
         display: flex !important;
+        flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: max(8px, env(safe-area-inset-top, 8px)) 0 4px !important;
-        background: transparent !important;
-        border: none !important;
+        gap: 4px !important;
+        padding: max(10px, env(safe-area-inset-top, 10px)) 16px 8px !important;
+        background: rgba(18, 18, 24, 0.98) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
         cursor: pointer !important;
         user-select: none !important;
         -webkit-tap-highlight-color: transparent !important;
         flex-shrink: 0 !important;
+        transition: background 0.2s !important;
+      }
+      .crit-mobile-bar:active {
+        background: rgba(240, 165, 0, 0.08) !important;
       }
       .crit-mobile-handle {
-        width: 38px !important;
+        width: 36px !important;
         height: 4px !important;
-        background: rgba(255, 255, 255, 0.28) !important;
+        background: rgba(255, 255, 255, 0.32) !important;
         border-radius: 99px !important;
         transition: background 0.2s, transform 0.2s !important;
       }
       .crit-mobile-bar:hover .crit-mobile-handle,
       .crit-mobile-bar:active .crit-mobile-handle {
         background: #f0a500 !important;
-        transform: scaleX(1.15) !important;
+        transform: scaleX(1.1) !important;
       }
       .crit-mobile-close-label {
-        display: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: 'Syne', sans-serif !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        transition: color 0.2s !important;
+      }
+      .crit-mobile-bar:hover .crit-mobile-close-label,
+      .crit-mobile-bar:active .crit-mobile-close-label {
+        color: #f0a500 !important;
       }
 
       #crit-header {
@@ -558,7 +577,7 @@
         flex-shrink: 0 !important;
       }
       #crit-clear {
-        padding: 5px 10px !important;
+        padding: 5px 12px !important;
         height: 28px !important;
         border-radius: 8px !important;
         font-size: 11px !important;
@@ -568,34 +587,6 @@
         flex-shrink: 0 !important;
       }
       #crit-header-close {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 30px !important;
-        height: 30px !important;
-        min-width: 30px !important;
-        padding: 0 !important;
-        border-radius: 50% !important;
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        color: #e2e8f0 !important;
-        cursor: pointer !important;
-        box-shadow: none !important;
-        touch-action: manipulation !important;
-        flex-shrink: 0 !important;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-      }
-      #crit-header-close:hover,
-      #crit-header-close:active {
-        background: rgba(240, 165, 0, 0.2) !important;
-        color: #f0a500 !important;
-        border-color: #f0a500 !important;
-        transform: scale(0.95) !important;
-      }
-      #crit-header-close .crit-close-txt {
-        display: none !important;
-      }
-      #crit-header-close .crit-close-x {
         display: none !important;
       }
       #crit-messages {
@@ -2696,7 +2687,7 @@ When users mention they are stuck, have an unfinished project, or need help comp
 - Confidently and enthusiastically answer: YES! CRITERIA specializes in taking over, finishing, debugging, and redesigning in-progress projects (codebases, web apps, UI/UX, branding, graphic design, and video).
 - Highlight that they can attach their existing codebases, GitHub repositories, or UI component files directly in Section 3 of our submission wizard (/submit), or upload their existing assets/documents.
 - Reassure them with our Preview-First model: ₹0 upfront payment! We deliver a complete watermarked preview with up to 2 free revisions before they spend a single rupee.
-- Offer to start or continue the brief walkthrough: if new to the wizard, suggest [TOUR:start-project] ("Ready to start the interactive walkthrough?"); if currently on /submit, suggest [TOUR:interactive-build] ("Ready to proceed with the walkthrough from here?").
+- Offer to start or continue the brief walkthrough: if new to the wizard, append [TOUR:start-project]; if currently on /submit, append [TOUR:interactive-build]. Never output more than ONE [TOUR:id] tag, and only place it at the very end of your response.
 
 CORE KNOWLEDGE:
 • Preview-First Model: Submit brief (/submit) -> Free watermarked preview (24-48h graphics, 3-5d web/video) -> 2 free revisions -> Pay (UPI, Cards, NetBanking) & get clean source files with full 100% IP rights. Zero upfront risk.
@@ -6555,6 +6546,7 @@ RESPONSE MANDATE:
       <div id="crit-window" role="dialog" aria-label="CRITERIA AI chat" data-lenis-prevent="true">
                 <div id="crit-mobile-bar" class="crit-mobile-bar" role="button" aria-label="Close chat" title="Tap to close chat">
           <div class="crit-mobile-handle"></div>
+          <span class="crit-mobile-close-label">✕ Tap to Close</span>
         </div>
         <div id="crit-header">
           <div class="crit-avatar">
@@ -6777,14 +6769,30 @@ RESPONSE MANDATE:
     div.className = `crit-msg ${role}${extraClass ? " " + extraClass : ""}`;
 
     const renderFullHtml = (rawText) => {
-      let html = escHtml(rawText)
+      const rawStr = String(rawText || '');
+      const tourMatches = Array.from(rawStr.matchAll(/\[TOUR:([a-z0-9_-]+)\]/gi));
+      // Completely strip [TOUR:id] tags so raw unrendered tags never leak in sentences
+      const cleanedText = rawStr.replace(/\[TOUR:[a-z0-9_-]+]/gi, '').trim();
+
+      let html = escHtml(cleanedText)
         .replace(/\n/g, "<br>")
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
         .replace(/\*(.*?)\*/g, "<em>$1</em>")
         .replace(/`(.*?)`/g, "<code style='background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-size:12px'>$1</code>");
 
-      // Replace [TOUR:id] with interactive button
-      html = html.replace(/\[TOUR:([a-z0-9_-]+)\]/gi, (match, tourId) => {
+      // Replace [DONE_BUTTON] with clean interactive completion button
+      html = html.replace(/\[DONE_BUTTON\]/g, () => {
+        return `
+          <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+            <button type="button" class="crit-tour-btn-done" id="crit-finish-tour-btn">Done ✓</button>
+          </div>
+        `;
+      });
+
+      // If at least one tour was requested, render EXACTLY ONE tour prompt card (using the last match)
+      if (tourMatches.length > 0) {
+        const lastMatch = tourMatches[tourMatches.length - 1];
+        const tourId = lastMatch[1];
         let btnTitle = 'Take Guided Tour';
         let btnIcon = '🧭';
         let promptLabel = 'Want me to show you how directly on the page?';
@@ -6807,7 +6815,8 @@ RESPONSE MANDATE:
         } else if (typeof CRIT_TOURS !== 'undefined' && CRIT_TOURS[tourId]) {
           btnTitle = CRIT_TOURS[tourId].title;
         }
-        return `
+
+        html += `
           <div class="crit-tour-prompt-wrap">
             <div class="crit-tour-prompt-label">
               <span class="crit-tour-sparkle">✨</span>
@@ -6820,16 +6829,8 @@ RESPONSE MANDATE:
             </button>
           </div>
         `;
-      });
+      }
 
-      // Replace [DONE_BUTTON] with clean interactive completion button
-      html = html.replace(/\[DONE_BUTTON\]/g, () => {
-        return `
-          <div style="margin-top:14px;display:flex;justify-content:flex-end;">
-            <button type="button" class="crit-tour-btn-done" id="crit-finish-tour-btn">Done ✓</button>
-          </div>
-        `;
-      });
       return html;
     };
 
@@ -6911,7 +6912,8 @@ RESPONSE MANDATE:
           cursor.remove();
 
           if (tourMatches.length > 0 || hasDone) {
-            let actionsRaw = tourMatches.join(' ') + (hasDone ? ' [DONE_BUTTON]' : '');
+            const chosenTourTag = tourMatches.length > 0 ? tourMatches[tourMatches.length - 1] : '';
+            let actionsRaw = chosenTourTag + (hasDone ? ' [DONE_BUTTON]' : '');
             const actionsWrap = document.createElement('div');
             actionsWrap.className = 'crit-actions-fade-in';
             actionsWrap.innerHTML = renderFullHtml(actionsRaw);
@@ -6967,10 +6969,12 @@ RESPONSE MANDATE:
       input.value = "";
       input.style.height = "auto";
       document.getElementById("crit-send").disabled = true;
+      isTyping = true;
       appendMessage("user", text);
       addMessageToState("user", text);
 
       setTimeout(() => {
+        isTyping = false;
         const currentPath = window.location.pathname.toLowerCase().replace(/\/index\.html$/, '/');
         const isHome = currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html') || currentPath === '/index' || currentPath.endsWith('/index');
         const isSubmit = currentPath.includes('submit');

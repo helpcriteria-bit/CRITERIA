@@ -1,1641 +1,1949 @@
 ﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta name="robots" content="noindex, nofollow" />
-<script src="/siteCookies.js"></script>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Preferences — CRITERIA</title>
-<link rel="icon" href="/favicon.ico" type="image/png"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script src="/siteCookies.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preferences — CRITERIA</title>
+  <link rel="icon" href="/favicon.ico" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+    rel="stylesheet" />
 
-<style>
-/* ══════════════════════════════════════════
+  <style>
+    /* ══════════════════════════════════════════
    VARIABLES — DARK (default)
 ══════════════════════════════════════════ */
-:root {
-  --gold: #f0a500;
-  --gold-dim: #c98a00;
-  --gold-hover: #ffc436;
-  --gold-glow: rgba(240,165,0,0.12);
-  --gold-border: rgba(240,165,0,0.25);
-  --bg: #080808;
-  --bg-2: #0f0f0f;
-  --bg-3: #161616;
-  --bg-card: #111111;
-  --text: #f5f5f5;
-  --text-2: #999;
-  --text-3: #555;
-  --border: rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.13);
-  --select-opt-bg: #1a1a1a;
-  --success: #22c55e;
-  --error: #ef4444;
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-lg: 20px;
-  --transition: 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
-}
+    :root {
+      --gold: #f0a500;
+      --gold-dim: #c98a00;
+      --gold-hover: #ffc436;
+      --gold-glow: rgba(240, 165, 0, 0.12);
+      --gold-border: rgba(240, 165, 0, 0.25);
+      --bg: #080808;
+      --bg-2: #0f0f0f;
+      --bg-3: #161616;
+      --bg-card: #111111;
+      --text: #f5f5f5;
+      --text-2: #999;
+      --text-3: #555;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.13);
+      --select-opt-bg: #1a1a1a;
+      --success: #22c55e;
+      --error: #ef4444;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 20px;
+      --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
 
-[data-theme="light"] {
-  --bg: #f8f8f6;
-  --bg-2: #f0f0ec;
-  --bg-3: #e8e8e2;
-  --bg-card: #ffffff;
-  --text: #111111;
-  --text-2: #555555;
-  --text-3: #999999;
-  --border: rgba(0,0,0,0.08);
-  --border-hover: rgba(0,0,0,0.16);
-  --select-opt-bg: #f0f0ec;
-}
+    [data-theme="light"] {
+      --bg: #f8f8f6;
+      --bg-2: #f0f0ec;
+      --bg-3: #e8e8e2;
+      --bg-card: #ffffff;
+      --text: #111111;
+      --text-2: #555555;
+      --text-3: #999999;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+      --select-opt-bg: #f0f0ec;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    RESET & BASE
 ══════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: var(--font-body); font-size: 15px; line-height: 1.6;
-  min-height: 100vh; display: flex; flex-direction: column;
-  transition: background var(--transition), color var(--transition);
-}
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-/* ══════════════════════════════════════════
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    /* ══════════════════════════════════════════
    APP SHELL
 ══════════════════════════════════════════ */
-.app-shell { display: flex; flex: 1; }
+    .app-shell {
+      display: flex;
+      flex: 1;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════════ */
-.sidebar {
-  width: 260px; flex-shrink: 0; background: var(--bg-2);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
-  transition: transform var(--transition);
-}
-.sidebar-logo {
-  padding: 1.75rem 1.75rem 1.25rem;
-  display: flex; align-items: center; gap: 0.75rem;
-  border-bottom: 1px solid var(--border); text-decoration: none;
-}
-.sidebar-logo .logo-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--gold);
-  border-radius: 50%;
-  animation: pulse 2.5s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(235, 94, 40, 0.5);
-  flex-shrink: 0;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-.sidebar-logo-text {
-  font-family: var(--font-display); font-weight: 800; font-size: 0.95rem;
-  letter-spacing: 0.2em; color: var(--text);
-}
-.sidebar-user {
-  padding: 1.25rem 1.75rem; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 0.875rem;
-}
-.sidebar-avatar {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: var(--bg-3); border: 1px solid var(--gold-border);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: 0.85rem; color: var(--gold); overflow: hidden; flex-shrink: 0;
-}
-.sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.sidebar-user-name { font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; margin-bottom: 2px; }
-.sidebar-user-email { font-size: 0.72rem; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
-.sidebar-nav { padding: 1.25rem 0.875rem; flex: 1; overflow-y: auto; }
-.nav-section-label {
-  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--text-3);
-  padding: 0 0.875rem; margin-bottom: 0.5rem; margin-top: 1.25rem;
-}
-.nav-section-label:first-child { margin-top: 0; }
-.nav-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.65rem 0.875rem; border-radius: var(--radius-sm);
-  text-decoration: none; color: var(--text-2); font-size: 0.85rem;
-  transition: all var(--transition); cursor: pointer; margin-bottom: 2px;
-}
-.nav-item:hover { color: var(--text); background: var(--bg-3); }
-.nav-item.active { color: var(--gold); background: var(--gold-glow); }
-.nav-item.active::before {
-  content: ''; width: 3px; height: 16px; background: var(--gold);
-  border-radius: 2px; margin-left: -0.875rem; margin-right: 0.875rem;
-}
-.nav-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.nav-icon svg { width: 16px; height: 16px; fill: currentColor; }
-.nav-item:hover .nav-icon svg { transform: scale(1.1); }
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
 
-/* ══════════════════════════════════════════
+    .sidebar-logo {
+      padding: 1.75rem 1.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+    }
+
+    .sidebar-logo .logo-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 2.5s ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(235, 94, 40, 0.5);
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+      }
+    }
+
+    .sidebar-logo-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.2em;
+      color: var(--text);
+    }
+
+    .sidebar-user {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .sidebar-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-3);
+      border: 1px solid var(--gold-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--gold);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .sidebar-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sidebar-user-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 2px;
+    }
+
+    .sidebar-user-email {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .sidebar-nav {
+      padding: 1.25rem 0.875rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-section-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 0 0.875rem;
+      margin-bottom: 0.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .nav-section-label:first-child {
+      margin-top: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.875rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-2);
+      font-size: 0.85rem;
+      transition: all var(--transition);
+      cursor: pointer;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: var(--bg-3);
+    }
+
+    .nav-item.active {
+      color: var(--gold);
+      background: var(--gold-glow);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin-left: -0.875rem;
+      margin-right: 0.875rem;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .nav-item:hover .nav-icon svg {
+      transform: scale(1.1);
+    }
+
+    /* ══════════════════════════════════════════
    MAIN CONTENT
 ══════════════════════════════════════════ */
-.main { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.topbar {
-  position: sticky; top: 0; z-index: 50;
-  background: var(--bg); border-bottom: 1px solid var(--border);
-  padding: 1rem 2.5rem;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-}
-.topbar-breadcrumb { font-size: 0.78rem; color: var(--text-3); }
-.topbar-breadcrumb span { color: var(--text); font-weight: 500; }
-.topbar-btn {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.55rem 1.25rem; border-radius: var(--radius-sm);
-  font-family: var(--font-display); font-weight: 600; font-size: 0.78rem;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  cursor: pointer; transition: all var(--transition); border: 1px solid transparent;
-}
-.topbar-btn-primary { background: var(--gold); color: #000; border-color: var(--gold); }
-.topbar-btn-primary:hover { background: var(--gold-hover); transform: translateY(-1px); box-shadow: 0 4px 16px var(--gold-glow); }
-.page-content { padding: 2.5rem; max-width: 820px; display: flex; flex-direction: column; gap: 2rem; }
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-/* ══════════════════════════════════════════
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .topbar-breadcrumb {
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    .topbar-breadcrumb span {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .topbar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .topbar-btn-primary {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+    }
+
+    .topbar-btn-primary:hover {
+      background: var(--gold-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px var(--gold-glow);
+    }
+
+    .page-content {
+      padding: 2.5rem;
+      max-width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* ══════════════════════════════════════════
    SECTION CARDS
 ══════════════════════════════════════════ */
-.settings-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: visible;
-  position: relative;
-  transition: border-color var(--transition);
-}
-.settings-section:hover {
-  border-color: var(--border-hover);
-}
-.settings-section.has-open-dropdown,
-.settings-section:has(.custom-select-wrapper.open) {
-  z-index: 120;
-}
-.section-header {
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
-}
-.section-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
-.section-subtitle { font-size: 0.78rem; color: var(--text-3); }
-.section-body { padding: 2rem; overflow: visible; position: relative; }
+    .settings-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: visible;
+      position: relative;
+      transition: border-color var(--transition);
+    }
 
-.sub-label {
-  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--text-2); margin-bottom: 0.75rem;
-}
+    .settings-section:hover {
+      border-color: var(--border-hover);
+    }
 
-/* ══════════════════════════════════════════
+    .settings-section.has-open-dropdown,
+    .settings-section:has(.custom-select-wrapper.open) {
+      z-index: 120;
+    }
+
+    .section-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+
+    .section-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    .section-body {
+      padding: 2rem;
+      overflow: visible;
+      position: relative;
+    }
+
+    .sub-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ══════════════════════════════════════════
    FORM LAYOUT & CUSTOM LUXURY DROPDOWN SYSTEM
 ══════════════════════════════════════════ */
-.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-.form-group { display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
-.form-label {
-  font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--text-2); display: flex; align-items: center; gap: 0.4rem;
-}
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
 
-/* Custom Select Wrapper */
-.custom-select-wrapper {
-  position: relative;
-  width: 100%;
-  user-select: none;
-}
-.custom-select-wrapper.open {
-  z-index: 1000;
-}
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+    }
 
-/* Visually conceal native select while preserving accessible DOM & values */
-.custom-select-wrapper select.form-select {
-  position: absolute !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  height: 0 !important;
-  width: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  clip: rect(0,0,0,0) !important;
-}
+    .form-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
 
-/* Custom Select Trigger Button */
-.custom-select-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  background: var(--bg-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  min-height: 46px;
-  cursor: pointer;
-  outline: none;
-  transition: all var(--transition);
-  font-family: var(--font-body);
-}
+    /* Custom Select Wrapper */
+    .custom-select-wrapper {
+      position: relative;
+      width: 100%;
+      user-select: none;
+    }
 
-.custom-select-trigger:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-3);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
+    .custom-select-wrapper.open {
+      z-index: 1000;
+    }
 
-.custom-select-wrapper.open .custom-select-trigger,
-.custom-select-trigger:focus-visible {
-  border-color: var(--gold-border);
-  box-shadow: 0 0 0 3px var(--gold-glow);
-  background: var(--bg-3);
-}
+    /* Visually conceal native select while preserving accessible DOM & values */
+    .custom-select-wrapper select.form-select {
+      position: absolute !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      clip: rect(0, 0, 0, 0) !important;
+    }
 
-.custom-select-trigger-content {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
-  flex: 1;
-}
+    /* Custom Select Trigger Button */
+    .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      min-height: 46px;
+      cursor: pointer;
+      outline: none;
+      transition: all var(--transition);
+      font-family: var(--font-body);
+    }
 
-.custom-select-val {
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .custom-select-trigger:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-3);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
 
-.custom-select-badge {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--gold);
-  background: var(--gold-glow);
-  border: 1px solid var(--gold-border);
-  padding: 2px 8px;
-  border-radius: 100px;
-  white-space: nowrap;
-  letter-spacing: 0.02em;
-}
+    .custom-select-wrapper.open .custom-select-trigger,
+    .custom-select-trigger:focus-visible {
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+      background: var(--bg-3);
+    }
 
-.custom-select-chevron {
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-3);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
-  flex-shrink: 0;
-}
+    .custom-select-trigger-content {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-width: 0;
+      flex: 1;
+    }
 
-.custom-select-chevron svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+    .custom-select-val {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.custom-select-wrapper.open .custom-select-chevron {
-  transform: rotate(180deg);
-  color: var(--gold);
-}
+    .custom-select-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--gold);
+      background: var(--gold-glow);
+      border: 1px solid var(--gold-border);
+      padding: 2px 8px;
+      border-radius: 100px;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
 
-/* Custom Dropdown Floating Menu */
-.custom-select-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: rgba(18, 18, 18, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 6px;
-  max-height: 260px;
-  overflow-y: auto;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  display: none;
-  animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-}
+    .custom-select-chevron {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-3);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
+      flex-shrink: 0;
+    }
 
-[data-theme="light"] .custom-select-menu {
-  background: rgba(255, 255, 255, 0.98);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
-}
+    .custom-select-chevron svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
-.custom-select-wrapper.open .custom-select-menu {
-  display: block;
-}
+    .custom-select-wrapper.open .custom-select-chevron {
+      transform: rotate(180deg);
+      color: var(--gold);
+    }
 
-.custom-select-wrapper.drop-up .custom-select-menu {
-  top: auto;
-  bottom: calc(100% + 6px);
-  animation: dropdownInUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-}
+    /* Custom Dropdown Floating Menu */
+    .custom-select-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(18, 18, 18, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      display: none;
+      animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-@keyframes dropdownInUp {
-  from { opacity: 0; transform: translateY(6px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
+    [data-theme="light"] .custom-select-menu {
+      background: rgba(255, 255, 255, 0.98);
+      border-color: rgba(0, 0, 0, 0.1);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
 
-@keyframes dropdownIn {
-  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
+    .custom-select-wrapper.open .custom-select-menu {
+      display: block;
+    }
 
-.custom-select-menu::-webkit-scrollbar {
-  width: 5px;
-}
-.custom-select-menu::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-select-menu::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
+    .custom-select-wrapper.drop-up .custom-select-menu {
+      top: auto;
+      bottom: calc(100% + 6px);
+      animation: dropdownInUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-/* Option item */
-.custom-select-option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  padding: 9px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-size: 0.85rem;
-  color: var(--text-2);
-}
+    @keyframes dropdownInUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+      }
 
-.custom-select-option:hover {
-  background: rgba(240, 165, 0, 0.1);
-  color: var(--gold);
-  padding-left: 15px;
-}
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
 
-.custom-select-option.selected {
-  background: rgba(240, 165, 0, 0.16);
-  color: var(--gold);
-  font-weight: 600;
-}
+    @keyframes dropdownIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+      }
 
-.custom-select-option-main {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-width: 0;
-  flex: 1;
-}
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
 
-.custom-select-option-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .custom-select-menu::-webkit-scrollbar {
+      width: 5px;
+    }
 
-.custom-select-option-badge {
-  font-size: 0.68rem;
-  color: var(--text-3);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px 7px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  white-space: nowrap;
-}
+    .custom-select-menu::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-.custom-select-option:hover .custom-select-option-badge,
-.custom-select-option.selected .custom-select-option-badge {
-  color: var(--gold);
-  border-color: var(--gold-border);
-  background: var(--gold-glow);
-}
+    .custom-select-menu::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
 
-.custom-select-check {
-  width: 14px;
-  height: 14px;
-  opacity: 0;
-  color: var(--gold);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.15s;
-}
+    /* Option item */
+    .custom-select-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.85rem;
+      color: var(--text-2);
+    }
 
-.custom-select-option.selected .custom-select-check {
-  opacity: 1;
-}
+    .custom-select-option:hover {
+      background: rgba(240, 165, 0, 0.1);
+      color: var(--gold);
+      padding-left: 15px;
+    }
 
-.custom-select-check svg {
-  width: 13px;
-  height: 13px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+    .custom-select-option.selected {
+      background: rgba(240, 165, 0, 0.16);
+      color: var(--gold);
+      font-weight: 600;
+    }
 
-/* ══════════════════════════════════════════
+    .custom-select-option-main {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .custom-select-option-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-select-option-badge {
+      font-size: 0.68rem;
+      color: var(--text-3);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      white-space: nowrap;
+    }
+
+    .custom-select-option:hover .custom-select-option-badge,
+    .custom-select-option.selected .custom-select-option-badge {
+      color: var(--gold);
+      border-color: var(--gold-border);
+      background: var(--gold-glow);
+    }
+
+    .custom-select-check {
+      width: 14px;
+      height: 14px;
+      opacity: 0;
+      color: var(--gold);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
+    }
+
+    .custom-select-option.selected .custom-select-check {
+      opacity: 1;
+    }
+
+    .custom-select-check svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ══════════════════════════════════════════
    ENHANCED PREFERENCE LISTS & TOGGLES
 ══════════════════════════════════════════ */
-.pref-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
+    .pref-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
 
-.pref-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 1.15rem 1.25rem;
-  border: 1px solid transparent;
-  border-bottom: 1px solid var(--border);
-  border-radius: 12px;
-  transition: all var(--transition);
-  position: relative;
-}
+    .pref-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1.15rem 1.25rem;
+      border: 1px solid transparent;
+      border-bottom: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all var(--transition);
+      position: relative;
+    }
 
-.pref-item:hover {
-  background: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.06);
-}
+    .pref-item:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.06);
+    }
 
-[data-theme="light"] .pref-item:hover {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.06);
-}
+    [data-theme="light"] .pref-item:hover {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
 
-.pref-item:last-child {
-  border-bottom-color: transparent;
-}
+    .pref-item:last-child {
+      border-bottom-color: transparent;
+    }
 
-.pref-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+    .pref-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-.pref-desc {
-  font-size: 0.78rem;
-  color: var(--text-2);
-  line-height: 1.5;
-  max-width: 580px;
-}
+    .pref-desc {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.5;
+      max-width: 580px;
+    }
 
-/* Status Badges */
-.pref-badge {
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 100px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+    /* Status Badges */
+    .pref-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-.pref-badge.allowed {
-  background: rgba(34, 197, 94, 0.12);
-  color: var(--success);
-  border: 1px solid rgba(34, 197, 94, 0.25);
-}
+    .pref-badge.allowed {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
 
-.pref-badge.allowed::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--success);
-}
+    .pref-badge.allowed::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--success);
+    }
 
-.pref-badge.essential {
-  background: rgba(240, 165, 0, 0.12);
-  color: var(--gold);
-  border: 1px solid var(--gold-border);
-}
+    .pref-badge.essential {
+      background: rgba(240, 165, 0, 0.12);
+      color: var(--gold);
+      border: 1px solid var(--gold-border);
+    }
 
-.pref-badge.essential::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--gold);
-}
+    .pref-badge.essential::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
 
-.pref-badge.pending {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-3);
-  border: 1px solid var(--border);
-}
+    .pref-badge.pending {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-3);
+      border: 1px solid var(--border);
+    }
 
-/* Action Buttons */
-.cookie-settings-trigger {
-  background: var(--bg-2);
-  border: 1px solid var(--border-hover);
-  color: var(--text);
-  font-family: var(--font-display);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 8px 16px;
-  border-radius: 100px;
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
+    /* Action Buttons */
+    .cookie-settings-trigger {
+      background: var(--bg-2);
+      border: 1px solid var(--border-hover);
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 8px 16px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
 
-.cookie-settings-trigger:hover {
-  border-color: var(--gold-border);
-  color: var(--gold);
-  background: var(--gold-glow);
-  transform: translateY(-1px);
-}
+    .cookie-settings-trigger:hover {
+      border-color: var(--gold-border);
+      color: var(--gold);
+      background: var(--gold-glow);
+      transform: translateY(-1px);
+    }
 
-/* Toggle Switches */
-.toggle {
-  position: relative;
-  width: 46px;
-  height: 26px;
-  flex-shrink: 0;
-}
+    /* Toggle Switches */
+    .toggle {
+      position: relative;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
 
-.toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
-}
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
 
-.toggle-track {
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  background: var(--bg-3);
-  border: 1px solid var(--border-hover);
-  border-radius: 100px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: var(--bg-3);
+      border: 1px solid var(--border-hover);
+      border-radius: 100px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-.toggle input:checked + .toggle-track {
-  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-  border-color: var(--gold);
-  box-shadow: 0 0 12px var(--gold-glow);
-}
+    .toggle input:checked+.toggle-track {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border-color: var(--gold);
+      box-shadow: 0 0 12px var(--gold-glow);
+    }
 
-.toggle-thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  background: #777;
-  border-radius: 50%;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
-  pointer-events: none;
-}
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #777;
+      border-radius: 50%;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+      pointer-events: none;
+    }
 
-.toggle input:checked ~ .toggle-thumb {
-  transform: translateX(20px);
-  background: #000;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
+    .toggle input:checked~.toggle-thumb {
+      transform: translateX(20px);
+      background: #000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    TOAST
 ══════════════════════════════════════════ */
-.toast {
-  position: fixed; bottom: 2rem; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--bg-3); border: 1px solid var(--border-hover);
-  border-radius: 100px; padding: 12px 24px;
-  font-size: 0.82rem; color: var(--text);
-  opacity: 0; transition: all 0.3s ease; z-index: 400; white-space: nowrap;
-  pointer-events: none;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.success { border-color: rgba(34,197,94,0.35); color: var(--success); }
-.toast.error   { border-color: rgba(239,68,68,0.35); color: var(--error); }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-3);
+      border: 1px solid var(--border-hover);
+      border-radius: 100px;
+      padding: 12px 24px;
+      font-size: 0.82rem;
+      color: var(--text);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 400;
+      white-space: nowrap;
+      pointer-events: none;
+    }
 
-/* ══════════════════════════════════════════
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      border-color: rgba(34, 197, 94, 0.35);
+      color: var(--success);
+    }
+
+    .toast.error {
+      border-color: rgba(239, 68, 68, 0.35);
+      color: var(--error);
+    }
+
+    /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
-  .main { margin-left: 0; }
-  .page-content { padding: 1.25rem; }
-  .form-row-2 { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  .page-content { padding: 1rem 0.75rem; }
-  .topbar { padding: 0.75rem 1rem; }
-  .topbar-btn { width: 100%; text-align: center; justify-content: center; }
-  .toast { max-width: calc(100vw - 24px); white-space: normal; text-align: center; font-size: 0.8rem; }
-}
-</style>
-<script src="themeAccent.js" defer></script>
-</head>
-<body>
-<div class="app-shell">
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
 
-<!-- ══════════════════════════════════════════
+      .main {
+        margin-left: 0;
+      }
+
+      .page-content {
+        padding: 1.25rem;
+      }
+
+      .form-row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-content {
+        padding: 1rem 0.75rem;
+      }
+
+      .topbar {
+        padding: 0.75rem 1rem;
+      }
+
+      .topbar-btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+
+      .toast {
+        max-width: calc(100vw - 24px);
+        white-space: normal;
+        text-align: center;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+  <script src="themeAccent.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- ══════════════════════════════════════════
      SIDEBAR
 ══════════════════════════════════════════ -->
-<aside class="sidebar" id="sidebar">
-  <a href="/" class="sidebar-logo">
-    <div class="logo-dot"></div>
-    <span class="sidebar-logo-text">CRITERIA</span>
-  </a>
+    <aside class="sidebar" id="sidebar">
+      <a href="/" class="sidebar-logo">
+        <div class="logo-dot"></div>
+        <span class="sidebar-logo-text">CRITERIA</span>
+      </a>
 
-  <div class="sidebar-user">
-    <div class="sidebar-avatar" id="sb-avatar">
-      <span id="sb-initials">?</span>
-    </div>
-    <div style="min-width:0;">
-      <div class="sidebar-user-name" id="sb-name">-</div>
-      <div class="sidebar-user-email" id="sb-email">-</div>
-    </div>
-  </div>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sb-avatar">
+          <span id="sb-initials">?</span>
+        </div>
+        <div style="min-width:0;">
+          <div class="sidebar-user-name" id="sb-name">-</div>
+          <div class="sidebar-user-email" id="sb-email">-</div>
+        </div>
+      </div>
 
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Account</div>
-    <div class="nav-item" onclick="location.href='/profile'">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
-      Profile
-    </div>
-    <div class="nav-item active">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>
-      Preferences
-    </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Account</div>
+        <div class="nav-item" onclick="location.href='/profile'">
+          <span class="nav-icon"><svg viewBox="0 0 24 24">
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg></span>
+          Profile
+        </div>
+        <div class="nav-item active">
+          <span class="nav-icon"><svg viewBox="0 0 24 24">
+              <path
+                d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+            </svg></span>
+          Preferences
+        </div>
 
-    <div class="nav-section-label">Studio</div>
-    <div class="nav-item" onclick="location.href='/dashboard'">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></span>
-      Dashboard
-    </div>
-    <div class="nav-item" onclick="location.href='/submit'">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></span>
-      New Project
-    </div>
-    <div class="nav-item" onclick="location.href='/'">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
-      Website
-    </div>
+        <div class="nav-section-label">Studio</div>
+        <div class="nav-item" onclick="location.href='/dashboard'">
+          <span class="nav-icon"><svg viewBox="0 0 24 24">
+              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+            </svg></span>
+          Dashboard
+        </div>
+        <div class="nav-item" onclick="location.href='/submit'">
+          <span class="nav-icon"><svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg></span>
+          New Project
+        </div>
+        <div class="nav-item" onclick="location.href='/'">
+          <span class="nav-icon"><svg viewBox="0 0 24 24">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg></span>
+          Website
+        </div>
 
-    <div class="nav-section-label">Session</div>
-    <div class="nav-item" style="color:var(--error);" onclick="signOutUser()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></span>
-      Sign Out
-    </div>
-  </nav>
-</aside>
+        <div class="nav-section-label">Session</div>
+        <div class="nav-item" style="color:var(--error);" onclick="signOutUser()">
+          <span class="nav-icon"><svg viewBox="0 0 24 24">
+              <path
+                d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+            </svg></span>
+          Sign Out
+        </div>
+      </nav>
+    </aside>
 
-<!-- ══════════════════════════════════════════
+    <!-- ══════════════════════════════════════════
      MAIN
 ══════════════════════════════════════════ -->
-<main class="main">
+    <main class="main">
 
-  <div class="topbar">
-    <div class="topbar-breadcrumb">Account / <span>Preferences</span></div>
-    <button class="topbar-btn topbar-btn-primary" onclick="saveSettings()">
-      Save Settings
-    </button>
-  </div>
-
-  <div class="page-content">
-
-    <!-- ── TIME & REGION ── -->
-    <div class="settings-section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Time & Region</div>
-          <div class="section-subtitle">Timezone and date format preferences</div>
-        </div>
+      <div class="topbar">
+        <div class="topbar-breadcrumb">Account / <span>Preferences</span></div>
+        <button class="topbar-btn topbar-btn-primary" onclick="saveSettings()">
+          Save Settings
+        </button>
       </div>
-      <div class="section-body">
-        <div class="form-row-2">
-          <div class="form-group">
-            <label class="form-label" for="s-timezone">Timezone</label>
-            <select class="form-select" id="s-timezone">
-              <option value="Asia/Kolkata">Asia/Kolkata (IST +5:30)</option>
-              <option value="America/New_York">America/New_York (EST -5:00)</option>
-              <option value="Europe/London">Europe/London (GMT +0:00)</option>
-              <option value="Asia/Dubai">Asia/Dubai (GST +4:00)</option>
-              <option value="America/Los_Angeles">America/Los_Angeles (PST -8:00)</option>
-              <option value="Asia/Singapore">Asia/Singapore (SGT +8:00)</option>
-              <option value="Europe/Paris">Europe/Paris (CET +1:00)</option>
-              <option value="Australia/Sydney">Australia/Sydney (AEST +10:00)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="s-dateformat">Date Format</label>
-            <select class="form-select" id="s-dateformat">
-              <option value="DD/MM/YYYY">DD/MM/YYYY (e.g. 20/10/2026)</option>
-              <option value="MM/DD/YYYY">MM/DD/YYYY (e.g. 10/20/2026)</option>
-              <option value="YYYY-MM-DD">YYYY-MM-DD (e.g. 2026-10-20)</option>
-              <option value="D MMM YYYY">D MMM YYYY (e.g. 20 Oct 2026)</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row-2" style="margin-top:1.25rem;">
-          <div class="form-group">
-            <label class="form-label" for="s-timeformat">Time Clock</label>
-            <select class="form-select" id="s-timeformat">
-              <option value="12h">12-Hour Clock (e.g. 02:30 PM)</option>
-              <option value="24h">24-Hour Clock (e.g. 14:30)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="s-currency">Display Currency</label>
-            <select class="form-select" id="s-currency">
-              <option value="INR">₹ INR (Indian Rupee)</option>
-              <option value="USD">$ USD (US Dollar)</option>
-              <option value="EUR">€ EUR (Euro)</option>
-              <option value="GBP">£ GBP (British Pound)</option>
-              <option value="AED">AED (UAE Dirham)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    
-    <!-- ── DASHBOARD PREFERENCES ── -->
-    <div class="settings-section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Dashboard Preferences</div>
-          <div class="section-subtitle">Tailor how project lists, metrics, and tables render</div>
-        </div>
-      </div>
-      <div class="section-body">
-        <div class="form-row-2">
-          <div class="form-group">
-            <label class="form-label" for="d-sort">Default Project Sort</label>
-            <select class="form-select" id="d-sort">
-              <option value="newest">Newest Submitted First</option>
-              <option value="oldest">Oldest Submitted First</option>
-              <option value="amount-high">Highest Amount Value</option>
-              <option value="status">By Progress Status</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="d-autorefresh">Auto-Refresh Interval</label>
-            <select class="form-select" id="d-autorefresh">
-              <option value="off">Manual Only (Recommended)</option>
-              <option value="30s">Every 30 Seconds</option>
-              <option value="60s">Every 60 Seconds</option>
-            </select>
-          </div>
-        </div>
+      <div class="page-content">
 
-        <div class="pref-list" style="margin-top:0.75rem;">
-          <div class="pref-item">
+        <!-- ── TIME & REGION ── -->
+        <div class="settings-section">
+          <div class="section-header">
             <div>
-              <div class="pref-label">Compact table density</div>
-              <div class="pref-desc">Reduces padding in the projects table for high-density overview</div>
+              <div class="section-title">Time & Region</div>
+              <div class="section-subtitle">Timezone and date format preferences</div>
             </div>
-            <label class="toggle" aria-label="Toggle compact table density">
-              <input type="checkbox" id="d-compact"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
           </div>
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Hide financial totals by default</div>
-              <div class="pref-desc">Masks Total Spent on dashboard with a click-to-reveal toggle for privacy in public</div>
+          <div class="section-body">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="s-timezone">Timezone</label>
+                <select class="form-select" id="s-timezone">
+                  <option value="Asia/Kolkata">Asia/Kolkata (IST +5:30)</option>
+                  <option value="America/New_York">America/New_York (EST -5:00)</option>
+                  <option value="Europe/London">Europe/London (GMT +0:00)</option>
+                  <option value="Asia/Dubai">Asia/Dubai (GST +4:00)</option>
+                  <option value="America/Los_Angeles">America/Los_Angeles (PST -8:00)</option>
+                  <option value="Asia/Singapore">Asia/Singapore (SGT +8:00)</option>
+                  <option value="Europe/Paris">Europe/Paris (CET +1:00)</option>
+                  <option value="Australia/Sydney">Australia/Sydney (AEST +10:00)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="s-dateformat">Date Format</label>
+                <select class="form-select" id="s-dateformat">
+                  <option value="DD/MM/YYYY">DD/MM/YYYY (e.g. 20/10/2026)</option>
+                  <option value="MM/DD/YYYY">MM/DD/YYYY (e.g. 10/20/2026)</option>
+                  <option value="YYYY-MM-DD">YYYY-MM-DD (e.g. 2026-10-20)</option>
+                  <option value="D MMM YYYY">D MMM YYYY (e.g. 20 Oct 2026)</option>
+                </select>
+              </div>
             </div>
-            <label class="toggle" aria-label="Toggle mask financial totals">
-              <input type="checkbox" id="d-mask-spent"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── PROJECT SUBMISSION PREFERENCES ── -->
-    <div class="settings-section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Project Submission</div>
-          <div class="section-subtitle">Default workflows and smart automation when creating project briefs</div>
-        </div>
-      </div>
-      <div class="section-body">
-        <div class="form-row-2">
-          <div class="form-group">
-            <label class="form-label" for="sub-default-service">Default Service Category</label>
-            <select class="form-select" id="sub-default-service">
-              <option value="none">None (Choose each time)</option>
-              <option value="Websites">Websites (Modern responsive sites)</option>
-              <option value="Logo & Branding">Logo & Branding (Identity systems)</option>
-              <option value="Poster & Graphics">Poster & Graphics (Social posts & posters)</option>
-              <option value="Thumbnails">Thumbnails (YouTube & content thumbnails)</option>
-              <option value="Video Editing">Video Editing (Reels & cinematic cuts)</option>
-              <option value="UI/Presentations">UI / Presentations (Decks & pitch UI)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="sub-ai-level">Default AI Collaboration</label>
-            <select class="form-select" id="sub-ai-level">
-              <option value="85">85% — Balanced Studio (Recommended)</option>
-              <option value="95">95% — High AI Acceleration (Rapid turns)</option>
-              <option value="50">50% — Hybrid Co-Design (50/50 balance)</option>
-              <option value="15">15% — Handcrafted Craft (Human-first)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row-2" style="margin-top:1.25rem;">
-          <div class="form-group">
-            <label class="form-label" for="sub-urgency">Project Delivery Priority</label>
-            <select class="form-select" id="sub-urgency">
-              <option value="standard">Standard Timeline (Standard studio queue)</option>
-              <option value="rush">Priority Fast-Track (Rush turnaround & urgent flag)</option>
-              <option value="flexible">Flexible Timeline (+7 days relaxed schedule)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Submission Draft Storage</label>
-            <div style="display:flex; align-items:center; gap:0.5rem; height:42px;">
-              <span id="draft-storage-indicator" style="font-size:0.84rem; color:var(--text-2);">Checking cache...</span>
-              <button type="button" class="cookie-settings-trigger" style="margin-left:auto; padding:0.35rem 0.75rem;" onclick="window.clearSubmissionDraft()">Clear Draft</button>
+            <div class="form-row-2" style="margin-top:1.25rem;">
+              <div class="form-group">
+                <label class="form-label" for="s-timeformat">Time Clock</label>
+                <select class="form-select" id="s-timeformat">
+                  <option value="12h">12-Hour Clock (e.g. 02:30 PM)</option>
+                  <option value="24h">24-Hour Clock (e.g. 14:30)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="s-currency">Display Currency</label>
+                <select class="form-select" id="s-currency">
+                  <option value="INR">₹ INR (Indian Rupee)</option>
+                  <option value="USD">$ USD (US Dollar)</option>
+                  <option value="EUR">€ EUR (Euro)</option>
+                  <option value="GBP">£ GBP (British Pound)</option>
+                  <option value="AED">AED (UAE Dirham)</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="pref-list" style="margin-top:0.75rem;">
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Auto-save in-progress project briefs</div>
-              <div class="pref-desc">Preserves your title, service, brief description, and options locally so you never lose ideas if the tab is closed or reloaded</div>
-            </div>
-            <label class="toggle" aria-label="Toggle auto-save project briefs">
-              <input type="checkbox" id="sub-autosave" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
 
-          <div class="pref-item">
+        <!-- ── DASHBOARD PREFERENCES ── -->
+        <div class="settings-section">
+          <div class="section-header">
             <div>
-              <div class="pref-label">Auto-attach primary GitHub repository</div>
-              <div class="pref-desc">For Website & Web App projects, automatically attaches your active GitHub repository in Step 3</div>
+              <div class="section-title">Dashboard Preferences</div>
+              <div class="section-subtitle">Tailor how project lists, metrics, and tables render</div>
             </div>
-            <label class="toggle" aria-label="Toggle auto-attach GitHub repo">
-              <input type="checkbox" id="sub-github-auto" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
           </div>
-
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Remember Terms & Conditions agreement</div>
-              <div class="pref-desc">Automatically marks terms agreed in step 5 for express project submission</div>
+          <div class="section-body">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="d-sort">Default Project Sort</label>
+                <select class="form-select" id="d-sort">
+                  <option value="newest">Newest Submitted First</option>
+                  <option value="oldest">Oldest Submitted First</option>
+                  <option value="amount-high">Highest Amount Value</option>
+                  <option value="status">By Progress Status</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="d-autorefresh">Auto-Refresh Interval</label>
+                <select class="form-select" id="d-autorefresh">
+                  <option value="off">Manual Only (Recommended)</option>
+                  <option value="30s">Every 30 Seconds</option>
+                  <option value="60s">Every 60 Seconds</option>
+                </select>
+              </div>
             </div>
-            <label class="toggle" aria-label="Toggle remember terms">
-              <input type="checkbox" id="sub-remember-terms"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
 
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Submission success audio chime</div>
-              <div class="pref-desc">Play a celebratory confirmation sound when a project brief is successfully sent</div>
+            <div class="pref-list" style="margin-top:0.75rem;">
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Compact table density</div>
+                  <div class="pref-desc">Reduces padding in the projects table for high-density overview</div>
+                </div>
+                <label class="toggle" aria-label="Toggle compact table density">
+                  <input type="checkbox" id="d-compact" />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Hide financial totals by default</div>
+                  <div class="pref-desc">Masks Total Spent on dashboard with a click-to-reveal toggle for privacy in
+                    public</div>
+                </div>
+                <label class="toggle" aria-label="Toggle mask financial totals">
+                  <input type="checkbox" id="d-mask-spent" />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
             </div>
-            <label class="toggle" aria-label="Toggle submission success chime">
-              <input type="checkbox" id="sub-chime" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ── NOTIFICATIONS ── -->
-    <div class="settings-section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Notifications</div>
-          <div class="section-subtitle">Control what emails and alerts you receive</div>
-        </div>
-      </div>
-      <div class="section-body">
-        <div class="pref-list">
-          <div class="pref-item">
+        <!-- ── PROJECT SUBMISSION PREFERENCES ── -->
+        <div class="settings-section">
+          <div class="section-header">
             <div>
-              <div class="pref-label">Project status updates</div>
-              <div class="pref-desc">When your project moves to In Review, Preview Ready, or Completed</div>
+              <div class="section-title">Project Submission</div>
+              <div class="section-subtitle">Default workflows and smart automation when creating project briefs</div>
             </div>
-            <label class="toggle" aria-label="Toggle project status updates">
-              <input type="checkbox" id="n-status" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
           </div>
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Preview ready alerts</div>
-              <div class="pref-desc">When your watermarked preview is created and waiting for approval</div>
-            </div>
-            <label class="toggle" aria-label="Toggle preview ready alerts">
-              <input type="checkbox" id="n-preview" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">File delivery confirmation</div>
-              <div class="pref-desc">When your final, watermark-free files are ready to download</div>
-            </div>
-            <label class="toggle" aria-label="Toggle file delivery confirmation">
-              <input type="checkbox" id="n-delivery" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-          
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Notification sound chime</div>
-              <div class="pref-desc">Play a subtle audio tone when new notifications or delivery alerts arrive</div>
-            </div>
-            <label class="toggle" aria-label="Toggle notification sound chime">
-              <input type="checkbox" id="n-sound" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Promotional emails</div>
-              <div class="pref-desc">New services, seasonal offers, and studio announcements</div>
-            </div>
-            <label class="toggle" aria-label="Toggle promotional emails">
-              <input type="checkbox" id="n-promo"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── PRIVACY ── -->
-    <div class="settings-section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Privacy</div>
-          <div class="section-subtitle">Control your data, cookies, and public visibility</div>
-        </div>
-      </div>
-      <div class="section-body">
-        <div class="pref-list">
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Show work in public gallery</div>
-              <div class="pref-desc">Allow approved project work to appear in CRITERIA's public portfolio</div>
-            </div>
-            <label class="toggle" aria-label="Toggle public gallery display">
-              <input type="checkbox" id="p-gallery" checked/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Preference cookies <span id="cookie-status-badge" class="pref-badge pending">Checking...</span></div>
-              <div class="pref-desc">Store your timezone, date format, and accessibility preferences in browser cookies across pages. Google sign-in also uses a short-lived security cookie. No advertising or tracking cookies are used.</div>
-            </div>
-            <button type="button" class="cookie-settings-trigger" onclick="window.criteriaCookiePreferences.openSettings()">Manage choices</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── ACCESSIBILITY ── -->
-    <div class="settings-section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Accessibility</div>
-          <div class="section-subtitle">Adjust the experience to your needs</div>
-        </div>
-      </div>
-      <div class="section-body">
-        <div class="pref-list">
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Reduce motion</div>
-              <div class="pref-desc">Disable animations and transitions across the site</div>
-            </div>
-            <label class="toggle" aria-label="Toggle reduce motion">
-              <input type="checkbox" id="a-motion" onchange="applyReduceMotion(this.checked)"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">High contrast borders</div>
-              <div class="pref-desc">Increase border and separator visibility</div>
+          <div class="section-body">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="sub-default-service">Default Service Category</label>
+                <select class="form-select" id="sub-default-service">
+                  <option value="none">None (Choose each time)</option>
+                  <option value="Websites">Websites (Modern responsive sites)</option>
+                  <option value="Logo & Branding">Logo & Branding (Identity systems)</option>
+                  <option value="Poster & Graphics">Poster & Graphics (Social posts & posters)</option>
+                  <option value="Thumbnails">Thumbnails (YouTube & content thumbnails)</option>
+                  <option value="Video Editing">Video Editing (Reels & cinematic cuts)</option>
+                  <option value="UI/Presentations">UI / Presentations (Decks & pitch UI)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="sub-ai-level">Default AI Collaboration</label>
+                <select class="form-select" id="sub-ai-level">
+                  <option value="85">85% — Balanced Studio (Recommended)</option>
+                  <option value="95">95% — High AI Acceleration (Rapid turns)</option>
+                  <option value="50">50% — Hybrid Co-Design (50/50 balance)</option>
+                  <option value="15">15% — Handcrafted Craft (Human-first)</option>
+                </select>
+              </div>
             </div>
 
-          <div class="pref-item">
-            <div>
-              <div class="pref-label">Enhanced focus indicators</div>
-              <div class="pref-desc">Display high-visibility gold outlines when navigating via keyboard Tab</div>
+            <div class="form-row-2" style="margin-top:1.25rem;">
+              <div class="form-group">
+                <label class="form-label" for="sub-urgency">Project Delivery Priority</label>
+                <select class="form-select" id="sub-urgency">
+                  <option value="standard">Standard Timeline (Standard studio queue)</option>
+                  <option value="rush">Priority Fast-Track (Rush turnaround & urgent flag)</option>
+                  <option value="flexible">Flexible Timeline (+7 days relaxed schedule)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Submission Draft Storage</label>
+                <div style="display:flex; align-items:center; gap:0.5rem; height:42px;">
+                  <span id="draft-storage-indicator" style="font-size:0.84rem; color:var(--text-2);">Checking
+                    cache...</span>
+                  <button type="button" class="cookie-settings-trigger"
+                    style="margin-left:auto; padding:0.35rem 0.75rem;" onclick="window.clearSubmissionDraft()">Clear
+                    Draft</button>
+                </div>
+              </div>
             </div>
-            <label class="toggle" aria-label="Toggle enhanced focus indicators">
-              <input type="checkbox" id="a-focus" onchange="applyEnhancedFocus(this.checked)"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-            <label class="toggle" aria-label="Toggle high contrast borders">
-              <input type="checkbox" id="a-contrast" onchange="applyHighContrast(this.checked)"/>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
+
+            <div class="pref-list" style="margin-top:0.75rem;">
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Auto-save in-progress project briefs</div>
+                  <div class="pref-desc">Preserves your title, service, brief description, and options locally so you
+                    never lose ideas if the tab is closed or reloaded</div>
+                </div>
+                <label class="toggle" aria-label="Toggle auto-save project briefs">
+                  <input type="checkbox" id="sub-autosave" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Auto-attach primary GitHub repository</div>
+                  <div class="pref-desc">For Website & Web App projects, automatically attaches your active GitHub
+                    repository in Step 3</div>
+                </div>
+                <label class="toggle" aria-label="Toggle auto-attach GitHub repo">
+                  <input type="checkbox" id="sub-github-auto" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Remember Terms & Conditions agreement</div>
+                  <div class="pref-desc">Automatically marks terms agreed in step 5 for express project submission</div>
+                </div>
+                <label class="toggle" aria-label="Toggle remember terms">
+                  <input type="checkbox" id="sub-remember-terms" />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Submission success audio chime</div>
+                  <div class="pref-desc">Play a celebratory confirmation sound when a project brief is successfully sent
+                  </div>
+                </div>
+                <label class="toggle" aria-label="Toggle submission success chime">
+                  <input type="checkbox" id="sub-chime" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-  </div><!-- /page-content -->
-</main>
-</div><!-- /app-shell -->
+        <!-- ── NOTIFICATIONS ── -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Notifications</div>
+              <div class="section-subtitle">Control what emails and alerts you receive</div>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="pref-list">
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Project status updates</div>
+                  <div class="pref-desc">When your project moves to In Review, Preview Ready, or Completed</div>
+                </div>
+                <label class="toggle" aria-label="Toggle project status updates">
+                  <input type="checkbox" id="n-status" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Preview ready alerts</div>
+                  <div class="pref-desc">When your watermarked preview is created and waiting for approval</div>
+                </div>
+                <label class="toggle" aria-label="Toggle preview ready alerts">
+                  <input type="checkbox" id="n-preview" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">File delivery confirmation</div>
+                  <div class="pref-desc">When your final, watermark-free files are ready to download</div>
+                </div>
+                <label class="toggle" aria-label="Toggle file delivery confirmation">
+                  <input type="checkbox" id="n-delivery" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
 
-<div class="toast" id="toast"></div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Notification sound chime</div>
+                  <div class="pref-desc">Play a subtle audio tone when new notifications or delivery alerts arrive</div>
+                </div>
+                <label class="toggle" aria-label="Toggle notification sound chime">
+                  <input type="checkbox" id="n-sound" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Promotional emails</div>
+                  <div class="pref-desc">New services, seasonal offers, and studio announcements</div>
+                </div>
+                <label class="toggle" aria-label="Toggle promotional emails">
+                  <input type="checkbox" id="n-promo" />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<!-- ══════════════════════════════════════════
+        <!-- ── PRIVACY ── -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Privacy</div>
+              <div class="section-subtitle">Control your data, cookies, and public visibility</div>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="pref-list">
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Show work in public gallery</div>
+                  <div class="pref-desc">Allow approved project work to appear in CRITERIA's public portfolio</div>
+                </div>
+                <label class="toggle" aria-label="Toggle public gallery display">
+                  <input type="checkbox" id="p-gallery" checked />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Preference cookies <span id="cookie-status-badge"
+                      class="pref-badge pending">Checking...</span></div>
+                  <div class="pref-desc">Store your timezone, date format, and accessibility preferences in browser
+                    cookies across pages. Google sign-in also uses a short-lived security cookie. No advertising or
+                    tracking cookies are used.</div>
+                </div>
+                <button type="button" class="cookie-settings-trigger"
+                  onclick="window.criteriaCookiePreferences.openSettings()">Manage choices</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ACCESSIBILITY ── -->
+        <div class="settings-section">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Accessibility</div>
+              <div class="section-subtitle">Adjust the experience to your needs</div>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="pref-list">
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">Reduce motion</div>
+                  <div class="pref-desc">Disable animations and transitions across the site</div>
+                </div>
+                <label class="toggle" aria-label="Toggle reduce motion">
+                  <input type="checkbox" id="a-motion" onchange="applyReduceMotion(this.checked)" />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="pref-item">
+                <div>
+                  <div class="pref-label">High contrast borders</div>
+                  <div class="pref-desc">Increase border and separator visibility</div>
+                </div>
+
+                <div class="pref-item">
+                  <div>
+                    <div class="pref-label">Enhanced focus indicators</div>
+                    <div class="pref-desc">Display high-visibility gold outlines when navigating via keyboard Tab</div>
+                  </div>
+                  <label class="toggle" aria-label="Toggle enhanced focus indicators">
+                    <input type="checkbox" id="a-focus" onchange="applyEnhancedFocus(this.checked)" />
+                    <div class="toggle-track"></div>
+                    <div class="toggle-thumb"></div>
+                  </label>
+                </div>
+                <label class="toggle" aria-label="Toggle high contrast borders">
+                  <input type="checkbox" id="a-contrast" onchange="applyHighContrast(this.checked)" />
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /page-content -->
+    </main>
+  </div><!-- /app-shell -->
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════════════════════════════════
      FIREBASE + LOGIC
 ══════════════════════════════════════════ -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {
-  getAuth, onAuthStateChanged, signOut
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {
-  getFirestore, doc, getDoc, setDoc
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth, onAuthStateChanged, signOut
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore, doc, getDoc, setDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-const firebaseConfig = {
-  apiKey:            "AIzaSyC5PXHOl3UYhsWImZBKXYXbikYASWVC-7Y",
-  authDomain:        "criteria-18e9d.firebaseapp.com",
-  projectId:         "criteria-18e9d",
-  storageBucket:     "criteria-18e9d.firebasestorage.app",
-  messagingSenderId: "427729441325",
-  appId:             "1:427729441325:web:43a77167bd1f9fc5c65ea4"
-};
-
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-let currentUser = null;
-
-// ── COOKIE STATUS BADGE ──
-function updateCookieBadge() {
-  const badge = document.getElementById('cookie-status-badge');
-  if (!badge) return;
-  const consent = window.criteriaCookiePreferences?.consent();
-  if (consent === 'preferences') {
-    badge.textContent = 'Allowed';
-    badge.className = 'pref-badge allowed';
-  } else if (consent === 'essential') {
-    badge.textContent = 'Essential only';
-    badge.className = 'pref-badge essential';
-  } else {
-    badge.textContent = 'Action needed';
-    badge.className = 'pref-badge pending';
-  }
-}
-
-window.addEventListener('criteria-cookie-consent-change', () => {
-  updateCookieBadge();
-});
-
-// ── POPULATE SETTINGS HELPER ──
-function populateSettings(s) {
-  if (!s || typeof s !== 'object') return;
-
-  const selectMap = {
-    's-timezone': s.timezone || 'Asia/Kolkata',
-    's-dateformat': s.dateformat || 'DD/MM/YYYY',
-    's-timeformat': s.timeformat || '12h',
-    's-currency': s.currency || 'INR',
-    'd-sort': s['d-sort'] || 'newest',
-    'd-autorefresh': s['d-autorefresh'] || 'off',
-    'sub-default-service': s['sub-default-service'] || 'none',
-    'sub-ai-level': s['sub-ai-level'] || '85',
-    'sub-urgency': s['sub-urgency'] || 'standard'
-  };
-
-  Object.keys(selectMap).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = selectMap[id];
-  });
-
-  const toggleDefaults = {
-    'd-compact': false,
-    'd-mask-spent': false,
-    'sub-autosave': true,
-    'sub-github-auto': true,
-    'sub-remember-terms': false,
-    'sub-chime': true,
-    'n-status': true,
-    'n-preview': true,
-    'n-delivery': true,
-    'n-sound': true,
-    'n-promo': false,
-    'p-gallery': true,
-    'a-motion': false,
-    'a-contrast': false,
-    'a-focus': false
-  };
-
-  Object.keys(toggleDefaults).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.checked = s[id] !== undefined ? !!s[id] : toggleDefaults[id];
-    }
-  });
-
-  if (s['a-motion'] !== undefined) applyReduceMotion(!!s['a-motion']);
-  if (s['a-contrast'] !== undefined) applyHighContrast(!!s['a-contrast']);
-  if (s['a-focus'] !== undefined) applyEnhancedFocus(!!s['a-focus']);
-  if (typeof window.updateDraftStatusIndicator === 'function') window.updateDraftStatusIndicator();
-}
-
-
-// ── SUBMISSION DRAFT MANAGEMENT ──
-window.updateDraftStatusIndicator = function() {
-  try {
-    const hasDraft = localStorage.getItem('criteria_saved_submission_draft');
-    const el = document.getElementById('draft-storage-indicator');
-    if (el) {
-      if (hasDraft) {
-        try {
-          const d = JSON.parse(hasDraft);
-          const name = d.name ? ('"' + d.name.slice(0, 18) + (d.name.length > 18 ? '…' : '') + '"') : 'Draft brief';
-          el.textContent = name + ' cached';
-          el.style.color = 'var(--gold)';
-        } catch(e) {
-          el.textContent = 'Active draft cached';
-          el.style.color = 'var(--gold)';
-        }
-      } else {
-        el.textContent = 'No draft cached';
-        el.style.color = 'var(--text-3)';
-      }
-    }
-  } catch(e) {}
-};
-
-window.clearSubmissionDraft = function() {
-  try {
-    localStorage.removeItem('criteria_saved_submission_draft');
-    sessionStorage.removeItem('crit_submit_saved_data');
-    showToast('Submission draft cache cleared.', 'info');
-    window.updateDraftStatusIndicator();
-  } catch(e) {
-    showToast('Could not clear draft cache.', 'error');
-  }
-};
-
-// ── LOAD SETTINGS ──
-async function loadSettings(uid) {
-  let s = null;
-
-  // 1. Try Firestore if uid provided
-  if (uid && db) {
-    try {
-      const snap = await getDoc(doc(db, 'settings', uid));
-      if (snap.exists()) s = snap.data();
-    } catch(e) { /* offline or unauthenticated */ }
-  }
-
-  // 2. Fall back to Cookie/LocalStorage Preferences
-  if (!s) {
-    try {
-      if (window.criteriaCookiePreferences?.getAll) {
-        s = window.criteriaCookiePreferences.getAll();
-      }
-    } catch(e) {}
-  }
-
-  if (!s || Object.keys(s).length === 0) {
-    try {
-      const ls = localStorage.getItem('criteria-settings');
-      if (ls) s = JSON.parse(ls);
-    } catch(e) {}
-  }
-
-  if (s) {
-    populateSettings(s);
-  }
-  if (typeof window.syncAllCustomSelects === "function") window.syncAllCustomSelects();
-}
-
-// ── SAVE SETTINGS ──
-window.saveSettings = async function() {
-  const getVal = id => {
-    const el = document.getElementById(id);
-    return el ? el.value : '';
-  };
-  const getCheck = id => {
-    const el = document.getElementById(id);
-    return el ? el.checked : false;
-  };
-
-  const s = {
-    timezone:      getVal('s-timezone') || 'Asia/Kolkata',
-    dateformat:    getVal('s-dateformat') || 'DD/MM/YYYY',
-    timeformat:    getVal('s-timeformat') || '12h',
-    currency:      getVal('s-currency') || 'INR',
-    'd-sort':        getVal('d-sort') || 'newest',
-    'd-autorefresh': getVal('d-autorefresh') || 'off',
-    'd-compact':     getCheck('d-compact'),
-    'd-mask-spent':  getCheck('d-mask-spent'),
-    'sub-default-service': getVal('sub-default-service') || 'none',
-    'sub-ai-level':        getVal('sub-ai-level') || '85',
-    'sub-urgency':         getVal('sub-urgency') || 'standard',
-    'sub-autosave':        getCheck('sub-autosave'),
-    'sub-github-auto':     getCheck('sub-github-auto'),
-    'sub-remember-terms':  getCheck('sub-remember-terms'),
-    'sub-chime':           getCheck('sub-chime'),
-    'n-status':      getCheck('n-status'),
-    'n-preview':     getCheck('n-preview'),
-    'n-delivery':    getCheck('n-delivery'),
-    'n-sound':       getCheck('n-sound'),
-    'n-promo':       getCheck('n-promo'),
-    'p-gallery':     getCheck('p-gallery'),
-    'a-motion':      getCheck('a-motion'),
-    'a-contrast':    getCheck('a-contrast'),
-    'a-focus':       getCheck('a-focus'),
-    updatedAt: new Date().toISOString()
-  };
-
-  // 1. Persist to LocalStorage
-  try {
-    localStorage.setItem('criteria-settings', JSON.stringify(s));
-  } catch(e) {}
-
-  // 2. Persist to Cookies (via criteriaCookiePreferences)
-  try {
-    if (window.criteriaCookiePreferences?.saveSettings) {
-      window.criteriaCookiePreferences.saveSettings(s);
-    }
-  } catch(e) {}
-
-  // 3. Try Firestore if user is authenticated
-  let savedToCloud = false;
-  try {
-    if (currentUser && currentUser.uid && currentUser.uid !== 'criteria_local_dev') {
-      await setDoc(doc(db, 'settings', currentUser.uid), s);
-      savedToCloud = true;
-    }
-  } catch(e) {
-    /* local / offline */
-  }
-
-  showToast(savedToCloud ? 'Settings saved to your account!' : 'Settings saved locally & in preferences.', 'success');
-  updateCookieBadge();
-};
-
-// ── ACCESSIBILITY ──
-window.applyReduceMotion = function(val) {
-  document.documentElement.style.setProperty(
-    '--transition', val ? '0s' : '0.3s cubic-bezier(0.25,0.46,0.45,0.94)'
-  );
-  if (val) {
-    document.documentElement.setAttribute('data-reduce-motion', 'true');
-  } else {
-    document.documentElement.removeAttribute('data-reduce-motion');
-  }
-};
-
-
-window.applyEnhancedFocus = function(val) {
-  if (val) {
-    document.documentElement.setAttribute('data-enhanced-focus', 'true');
-  } else {
-    document.documentElement.removeAttribute('data-enhanced-focus');
-  }
-};
-
-window.applyHighContrast = function(val) {
-  document.documentElement.style.setProperty(
-    '--border', val ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.07)'
-  );
-  document.documentElement.style.setProperty(
-    '--border-hover', val ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.13)'
-  );
-  if (val) {
-    document.documentElement.setAttribute('data-high-contrast', 'true');
-  } else {
-    document.documentElement.removeAttribute('data-high-contrast');
-  }
-};
-
-// ── SIGN OUT ──
-window.signOutUser = async function() {
-  await signOut(auth);
-  window.location.href = '/';
-};
-
-// ── TOAST ──
-window.showToast = function(msg, type = '') {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.className   = `toast show ${type}`.trim();
-  setTimeout(() => { t.className = 'toast'; }, 3800);
-};
-
-
-// ── CUSTOM LUXURY DROPDOWN CONTROLLER ──
-function initCustomDropdowns() {
-  const selects = document.querySelectorAll('select.form-select');
-  selects.forEach(select => {
-    if (select.dataset.customized === 'true') return;
-
-    // Check if already wrapped
-    let wrapper = select.closest('.custom-select-wrapper');
-    if (!wrapper) {
-      wrapper = document.createElement('div');
-      wrapper.className = 'custom-select-wrapper';
-      select.parentNode.insertBefore(wrapper, select);
-      wrapper.appendChild(select);
-    }
-    select.dataset.customized = 'true';
-
-    const parseOpt = (text) => {
-      const m = text.match(/^(.*?)\s*\((.*?)\)$/);
-      if (m) {
-        return { label: m[1].trim(), badge: m[2].trim() };
-      }
-      return { label: text.trim(), badge: '' };
+    const firebaseConfig = {
+      apiKey: "AIzaSyC5PXHOl3UYhsWImZBKXYXbikYASWVC-7Y",
+      authDomain: "criteria-18e9d.firebaseapp.com",
+      projectId: "criteria-18e9d",
+      storageBucket: "criteria-18e9d.firebasestorage.app",
+      messagingSenderId: "427729441325",
+      appId: "1:427729441325:web:43a77167bd1f9fc5c65ea4"
     };
 
-    // Trigger
-    const trigger = document.createElement('div');
-    trigger.className = 'custom-select-trigger';
-    trigger.tabIndex = 0;
-    trigger.setAttribute('role', 'combobox');
-    trigger.setAttribute('aria-expanded', 'false');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let currentUser = null;
 
-    const triggerContent = document.createElement('div');
-    triggerContent.className = 'custom-select-trigger-content';
+    // ── COOKIE STATUS BADGE ──
+    function updateCookieBadge() {
+      const badge = document.getElementById('cookie-status-badge');
+      if (!badge) return;
+      const consent = window.criteriaCookiePreferences?.consent();
+      if (consent === 'preferences') {
+        badge.textContent = 'Allowed';
+        badge.className = 'pref-badge allowed';
+      } else if (consent === 'essential') {
+        badge.textContent = 'Essential only';
+        badge.className = 'pref-badge essential';
+      } else {
+        badge.textContent = 'Action needed';
+        badge.className = 'pref-badge pending';
+      }
+    }
 
-    const valSpan = document.createElement('span');
-    valSpan.className = 'custom-select-val';
+    window.addEventListener('criteria-cookie-consent-change', () => {
+      updateCookieBadge();
+    });
 
-    const badgeSpan = document.createElement('span');
-    badgeSpan.className = 'custom-select-badge';
-    badgeSpan.style.display = 'none';
+    // ── POPULATE SETTINGS HELPER ──
+    function populateSettings(s) {
+      if (!s || typeof s !== 'object') return;
 
-    triggerContent.appendChild(valSpan);
-    triggerContent.appendChild(badgeSpan);
+      const selectMap = {
+        's-timezone': s.timezone || 'Asia/Kolkata',
+        's-dateformat': s.dateformat || 'DD/MM/YYYY',
+        's-timeformat': s.timeformat || '12h',
+        's-currency': s.currency || 'INR',
+        'd-sort': s['d-sort'] || 'newest',
+        'd-autorefresh': s['d-autorefresh'] || 'off',
+        'sub-default-service': s['sub-default-service'] || 'none',
+        'sub-ai-level': s['sub-ai-level'] || '85',
+        'sub-urgency': s['sub-urgency'] || 'standard'
+      };
 
-    const chevron = document.createElement('span');
-    chevron.className = 'custom-select-chevron';
-    chevron.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`;
+      Object.keys(selectMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = selectMap[id];
+      });
 
-    trigger.appendChild(triggerContent);
-    trigger.appendChild(chevron);
-    wrapper.appendChild(trigger);
+      const toggleDefaults = {
+        'd-compact': false,
+        'd-mask-spent': false,
+        'sub-autosave': true,
+        'sub-github-auto': true,
+        'sub-remember-terms': false,
+        'sub-chime': true,
+        'n-status': true,
+        'n-preview': true,
+        'n-delivery': true,
+        'n-sound': true,
+        'n-promo': false,
+        'p-gallery': true,
+        'a-motion': false,
+        'a-contrast': false,
+        'a-focus': false
+      };
 
-    // Menu
-    const menu = document.createElement('div');
-    menu.className = 'custom-select-menu';
-    menu.setAttribute('role', 'listbox');
+      Object.keys(toggleDefaults).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.checked = s[id] !== undefined ? !!s[id] : toggleDefaults[id];
+        }
+      });
 
-    function updateMenuOptions() {
-      menu.innerHTML = '';
-      Array.from(select.options).forEach((opt) => {
-        const parsed = parseOpt(opt.text);
-        const optEl = document.createElement('div');
-        optEl.className = 'custom-select-option' + (opt.value === select.value ? ' selected' : '');
-        optEl.dataset.value = opt.value;
-        optEl.setAttribute('role', 'option');
-        optEl.setAttribute('aria-selected', opt.value === select.value ? 'true' : 'false');
+      if (s['a-motion'] !== undefined) applyReduceMotion(!!s['a-motion']);
+      if (s['a-contrast'] !== undefined) applyHighContrast(!!s['a-contrast']);
+      if (s['a-focus'] !== undefined) applyEnhancedFocus(!!s['a-focus']);
+      if (typeof window.updateDraftStatusIndicator === 'function') window.updateDraftStatusIndicator();
+    }
 
-        const optMain = document.createElement('div');
-        optMain.className = 'custom-select-option-main';
 
-        const optText = document.createElement('span');
-        optText.className = 'custom-select-option-text';
-        optText.textContent = parsed.label;
-        optMain.appendChild(optText);
+    // ── SUBMISSION DRAFT MANAGEMENT ──
+    window.updateDraftStatusIndicator = function () {
+      try {
+        const hasDraft = localStorage.getItem('criteria_saved_submission_draft');
+        const el = document.getElementById('draft-storage-indicator');
+        if (el) {
+          if (hasDraft) {
+            try {
+              const d = JSON.parse(hasDraft);
+              const name = d.name ? ('"' + d.name.slice(0, 18) + (d.name.length > 18 ? '…' : '') + '"') : 'Draft brief';
+              el.textContent = name + ' cached';
+              el.style.color = 'var(--gold)';
+            } catch (e) {
+              el.textContent = 'Active draft cached';
+              el.style.color = 'var(--gold)';
+            }
+          } else {
+            el.textContent = 'No draft cached';
+            el.style.color = 'var(--text-3)';
+          }
+        }
+      } catch (e) { }
+    };
 
-        if (parsed.badge) {
-          const optBadge = document.createElement('span');
-          optBadge.className = 'custom-select-option-badge';
-          optBadge.textContent = parsed.badge;
-          optMain.appendChild(optBadge);
+    window.clearSubmissionDraft = function () {
+      try {
+        localStorage.removeItem('criteria_saved_submission_draft');
+        sessionStorage.removeItem('crit_submit_saved_data');
+        showToast('Submission draft cache cleared.', 'info');
+        window.updateDraftStatusIndicator();
+      } catch (e) {
+        showToast('Could not clear draft cache.', 'error');
+      }
+    };
+
+    // ── LOAD SETTINGS ──
+    async function loadSettings(uid) {
+      let s = null;
+
+      // 1. Try Firestore if uid provided
+      if (uid && db) {
+        try {
+          const snap = await getDoc(doc(db, 'settings', uid));
+          if (snap.exists()) s = snap.data();
+        } catch (e) { /* offline or unauthenticated */ }
+      }
+
+      // 2. Fall back to Cookie/LocalStorage Preferences
+      if (!s) {
+        try {
+          if (window.criteriaCookiePreferences?.getAll) {
+            s = window.criteriaCookiePreferences.getAll();
+          }
+        } catch (e) { }
+      }
+
+      if (!s || Object.keys(s).length === 0) {
+        try {
+          const ls = localStorage.getItem('criteria-settings');
+          if (ls) s = JSON.parse(ls);
+        } catch (e) { }
+      }
+
+      if (s) {
+        populateSettings(s);
+      }
+      if (typeof window.syncAllCustomSelects === "function") window.syncAllCustomSelects();
+    }
+
+    // ── SAVE SETTINGS ──
+    window.saveSettings = async function () {
+      const getVal = id => {
+        const el = document.getElementById(id);
+        return el ? el.value : '';
+      };
+      const getCheck = id => {
+        const el = document.getElementById(id);
+        return el ? el.checked : false;
+      };
+
+      const s = {
+        timezone: getVal('s-timezone') || 'Asia/Kolkata',
+        dateformat: getVal('s-dateformat') || 'DD/MM/YYYY',
+        timeformat: getVal('s-timeformat') || '12h',
+        currency: getVal('s-currency') || 'INR',
+        'd-sort': getVal('d-sort') || 'newest',
+        'd-autorefresh': getVal('d-autorefresh') || 'off',
+        'd-compact': getCheck('d-compact'),
+        'd-mask-spent': getCheck('d-mask-spent'),
+        'sub-default-service': getVal('sub-default-service') || 'none',
+        'sub-ai-level': getVal('sub-ai-level') || '85',
+        'sub-urgency': getVal('sub-urgency') || 'standard',
+        'sub-autosave': getCheck('sub-autosave'),
+        'sub-github-auto': getCheck('sub-github-auto'),
+        'sub-remember-terms': getCheck('sub-remember-terms'),
+        'sub-chime': getCheck('sub-chime'),
+        'n-status': getCheck('n-status'),
+        'n-preview': getCheck('n-preview'),
+        'n-delivery': getCheck('n-delivery'),
+        'n-sound': getCheck('n-sound'),
+        'n-promo': getCheck('n-promo'),
+        'p-gallery': getCheck('p-gallery'),
+        'a-motion': getCheck('a-motion'),
+        'a-contrast': getCheck('a-contrast'),
+        'a-focus': getCheck('a-focus'),
+        updatedAt: new Date().toISOString()
+      };
+
+      // 1. Persist to LocalStorage
+      try {
+        localStorage.setItem('criteria-settings', JSON.stringify(s));
+      } catch (e) { }
+
+      // 2. Persist to Cookies (via criteriaCookiePreferences)
+      try {
+        if (window.criteriaCookiePreferences?.saveSettings) {
+          window.criteriaCookiePreferences.saveSettings(s);
+        }
+      } catch (e) { }
+
+      // 3. Try Firestore if user is authenticated
+      let savedToCloud = false;
+      try {
+        if (currentUser && currentUser.uid && currentUser.uid !== 'criteria_local_dev') {
+          await setDoc(doc(db, 'settings', currentUser.uid), s);
+          savedToCloud = true;
+        }
+      } catch (e) {
+        /* local / offline */
+      }
+
+      showToast(savedToCloud ? 'Settings saved to your account!' : 'Settings saved locally & in preferences.', 'success');
+      updateCookieBadge();
+    };
+
+    // ── ACCESSIBILITY ──
+    window.applyReduceMotion = function (val) {
+      document.documentElement.style.setProperty(
+        '--transition', val ? '0s' : '0.3s cubic-bezier(0.25,0.46,0.45,0.94)'
+      );
+      if (val) {
+        document.documentElement.setAttribute('data-reduce-motion', 'true');
+      } else {
+        document.documentElement.removeAttribute('data-reduce-motion');
+      }
+    };
+
+
+    window.applyEnhancedFocus = function (val) {
+      if (val) {
+        document.documentElement.setAttribute('data-enhanced-focus', 'true');
+      } else {
+        document.documentElement.removeAttribute('data-enhanced-focus');
+      }
+    };
+
+    window.applyHighContrast = function (val) {
+      document.documentElement.style.setProperty(
+        '--border', val ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.07)'
+      );
+      document.documentElement.style.setProperty(
+        '--border-hover', val ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.13)'
+      );
+      if (val) {
+        document.documentElement.setAttribute('data-high-contrast', 'true');
+      } else {
+        document.documentElement.removeAttribute('data-high-contrast');
+      }
+    };
+
+    // ── SIGN OUT ──
+    window.signOutUser = async function () {
+      await signOut(auth);
+      window.location.href = '/';
+    };
+
+    // ── TOAST ──
+    window.showToast = function (msg, type = '') {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.className = `toast show ${type}`.trim();
+      setTimeout(() => { t.className = 'toast'; }, 3800);
+    };
+
+
+    // ── CUSTOM LUXURY DROPDOWN CONTROLLER ──
+    function initCustomDropdowns() {
+      const selects = document.querySelectorAll('select.form-select');
+      selects.forEach(select => {
+        if (select.dataset.customized === 'true') return;
+
+        // Check if already wrapped
+        let wrapper = select.closest('.custom-select-wrapper');
+        if (!wrapper) {
+          wrapper = document.createElement('div');
+          wrapper.className = 'custom-select-wrapper';
+          select.parentNode.insertBefore(wrapper, select);
+          wrapper.appendChild(select);
+        }
+        select.dataset.customized = 'true';
+
+        const parseOpt = (text) => {
+          const m = text.match(/^(.*?)\s*\((.*?)\)$/);
+          if (m) {
+            return { label: m[1].trim(), badge: m[2].trim() };
+          }
+          return { label: text.trim(), badge: '' };
+        };
+
+        // Trigger
+        const trigger = document.createElement('div');
+        trigger.className = 'custom-select-trigger';
+        trigger.tabIndex = 0;
+        trigger.setAttribute('role', 'combobox');
+        trigger.setAttribute('aria-expanded', 'false');
+
+        const triggerContent = document.createElement('div');
+        triggerContent.className = 'custom-select-trigger-content';
+
+        const valSpan = document.createElement('span');
+        valSpan.className = 'custom-select-val';
+
+        const badgeSpan = document.createElement('span');
+        badgeSpan.className = 'custom-select-badge';
+        badgeSpan.style.display = 'none';
+
+        triggerContent.appendChild(valSpan);
+        triggerContent.appendChild(badgeSpan);
+
+        const chevron = document.createElement('span');
+        chevron.className = 'custom-select-chevron';
+        chevron.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+        trigger.appendChild(triggerContent);
+        trigger.appendChild(chevron);
+        wrapper.appendChild(trigger);
+
+        // Menu
+        const menu = document.createElement('div');
+        menu.className = 'custom-select-menu';
+        menu.setAttribute('role', 'listbox');
+
+        function updateMenuOptions() {
+          menu.innerHTML = '';
+          Array.from(select.options).forEach((opt) => {
+            const parsed = parseOpt(opt.text);
+            const optEl = document.createElement('div');
+            optEl.className = 'custom-select-option' + (opt.value === select.value ? ' selected' : '');
+            optEl.dataset.value = opt.value;
+            optEl.setAttribute('role', 'option');
+            optEl.setAttribute('aria-selected', opt.value === select.value ? 'true' : 'false');
+
+            const optMain = document.createElement('div');
+            optMain.className = 'custom-select-option-main';
+
+            const optText = document.createElement('span');
+            optText.className = 'custom-select-option-text';
+            optText.textContent = parsed.label;
+            optMain.appendChild(optText);
+
+            if (parsed.badge) {
+              const optBadge = document.createElement('span');
+              optBadge.className = 'custom-select-option-badge';
+              optBadge.textContent = parsed.badge;
+              optMain.appendChild(optBadge);
+            }
+
+            const checkSpan = document.createElement('span');
+            checkSpan.className = 'custom-select-check';
+            checkSpan.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+            optEl.appendChild(optMain);
+            optEl.appendChild(checkSpan);
+
+            optEl.addEventListener('click', (e) => {
+              e.stopPropagation();
+              select.value = opt.value;
+              select.dispatchEvent(new Event('change', { bubbles: true }));
+              syncSelection();
+              closeMenu();
+              trigger.focus();
+            });
+
+            menu.appendChild(optEl);
+          });
         }
 
-        const checkSpan = document.createElement('span');
-        checkSpan.className = 'custom-select-check';
-        checkSpan.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+        function syncSelection() {
+          const curOpt = select.options[select.selectedIndex];
+          if (!curOpt) return;
+          const parsed = parseOpt(curOpt.text);
+          valSpan.textContent = parsed.label;
+          if (parsed.badge) {
+            badgeSpan.textContent = parsed.badge;
+            badgeSpan.style.display = 'inline-block';
+          } else {
+            badgeSpan.style.display = 'none';
+          }
 
-        optEl.appendChild(optMain);
-        optEl.appendChild(checkSpan);
+          menu.querySelectorAll('.custom-select-option').forEach(el => {
+            const isSel = el.dataset.value === select.value;
+            el.classList.toggle('selected', isSel);
+            el.setAttribute('aria-selected', isSel ? 'true' : 'false');
+          });
+        }
 
-        optEl.addEventListener('click', (e) => {
+        function openMenu() {
+          document.querySelectorAll('.custom-select-wrapper.open').forEach(w => {
+            if (w !== wrapper) {
+              w.classList.remove('open', 'drop-up');
+              const sec = w.closest('.settings-section');
+              if (sec) sec.classList.remove('has-open-dropdown');
+            }
+          });
+
+          const parentSection = wrapper.closest('.settings-section');
+          if (parentSection) parentSection.classList.add('has-open-dropdown');
+
+          // Smart flip: if bottom of viewport is tight, open upwards
+          const rect = trigger.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - rect.bottom;
+          if (spaceBelow < 250 && rect.top > 250) {
+            wrapper.classList.add('drop-up');
+          } else {
+            wrapper.classList.remove('drop-up');
+          }
+
+          wrapper.classList.add('open');
+          trigger.setAttribute('aria-expanded', 'true');
+          const selected = menu.querySelector('.custom-select-option.selected');
+          if (selected) {
+            selected.scrollIntoView({ block: 'nearest' });
+          }
+        }
+
+        function closeMenu() {
+          wrapper.classList.remove('open', 'drop-up');
+          trigger.setAttribute('aria-expanded', 'false');
+          const parentSection = wrapper.closest('.settings-section');
+          if (parentSection) parentSection.classList.remove('has-open-dropdown');
+        }
+
+        trigger.addEventListener('click', (e) => {
           e.stopPropagation();
-          select.value = opt.value;
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-          syncSelection();
-          closeMenu();
-          trigger.focus();
+          if (wrapper.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
         });
 
-        menu.appendChild(optEl);
+        trigger.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!wrapper.classList.contains('open')) {
+              openMenu();
+            }
+          } else if (e.key === 'Escape') {
+            closeMenu();
+          }
+        });
+
+        select.addEventListener('change', () => {
+          syncSelection();
+        });
+
+        updateMenuOptions();
+        syncSelection();
+        wrapper.appendChild(menu);
       });
     }
 
-    function syncSelection() {
-      const curOpt = select.options[select.selectedIndex];
-      if (!curOpt) return;
-      const parsed = parseOpt(curOpt.text);
-      valSpan.textContent = parsed.label;
-      if (parsed.badge) {
-        badgeSpan.textContent = parsed.badge;
-        badgeSpan.style.display = 'inline-block';
-      } else {
-        badgeSpan.style.display = 'none';
-      }
-
-      menu.querySelectorAll('.custom-select-option').forEach(el => {
-        const isSel = el.dataset.value === select.value;
-        el.classList.toggle('selected', isSel);
-        el.setAttribute('aria-selected', isSel ? 'true' : 'false');
-      });
-    }
-
-    function openMenu() {
+    document.addEventListener('click', () => {
       document.querySelectorAll('.custom-select-wrapper.open').forEach(w => {
-        if (w !== wrapper) {
-          w.classList.remove('open', 'drop-up');
-          const sec = w.closest('.settings-section');
-          if (sec) sec.classList.remove('has-open-dropdown');
-        }
+        w.classList.remove('open', 'drop-up');
+        const tr = w.querySelector('.custom-select-trigger');
+        if (tr) tr.setAttribute('aria-expanded', 'false');
+        const sec = w.closest('.settings-section');
+        if (sec) sec.classList.remove('has-open-dropdown');
       });
-
-      const parentSection = wrapper.closest('.settings-section');
-      if (parentSection) parentSection.classList.add('has-open-dropdown');
-
-      // Smart flip: if bottom of viewport is tight, open upwards
-      const rect = trigger.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      if (spaceBelow < 250 && rect.top > 250) {
-        wrapper.classList.add('drop-up');
-      } else {
-        wrapper.classList.remove('drop-up');
-      }
-
-      wrapper.classList.add('open');
-      trigger.setAttribute('aria-expanded', 'true');
-      const selected = menu.querySelector('.custom-select-option.selected');
-      if (selected) {
-        selected.scrollIntoView({ block: 'nearest' });
-      }
-    }
-
-    function closeMenu() {
-      wrapper.classList.remove('open', 'drop-up');
-      trigger.setAttribute('aria-expanded', 'false');
-      const parentSection = wrapper.closest('.settings-section');
-      if (parentSection) parentSection.classList.remove('has-open-dropdown');
-    }
-
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (wrapper.classList.contains('open')) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
     });
 
-    trigger.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (!wrapper.classList.contains('open')) {
-          openMenu();
-        }
-      } else if (e.key === 'Escape') {
-        closeMenu();
-      }
-    });
-
-    select.addEventListener('change', () => {
-      syncSelection();
-    });
-
-    updateMenuOptions();
-    syncSelection();
-    wrapper.appendChild(menu);
-  });
-}
-
-document.addEventListener('click', () => {
-  document.querySelectorAll('.custom-select-wrapper.open').forEach(w => {
-    w.classList.remove('open', 'drop-up');
-    const tr = w.querySelector('.custom-select-trigger');
-    if (tr) tr.setAttribute('aria-expanded', 'false');
-    const sec = w.closest('.settings-section');
-    if (sec) sec.classList.remove('has-open-dropdown');
-  });
-});
-
-window.syncAllCustomSelects = function() {
-  document.querySelectorAll('select.form-select').forEach(sel => {
-    sel.dispatchEvent(new Event('change', { bubbles: true }));
-  });
-};
-
-
-// Initialize Custom Dropdowns
-initCustomDropdowns();
-
-// ── IMMEDIATE PRE-FILL & STATUS BADGE ──
-loadSettings();
-updateCookieBadge();
-
-// ── AUTH GUARD ──
-onAuthStateChanged(auth, async user => {
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  if (!user) {
-    if (!isLocal) {
-      window.location.href = '/';
-      return;
-    }
-    user = {
-      displayName: 'Criteria Developer',
-      email: 'dev@criteria.agency',
-      uid: 'criteria_local_dev',
-      photoURL: '',
-      emailVerified: true
+    window.syncAllCustomSelects = function () {
+      document.querySelectorAll('select.form-select').forEach(sel => {
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      });
     };
-  }
-  currentUser = user;
 
-  const name  = user.displayName || 'User';
-  const init  = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const sbName = document.getElementById('sb-name');
-  const sbEmail = document.getElementById('sb-email');
-  const sbAvatar = document.getElementById('sb-avatar');
-  if (sbName) sbName.textContent = name;
-  if (sbEmail) sbEmail.textContent = user.email || '';
-  if (sbAvatar) {
-    if (user.photoURL) {
-      sbAvatar.innerHTML = `<img src="${user.photoURL}" alt="avatar" loading="lazy">`;
-    } else {
-      sbAvatar.innerHTML = `<span id="sb-initials">${init}</span>`;
-    }
-  }
 
-  await loadSettings(user.uid);
-  updateCookieBadge();
-});
-</script>
-<script src="ai-chat.js?v=2.9.3"></script>
+    // Initialize Custom Dropdowns
+    initCustomDropdowns();
+
+    // ── IMMEDIATE PRE-FILL & STATUS BADGE ──
+    loadSettings();
+    updateCookieBadge();
+
+    // ── AUTH GUARD ──
+    onAuthStateChanged(auth, async user => {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (!user) {
+        if (!isLocal) {
+          window.location.href = '/';
+          return;
+        }
+        user = {
+          displayName: 'Criteria Developer',
+          email: 'dev@criteria.agency',
+          uid: 'criteria_local_dev',
+          photoURL: '',
+          emailVerified: true
+        };
+      }
+      currentUser = user;
+
+      const name = user.displayName || 'User';
+      const init = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      const sbName = document.getElementById('sb-name');
+      const sbEmail = document.getElementById('sb-email');
+      const sbAvatar = document.getElementById('sb-avatar');
+      if (sbName) sbName.textContent = name;
+      if (sbEmail) sbEmail.textContent = user.email || '';
+      if (sbAvatar) {
+        if (user.photoURL) {
+          sbAvatar.innerHTML = `<img src="${user.photoURL}" alt="avatar" loading="lazy">`;
+        } else {
+          sbAvatar.innerHTML = `<span id="sb-initials">${init}</span>`;
+        }
+      }
+
+      await loadSettings(user.uid);
+      updateCookieBadge();
+    });
+  </script>
+  <script src="ai-chat.js?v=2.9.3"></script>
 </body>
+
 </html>
