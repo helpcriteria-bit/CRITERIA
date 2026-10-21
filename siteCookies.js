@@ -288,13 +288,19 @@
 
   let banner = null;
 
-  function makeButton(label, className, onClick) {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = className;
-    button.textContent = label;
-    button.addEventListener('click', onClick);
-    return button;
+  function dismissBanner(allowPreferences) {
+    if (!banner) {
+      setConsent(allowPreferences);
+      return;
+    }
+    banner.classList.add('site-cookie-leaving');
+    setTimeout(() => {
+      setConsent(allowPreferences);
+      if (banner) {
+        banner.hidden = true;
+        banner.classList.remove('site-cookie-leaving');
+      }
+    }, 240);
   }
 
   function renderBanner(show) {
@@ -313,31 +319,99 @@
       banner.setAttribute('aria-labelledby', 'site-cookie-title');
       banner.setAttribute('aria-describedby', 'site-cookie-description');
 
+      // Top glowing edge
+      const edge = document.createElement('div');
+      edge.className = 'site-cookie-glow-edge';
+
+      // Inner container
+      const inner = document.createElement('div');
+      inner.className = 'site-cookie-inner';
+
+      // Icon wrap
+      const iconWrap = document.createElement('div');
+      iconWrap.className = 'site-cookie-icon-wrap';
+      iconWrap.setAttribute('aria-hidden', 'true');
+      iconWrap.innerHTML = '<svg class="site-cookie-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path><path d="M8.5 8.5v.01"></path><path d="M7 13.5v.01"></path><path d="M12 11.5v.01"></path><path d="M11.5 16.5v.01"></path><path d="M16 15v.01"></path></svg>';
+
+      // Copy Area
       const copy = document.createElement('div');
       copy.className = 'site-cookie-copy';
 
+      const headerRow = document.createElement('div');
+      headerRow.className = 'site-cookie-header-row';
+
+      const titleGroup = document.createElement('div');
+      titleGroup.className = 'site-cookie-title-group';
+
+      const tag = document.createElement('span');
+      tag.className = 'site-cookie-tag';
+      tag.innerHTML = '<span class="site-cookie-tag-dot"></span>CRITERIA PRIVACY';
+
       const title = document.createElement('h2');
       title.id = 'site-cookie-title';
-      title.textContent = 'Cookie Preferences';
+      title.textContent = 'Cookie & Privacy Preferences';
+
+      titleGroup.append(tag, title);
+
+      // Close / dismiss button
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'site-cookie-close-btn';
+      closeBtn.id = 'site-cookie-dismiss';
+      closeBtn.setAttribute('aria-label', 'Close cookie notice');
+      closeBtn.title = 'Dismiss (Keep essential only)';
+      closeBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      closeBtn.addEventListener('click', function() {
+        dismissBanner(false);
+      });
+
+      headerRow.append(titleGroup, closeBtn);
 
       const description = document.createElement('p');
       description.id = 'site-cookie-description';
-      description.textContent = 'We use essential cookies for secure login and authentication, and optional preference cookies to remember your time zone, date format, and dashboard preferences across pages. No advertising or tracking cookies are used.';
+      description.innerHTML = 'We use essential cookies for secure login, and optional preference cookies to remember your workspace settings (timezone, currency, display density). <strong>No ad tracking or third-party data collection.</strong>';
 
-      copy.append(title, description);
+      // Feature chips
+      const chips = document.createElement('div');
+      chips.className = 'site-cookie-chips';
+      chips.innerHTML = '<span class="site-cookie-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Secure Login</span><span class="site-cookie-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> UI Preferences</span><span class="site-cookie-chip shield"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Zero Trackers</span>';
 
+      copy.append(headerRow, description, chips);
+
+      // Actions
       const actions = document.createElement('div');
       actions.className = 'site-cookie-actions';
-      actions.append(
-        makeButton('Essential Only', 'site-cookie-button site-cookie-secondary', function() { setConsent(false); }),
-        makeButton('Allow Preferences', 'site-cookie-button site-cookie-primary', function() { setConsent(true); })
-      );
-      banner.append(copy, actions);
+
+      const secBtn = document.createElement('button');
+      secBtn.type = 'button';
+      secBtn.className = 'site-cookie-button site-cookie-secondary';
+      secBtn.textContent = 'Essential Only';
+      secBtn.addEventListener('click', function() {
+        dismissBanner(false);
+      });
+
+      const primBtn = document.createElement('button');
+      primBtn.type = 'button';
+      primBtn.className = 'site-cookie-button site-cookie-primary';
+      primBtn.innerHTML = '<span>Allow Preferences</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+      primBtn.addEventListener('click', function() {
+        dismissBanner(true);
+      });
+
+      actions.append(secBtn, primBtn);
+
+      inner.append(iconWrap, copy, actions);
+      banner.append(edge, inner);
     }
 
-    banner.hidden = !show;
-    if (show && !banner.isConnected) {
-      document.body.appendChild(banner);
+    if (show) {
+      banner.hidden = false;
+      banner.classList.remove('site-cookie-leaving');
+      if (!banner.isConnected) {
+        document.body.appendChild(banner);
+      }
+    } else {
+      banner.hidden = true;
     }
   }
 
