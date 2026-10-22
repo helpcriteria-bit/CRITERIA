@@ -1664,6 +1664,93 @@ const triggerEyeDropper = (targetVariable) => {
 // ---------------------------
 // 9. WEBSITE SIMULATOR SYSTEM
 // ---------------------------
+let critspaceWakeLock = null;
+let critspaceFsPending = false;
+
+function onCritspaceKeyGuard(e) {
+  if (!state.isLivePreview) return;
+
+  // 1. Volume buttons pressed -> Stop Preview immediately
+  if (
+    e.key === 'AudioVolumeUp' || e.key === 'AudioVolumeDown' || e.key === 'AudioVolumeMute' ||
+    e.key === 'VolumeUp' || e.key === 'VolumeDown' || e.key === 'VolumeMute' ||
+    e.keyCode === 174 || e.keyCode === 175 || e.keyCode === 173
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWebsiteLivePreview(false);
+    return false;
+  }
+
+  // 2. Power switch / Standby
+  if (e.key === 'Power' || e.key === 'Standby' || e.key === 'Sleep') {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWebsiteLivePreview(false);
+    return false;
+  }
+
+  // 3. Function keys F1-F12
+  if (/^F[1-9]$|^F1[0-2]$/i.test(e.key)) {
+    e.preventDefault();
+    return false;
+  }
+
+  // 4. PrintScreen
+  if (e.key === 'PrintScreen' || e.keyCode === 44) {
+    e.preventDefault();
+    return false;
+  }
+
+  // 5. All Ctrl / Meta / Alt shortcuts disabled
+  if (e.ctrlKey || e.metaKey || e.altKey) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+
+  // 6. Escape key stops preview
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    toggleWebsiteLivePreview(false);
+    return false;
+  }
+}
+
+function onCritspaceBlur() {
+  if (critspaceFsPending) return;
+  if (state.isLivePreview) {
+    toggleWebsiteLivePreview(false);
+  }
+}
+
+function onCritspaceVisibility() {
+  if (state.isLivePreview && (document.hidden || document.visibilityState === 'hidden')) {
+    toggleWebsiteLivePreview(false);
+  }
+}
+
+function onCritspaceFsChange() {
+  critspaceFsPending = false;
+  if (state.isLivePreview && !document.fullscreenElement && !document.webkitFullscreenElement) {
+    toggleWebsiteLivePreview(false);
+  }
+}
+
+function enforceCritspaceVolume() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  const medias = document.querySelectorAll('video, audio');
+  medias.forEach(m => {
+    try {
+      m.volume = 0.65; // Set volume to 65%
+      m.muted = false;
+      m.disablePictureInPicture = true;
+      m.setAttribute('disablePictureInPicture', '');
+      m.setAttribute('disableRemotePlayback', '');
+    } catch (e) { }
+  });
+}
+
 const toggleWebsiteLivePreview = (start) => {
   const layout = document.getElementById('app-layout');
   const exitBtn = document.getElementById('btn-exit-preview');
@@ -1682,6 +1769,35 @@ const toggleWebsiteLivePreview = (start) => {
     
     document.body.classList.add('website-preview-mode');
     exitBtn.style.display = 'block';
+
+    // 1. Enter Fullscreen
+    critspaceFsPending = true;
+    const reqFs = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+    if (reqFs && !document.fullscreenElement) {
+      reqFs.call(document.documentElement).catch(() => {}).finally(() => {
+        setTimeout(() => { critspaceFsPending = false; }, 350);
+      });
+    } else {
+      critspaceFsPending = false;
+    }
+
+    // 2. Request Wake Lock (prevent screensaver / sleep overlays)
+    if ('wakeLock' in navigator) {
+      navigator.wakeLock.request('screen').then(wl => { critspaceWakeLock = wl; }).catch(() => {});
+    }
+
+    // 3. Set volume to 65% on mobile
+    enforceCritspaceVolume();
+
+    // 4. Attach guards: shortcuts disabled, volume/power buttons stop preview, blur stops preview
+    window.addEventListener('keydown', onCritspaceKeyGuard, true);
+    window.addEventListener('blur', onCritspaceBlur);
+    document.addEventListener('visibilitychange', onCritspaceVisibility);
+    window.addEventListener('pagehide', onCritspaceBlur);
+    document.addEventListener('fullscreenchange', onCritspaceFsChange);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onCritspaceBlur);
+    }
     
     // Recenter canvas fullscreen
     resizeCanvasToFit();
@@ -1697,6 +1813,27 @@ const toggleWebsiteLivePreview = (start) => {
     
     document.body.classList.remove('website-preview-mode');
     exitBtn.style.display = 'none';
+
+    // Exit fullscreen
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      (document.exitFullscreen || document.webkitExitFullscreen)?.call(document).catch(() => {});
+    }
+
+    // Release wake lock
+    if (critspaceWakeLock) {
+      try { critspaceWakeLock.release(); } catch (e) {}
+      critspaceWakeLock = null;
+    }
+
+    // Detach guards
+    window.removeEventListener('keydown', onCritspaceKeyGuard, true);
+    window.removeEventListener('blur', onCritspaceBlur);
+    document.removeEventListener('visibilitychange', onCritspaceVisibility);
+    window.removeEventListener('pagehide', onCritspaceBlur);
+    document.removeEventListener('fullscreenchange', onCritspaceFsChange);
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', onCritspaceBlur);
+    }
     
     resizeCanvasToFit();
   }

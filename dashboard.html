@@ -3712,10 +3712,12 @@
     }
 
     // ── BEST-EFFORT PREVIEW CAPTURE RESPONSE ──
-    // Responds to browser-visible shortcuts, focus loss, hidden tabs, and fullscreen exit.
+    // — FULLSCREEN & ANTI-CAPTURE SECURE PREVIEW SYSTEM —
+    // Enforces fullscreen, disables all shortcuts, sets mobile volume to 65%, stops on volume/power switch, and blocks external apps
     let blackoutTimeout = null;
     let fullscreenRequestPending = false;
     let previewFocusMonitor = null;
+    let previewWakeLock = null;
 
     function isSecurePreviewOpen() {
       return document.getElementById('secure-preview-modal')?.classList.contains('open');
@@ -3739,7 +3741,6 @@
       clearTimeout(blackoutTimeout);
       if (durationMs > 0) {
         blackoutTimeout = setTimeout(() => {
-          // Only restore if window is active and document is visible
           if (!document.hidden && document.hasFocus()) {
             releaseBlackout();
           }
@@ -3753,66 +3754,207 @@
       if (curtain) curtain.classList.remove('show');
     }
 
-    // 1. Windows Key (Win) & Alt / Meta Key Trap:
-    // The millisecond user presses Win key, BEFORE PrintScreen can be touched, screen instantly blanks
-    function handleKeyGuard(e) {
-      if (!isPreviewProtectionActive()) return;
-
-      // Detect Windows Key (Win/Meta/OS)
-      if (e.key === 'Meta' || e.code === 'MetaLeft' || e.code === 'MetaRight' || e.key === 'OS' || e.keyCode === 91 || e.keyCode === 92) {
-        triggerInstantBlackout(3000);
-        return;
-      }
-
-      // Detect PrintScreen Key (direct or modifier)
-      if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
-        e.preventDefault();
-        triggerInstantBlackout(3500);
-        return false;
-      }
-
-      // Detect Alt Key combo (Alt+PrintScreen / Win+Alt+PrtScn)
-      if (e.altKey && (e.key === 'PrintScreen' || e.keyCode === 44)) {
-        e.preventDefault();
-        triggerInstantBlackout(3500);
-        return false;
-      }
-
-      // Detect Ctrl/Cmd + P (Print / Save PDF) & Ctrl/Cmd + S (Save Page)
-      if ((e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'S', 'P', 'U'].includes(e.key)) {
-        e.preventDefault();
-        triggerInstantBlackout(2000);
-        return false;
-      }
-
-      // Detect DevTools & Screenshot Combinations (Ctrl+Shift+I/C/J/S)
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'c', 'j', 's', 'I', 'C', 'J', 'S'].includes(e.key)) {
-        e.preventDefault();
-        triggerInstantBlackout(3000);
-        return false;
+    // Screen Wake Lock: Keeps display awake, prevents lock screen or external screensaver apps above preview
+    async function requestPreviewWakeLock() {
+      try {
+        if ('wakeLock' in navigator && !previewWakeLock) {
+          previewWakeLock = await navigator.wakeLock.request('screen');
+          previewWakeLock.addEventListener('release', () => {
+            previewWakeLock = null;
+          });
+        }
+      } catch (err) {
+        console.warn('Screen wake lock unavailable:', err);
       }
     }
 
-    // 2. Mobile 3-Finger Swipe Down & Multi-Touch Screenshot Trap
+    function releasePreviewWakeLock() {
+      if (previewWakeLock) {
+        try { previewWakeLock.release(); } catch (err) { }
+        previewWakeLock = null;
+      }
+    }
+
+    // Enforce Fullscreen on entering preview
+    async function enterPreviewFullscreen() {
+      const modal = document.getElementById('secure-preview-modal') || document.documentElement;
+      const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+      if (isFs) return;
+
+      fullscreenRequestPending = true;
+      const reqFs = modal.requestFullscreen || modal.webkitRequestFullscreen || modal.mozRequestFullScreen || modal.msRequestFullscreen || document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+      if (reqFs) {
+        try {
+          await reqFs.call(modal);
+        } catch (e) {
+          try {
+            if (document.documentElement.requestFullscreen) {
+              await document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+              await document.documentElement.webkitRequestFullscreen();
+            }
+          } catch (err2) {
+            console.warn('Fullscreen entry rejected or unsupported:', err2);
+          }
+        } finally {
+          setTimeout(() => { fullscreenRequestPending = false; }, 400);
+        }
+      }
+    }
+
+    // Automatically set volume to 65% on mobile and media elements
+    function enforcePreviewVolume() {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768 || ('ontouchstart' in window);
+      const mediaElements = document.querySelectorAll('#secure-preview-modal video, #secure-preview-modal audio, #sp-media-content video, #sp-media-content audio');
+
+      mediaElements.forEach(media => {
+        try {
+          media.volume = 0.65; // Set volume to 65%
+          media.muted = false; // Audibly play
+          media.disablePictureInPicture = true;
+          media.setAttribute('disablePictureInPicture', '');
+          media.setAttribute('disableRemotePlayback', '');
+        } catch (e) { }
+
+        if (!media._volGuardAttached) {
+          media._volGuardAttached = true;
+          media.addEventListener('volumechange', () => {
+            if (isSecurePreviewOpen()) {
+              if (Math.abs(media.volume - 0.65) > 0.02) {
+                media.volume = 0.65;
+              }
+            }
+          });
+        }
+      });
+    }
+
+    // Comprehensive Key Guard:
+    // 1. Hardware Volume buttons -> Disabled / Stop Preview immediately
+    // 2. Hardware Power switch / Standby -> Stop Preview immediately
+    // 3. ALL shortcuts disabled (Ctrl/Cmd combos, Alt combos, F1-F12, PrintScreen, Tab outside inputs)
+    function handleKeyGuard(e) {
+      if (!isPreviewProtectionActive()) return;
+
+      const target = e.target;
+      const isInputOrTextarea = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+
+      // Volume Switch pressed (Hardware volume keys / multimedia keys)
+      if (
+        e.key === 'AudioVolumeUp' || e.key === 'AudioVolumeDown' || e.key === 'AudioVolumeMute' ||
+        e.key === 'VolumeUp' || e.key === 'VolumeDown' || e.key === 'VolumeMute' ||
+        e.code === 'AudioVolumeUp' || e.code === 'AudioVolumeDown' || e.code === 'AudioVolumeMute' ||
+        e.keyCode === 174 || e.keyCode === 175 || e.keyCode === 173 ||
+        e.which === 174 || e.which === 175 || e.which === 173
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        closeSecurePreviewViewer();
+        return false;
+      }
+
+      // Power Switch / Sleep / Standby
+      if (e.key === 'Power' || e.key === 'Standby' || e.key === 'Sleep' || e.keyCode === 182) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        closeSecurePreviewViewer();
+        return false;
+      }
+
+      // Function keys (F1 - F12)
+      if (/^F[1-9]$|^F1[0-2]$/i.test(e.key) || (e.keyCode >= 112 && e.keyCode <= 123)) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }
+
+      // PrintScreen Key (direct or modifier)
+      if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        try { navigator.clipboard.writeText(''); } catch (err) { }
+        triggerInstantBlackout(3500);
+        return false;
+      }
+
+      // Windows Key (Win/Meta/OS)
+      if (e.key === 'Meta' || e.code === 'MetaLeft' || e.code === 'MetaRight' || e.key === 'OS' || e.keyCode === 91 || e.keyCode === 92) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        triggerInstantBlackout(3000);
+        return false;
+      }
+
+      // ALL Ctrl or Cmd (Meta) shortcuts
+      if (e.ctrlKey || e.metaKey) {
+        if (isInputOrTextarea) {
+          // Allow only basic text editing inside revision input
+          const allowedTextKeys = ['a', 'c', 'v', 'x', 'z', 'y', 'A', 'C', 'V', 'X', 'Z', 'Y'];
+          if (!allowedTextKeys.includes(e.key) || e.shiftKey || e.altKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+          }
+        } else {
+          // Block ALL shortcuts completely
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          return false;
+        }
+      }
+
+      // ALL Alt shortcuts (Alt+Tab, Alt+F4, etc.)
+      if (e.altKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }
+
+      // Outside inputs: Disable Tab, ContextMenu, and stop preview on Escape
+      if (!isInputOrTextarea) {
+        if (e.key === 'Tab' || e.keyCode === 9 || e.key === 'ContextMenu' || e.keyCode === 93) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          return false;
+        }
+        if (e.key === 'Escape' || e.keyCode === 27) {
+          e.preventDefault();
+          closeSecurePreviewViewer();
+          return false;
+        }
+      }
+    }
+
+    // 2. Mobile Multi-Touch Screenshot Trap
     function handleTouchGuard(e) {
       if (isPreviewProtectionActive() && e.touches && e.touches.length >= 2) {
-        // 2 or 3 fingers detected! Cancels 3-finger swipe screenshot gesture before it starts
         triggerInstantBlackout(3000);
         if (e.cancelable) e.preventDefault();
         e.stopPropagation();
       }
     }
 
-    // 3. Mobile Volume Down + Power Button & App Switcher Traps
+    // 3. Power switch / App Switcher / External app running above it:
+    // When focus is lost or power button is pressed, STOP PREVIEW immediately!
     function handleFocusLoss() {
       if (fullscreenRequestPending) return;
-      triggerInstantBlackout(0); // Indefinite blackout until user regains focus
+      if (!isSecurePreviewOpen()) return;
+      triggerInstantBlackout(0);
+      closeSecurePreviewViewer();
     }
 
     function handleFocusGain() {
-      // Small delay so screenshot flash can't capture delayed frame
       setTimeout(() => {
-        if (!document.hidden && document.hasFocus()) {
+        if (!document.hidden && document.hasFocus() && isSecurePreviewOpen()) {
           releaseBlackout();
         }
       }, 400);
@@ -3837,19 +3979,37 @@
     window.addEventListener('pagehide', handleFocusLoss);
 
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) handleFocusLoss();
-      else handleFocusGain();
+      if (document.hidden) {
+        if (isSecurePreviewOpen()) {
+          // Screen turned off by power switch or app placed in background -> stop preview
+          closeSecurePreviewViewer();
+        }
+      } else {
+        handleFocusGain();
+      }
     });
 
-    // Detect Mobile Volume HUD or Status Bar Dropdown (visualViewport resize)
+    // If fullscreen is exited while preview is active -> stop preview immediately
+    document.addEventListener('fullscreenchange', () => {
+      fullscreenRequestPending = false;
+      if (!isSecurePreviewOpen()) return;
+      const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+      if (!isFs) {
+        closeSecurePreviewViewer();
+      } else {
+        releaseBlackout();
+      }
+    });
+
+    // Detect Mobile Volume HUD or Status Bar Dropdown (visualViewport resize) -> stop preview
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', () => {
-        if (fullscreenRequestPending || document.fullscreenElement) return;
-        triggerInstantBlackout(2000);
+        if (fullscreenRequestPending || !isSecurePreviewOpen()) return;
+        closeSecurePreviewViewer();
       });
     }
     window.addEventListener('orientationchange', () => {
-      if (fullscreenRequestPending || document.fullscreenElement) return;
+      if (fullscreenRequestPending || !isSecurePreviewOpen()) return;
       triggerInstantBlackout(1500);
     });
 
@@ -5189,6 +5349,15 @@
       // Setup footer controls depending on acceptance
       updatePreviewFooter();
 
+      // Request fullscreen immediately
+      enterPreviewFullscreen();
+
+      // Screen Wake Lock (keeps display active, prevents background screensaver apps)
+      requestPreviewWakeLock();
+
+      // Enforce mobile volume at 65%
+      enforcePreviewVolume();
+
       // Attach anti-capture guards ONLY if not completed
       if (!isCompleted) {
         attachAntiCaptureGuards();
@@ -5223,8 +5392,30 @@
 
       if (isVid) {
         mediaContainer.innerHTML = `
-      <video class="sp-preview-media video" controls autoplay ${isCompleted ? '' : 'muted controlsList="nodownload noplaybackrate nofullscreen" disablePictureInPicture'} playsinline src="${url}" ${isCompleted ? '' : 'oncontextmenu="return false;"'}></video>
+      <video class="sp-preview-media video" controls autoplay ${isCompleted ? '' : 'controlsList="nodownload noplaybackrate nofullscreen" disablePictureInPicture disableRemotePlayback'} playsinline src="${url}" ${isCompleted ? '' : 'oncontextmenu="return false;"'}></video>
     `;
+        const v = mediaContainer.querySelector('video');
+        if (v) {
+          v.volume = 0.65;
+          v.muted = false;
+          v.play().catch(() => {
+            v.muted = true;
+            v.play().catch(() => { });
+            const unmuteOnGesture = () => {
+              v.muted = false;
+              v.volume = 0.65;
+              window.removeEventListener('click', unmuteOnGesture);
+              window.removeEventListener('touchstart', unmuteOnGesture);
+            };
+            window.addEventListener('click', unmuteOnGesture, { once: true });
+            window.addEventListener('touchstart', unmuteOnGesture, { once: true });
+          });
+          v.addEventListener('volumechange', () => {
+            if (isSecurePreviewOpen() && Math.abs(v.volume - 0.65) > 0.02) {
+              v.volume = 0.65;
+            }
+          });
+        }
       } else {
         mediaContainer.innerHTML = `
       <img class="sp-preview-media" src="${url}" alt="Preview" style="${isCompleted ? 'cursor:default;' : 'user-select:none;-webkit-user-drag:none;'}" ${isCompleted ? '' : 'oncontextmenu="return false;"'}/>
@@ -5307,23 +5498,32 @@
 
     window.closeSecurePreviewViewer = function () {
       const modal = document.getElementById('secure-preview-modal');
-      if (document.fullscreenElement === modal) document.exitFullscreen?.().catch(() => { });
-      modal.classList.remove('open');
+      const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+      if (isFs) {
+        (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen)?.call(document).catch(() => { });
+      }
+      if (modal) modal.classList.remove('open');
+      document.body.style.overflow = '';
       detachAntiCaptureGuards();
+      releasePreviewWakeLock();
       releaseBlackout();
       cleanupSpaceView();
       if (countdownInterval) clearInterval(countdownInterval);
+
+      // Pause preview media
+      const mediaElements = document.querySelectorAll('#secure-preview-modal video, #secure-preview-modal audio, #sp-media-content video');
+      mediaElements.forEach(m => {
+        try { m.pause(); } catch (e) { }
+      });
     };
 
     // Anti-Capture Handlers (Blur, PrintScreen, Key shortcuts)
     function onWindowBlur() {
       if (fullscreenRequestPending) return;
-      const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window);
-      if (isMobile) return;
-      const curtain = document.getElementById('anti-capture-curtain');
-      if (curtain && document.getElementById('secure-preview-modal')?.classList.contains('open')) {
-        curtain.classList.add('show');
-      }
+      if (!isSecurePreviewOpen()) return;
+      // Another app is running above preview or screen was switched
+      triggerInstantBlackout(0);
+      closeSecurePreviewViewer();
     }
     function onWindowFocus() {
       handleFocusGain();
@@ -5331,34 +5531,26 @@
     function onPreviewFullscreenChange() {
       fullscreenRequestPending = false;
       if (!isSecurePreviewOpen()) return;
-      releaseBlackout();
+      const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+      if (!isFs) {
+        closeSecurePreviewViewer();
+      } else {
+        releaseBlackout();
+      }
     }
     function monitorPreviewFocus() {
       if (!isSecurePreviewOpen() || fullscreenRequestPending) return;
-      const modal = document.getElementById('secure-preview-modal');
-      if (document.fullscreenElement === modal && !document.hasFocus()) {
-        triggerInstantBlackout(0);
+      if (!document.hasFocus() || document.hidden) {
+        // App running above it or screen turned off -> close preview
+        closeSecurePreviewViewer();
       }
     }
     function onVisibilityChange() {
-      if (document.hidden) onWindowBlur();
-      else onWindowFocus();
-    }
-    function onKeyGuard(e) {
-      if (!document.getElementById('secure-preview-modal').classList.contains('open')) return;
-      if (e.key === 'PrintScreen' || e.keyCode === 44) {
-        e.preventDefault();
-        try { navigator.clipboard.writeText(''); } catch (err) { }
-        onWindowBlur();
-        return false;
-      }
-      if ((e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'S', 'P', 'U'].includes(e.key)) {
-        e.preventDefault();
-        return false;
-      }
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'c', 'j', 's', 'I', 'C', 'J', 'S'].includes(e.key)) {
-        e.preventDefault();
-        return false;
+      if (!isSecurePreviewOpen() || fullscreenRequestPending) return;
+      if (document.hidden) {
+        closeSecurePreviewViewer();
+      } else {
+        onWindowFocus();
       }
     }
 
@@ -5367,34 +5559,23 @@
       window.addEventListener('focus', onWindowFocus);
       document.addEventListener('visibilitychange', onVisibilityChange);
       document.addEventListener('fullscreenchange', onPreviewFullscreenChange);
-      window.addEventListener('keydown', onKeyGuard, true);
       clearInterval(previewFocusMonitor);
-      previewFocusMonitor = setInterval(monitorPreviewFocus, 500);
-      window.addEventListener('keyup', (e) => {
-        if (e.key === 'PrintScreen' || e.keyCode === 44) {
-          try { navigator.clipboard.writeText(''); } catch (err) { }
-        }
-      });
+      previewFocusMonitor = setInterval(monitorPreviewFocus, 350);
     }
     function detachAntiCaptureGuards() {
       window.removeEventListener('blur', onWindowBlur);
       window.removeEventListener('focus', onWindowFocus);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       document.removeEventListener('fullscreenchange', onPreviewFullscreenChange);
-      window.removeEventListener('keydown', onKeyGuard, true);
       clearInterval(previewFocusMonitor);
       previewFocusMonitor = null;
     }
 
     window.resumePreviewFocus = function () {
       releaseBlackout();
-      const modal = document.getElementById('secure-preview-modal');
-      if (!modal) return;
-      const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window);
-      if (!isMobile && modal.requestFullscreen && document.fullscreenElement !== modal) {
-        fullscreenRequestPending = true;
-        modal.requestFullscreen().catch(() => {}).finally(() => { fullscreenRequestPending = false; });
-      }
+      enterPreviewFullscreen();
+      requestPreviewWakeLock();
+      enforcePreviewVolume();
     };
 
     window.openRevisionPrompt = function () {
