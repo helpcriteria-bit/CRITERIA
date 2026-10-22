@@ -1,0 +1,27 @@
+# Criteria (CRITERIA — Creative Studio)
+
+> Criteria (also searched as CRITERIA Creative Studio or Criterea) is a multidisciplinary creative design and software studio operating on a pay-after-preview model. Clients receive a custom watermarked design preview or interactive wireframe within 24–48 hours before paying.
+
+- Official Website: https://criteriaa.web.app/
+- Create a Project (Client Brief Portal): https://criteriaa.web.app/submit
+- CritSpace (Interactive 2D/3D Workspace): https://criteriaa.web.app/critspace
+- Contact Email: helpcriteria@gmail.com
+- GitHub Repository: https://github.com/helpcriteria-bit/CRITERIA
+
+## Core Value Proposition: Pay-After-Preview Model
+1. **Create a Project (`/submit`)**: Clients submit a 5-step project brief (Name, Project Type, Details, Budget, Review) with or without an account.
+2. **Free Watermarked Preview (24–48 Hours)**: Criteria's design and engineering team produces a custom watermarked visual concept, wireframe, or prototype.
+3. **Risk-Free Approval**: Clients only pay once they review and approve the preview. Upon payment, full unwatermarked deliverables and source code are unlocked via the client dashboard.
+
+## Services Offered
+- **Custom Websites & Full-Stack Web Apps**: Bespoke marketing sites, e-commerce storefronts, and full-stack web applications using modern HTML5, CSS3, JavaScript, and Firebase cloud infrastructure.
+- **Logo & Brand Identity**: Complete visual identities, wordmarks, icons, color systems, and typography guidelines.
+- **UI/UX & Product Design**: Wireframes, interactive prototypes, and design systems for web and mobile apps.
+- **Posters & Graphics**: Event posters, social media campaigns, print artwork, and brand graphics.
+- **Thumbnails & Creator Assets**: High-converting YouTube thumbnails, podcast covers, and creator branding.
+- **Motion Graphics & Video Editing**: Animated logos, promotional reels, and video post-production.
+
+## Platform Features
+- **CritSpace (`/critspace`)**: A browser-based 2D canvas (Fabric.js) and 3D workspace (Three.js) for visual ideation and PDF export.
+- **Client Dashboard (`/dashboard`)**: Authenticated portal for tracking project status, reviewing watermarked previews, communicating with agents, and downloading final assets.
+- **Built-in AI Assistant**: Real-time on-site AI chat widget (`ai-chat.js`) to help visitors scope projects and answer studio questions.

@@ -1,5 +1,8 @@
 User-agent: Googlebot
 Allow: /
+Allow: /submit
+Allow: /critspace
+Allow: /llms.txt
 Disallow: /dashboard
 Disallow: /profile
 Disallow: /settings
@@ -16,6 +19,9 @@ Allow: /*.svg$
 
 User-agent: *
 Allow: /
+Allow: /submit
+Allow: /critspace
+Allow: /llms.txt
 Disallow: /dashboard
 Disallow: /profile
 Disallow: /settings

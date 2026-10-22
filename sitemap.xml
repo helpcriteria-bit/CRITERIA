@@ -6,7 +6,7 @@
   <!-- CRITERIA Homepage & Studio Showcase -->
   <url>
     <loc>https://criteriaa.web.app/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
 
@@ -85,17 +85,17 @@
   <!-- Start Project / Submit Brief Page (Google Sitelink Action Target) -->
   <url>
     <loc>https://criteriaa.web.app/submit</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
       <image:loc>https://criteriaa.web.app/Tools/G_Thumbnail.jpeg</image:loc>
-      <image:title>Start a Project with CRITERIA</image:title>
+      <image:title>Create a Project with Criteria</image:title>
       <image:caption>Submit your design project and get a free preview within 24 to 48 hours before you pay</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://criteriaa.web.app/Tools/Submit%20the%20details.jpeg</image:loc>
-      <image:title>CRITERIA Project Submission Workflow</image:title>
+      <image:title>Criteria Project Creation Workflow</image:title>
       <image:caption>Simple 5-step form to start your project with zero upfront risk</image:caption>
     </image:image>
     <image:image>
@@ -112,6 +112,19 @@
       <image:loc>https://criteriaa.web.app/Tools/Logo.jpeg</image:loc>
       <image:title>Start a Logo and Branding Project</image:title>
       <image:caption>Full brand identity and wordmarks</image:caption>
+    </image:image>
+  </url>
+
+  <!-- CritSpace Workspace Page (Interactive 2D & 3D Workspace) -->
+  <url>
+    <loc>https://criteriaa.web.app/critspace</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://criteriaa.web.app/Tools/og-image.png</image:loc>
+      <image:title>CritSpace by Criteria — Interactive Design Workspace</image:title>
+      <image:caption>Free interactive browser-based 2D canvas and 3D design workspace powered by Fabric.js and Three.js</image:caption>
     </image:image>
   </url>
 

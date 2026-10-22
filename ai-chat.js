@@ -5025,16 +5025,29 @@ RESPONSE MANDATE:
           }
         }
 
+        // Determine GitHub signed-in vs signed-out state
+        const ghConnected = localStorage.getItem('criteria_github_connected') === 'true';
+        const ghUser = localStorage.getItem('criteria_github_username') || '';
+        const isGhSignedIn = ghConnected && !!ghUser;
+
+        const githubTourTitle = isGhSignedIn
+          ? ('3C. GitHub Repositories (Connected: @' + ghUser + ')')
+          : '3C. GitHub Repositories (Not Signed In)';
+
+        const githubTourText = isGhSignedIn
+          ? ('You are connected to GitHub as **@' + ghUser + '**!\n\nHere you can select any of your own repositories from the dropdown list, then click **Attach Repo** to link the entire repository or **Browse Files** to attach specific UI components and design tokens as reference.\n\nOnly your own verified GitHub repositories are accessible here—no dummy or mock repos.\n\nEverything is optional—tap **Next ➔** to proceed to budget & timeline.')
+          : 'You are currently **not signed in to GitHub**.\n\nTo ensure privacy and authenticity, CRITERIA only allows GitHub signed-in users to access and attach their own repositories and components—no dummy or mock repos are shown.\n\nYou can connect your GitHub account anytime from your **Profile** page.\n\nSince this is completely optional, tap **Next ➔** to proceed to budget & timeline.';
+
         this.smoothScrollToTarget(targetEl, () => {
           this.lockScroll();
           this.highlightInteractiveTarget(
             targetEl,
-                        '3C. GitHub Repositories & UI Components (Optional)',
-            `Select any code repository from the dropdown menu, then click **Attach Repo** or **Browse Files** to inspect folders and attach specific UI component files as reference.\n\nEverything is optional—tap **Next ➔** to proceed to budget & timeline.`,
+            githubTourTitle,
+            githubTourText,
             {
               prevText: '← Back',
               onPrev: () => this.runInteractiveStep('3-files'),
-              nextText: 'Next →',
+              nextText: 'Next ➔',
               onNext: () => {
                 this.unlockScroll();
                 const nextBtn = document.getElementById('crit-tour-next-btn');
@@ -5043,7 +5056,7 @@ RESPONSE MANDATE:
                   const nbRect = nextBtn.getBoundingClientRect();
                   startPos = { x: Math.round(nbRect.left + nbRect.width / 2), y: Math.round(nbRect.top + nbRect.height / 2) };
                 }
-                // When clicked next in comment-box, crit-mouse clicks 'Next' in web page
+                // When clicked next in comment-box, crit-mouse clicks Next in web page
                 this.clickRealNextWithMouse('#step-3 .btn-primary', () => {
                   const step4 = document.getElementById('step-4');
                   if (step4 && !step4.classList.contains('active')) {
@@ -5894,6 +5907,7 @@ RESPONSE MANDATE:
         if (sessionStorage.getItem('crit_just_submitted') === 'true' || sessionStorage.getItem('crit_tour_show_done') === 'true') {
           isSubmitted = true;
           sessionStorage.removeItem('crit_just_submitted');
+          sessionStorage.removeItem('crit_tour_show_done');
         }
       } catch (e) { }
 
@@ -7102,7 +7116,7 @@ RESPONSE MANDATE:
             },
             3: {
               step: 'Step 3: Description, Files & GitHub',
-              desc: 'Here you outline your vision (minimum 20 characters), upload reference moodboards, and attach GitHub repositories or UI components. When ready, tap **Continue Demo** to walk through each section.'
+              desc: (localStorage.getItem('criteria_github_connected') === 'true' && localStorage.getItem('criteria_github_username')) ? ('Here you outline your vision (minimum 20 characters), upload reference moodboards, and attach your own GitHub repositories (connected as @' + localStorage.getItem('criteria_github_username') + '). When ready, tap **Continue Demo** to walk through each section.') : 'Here you outline your vision (minimum 20 characters), upload reference moodboards, and optionally connect GitHub to attach your own repositories. When ready, tap **Continue Demo** to walk through each section.'
             },
             4: {
               step: 'Step 4: Budget & Timeline',

@@ -269,12 +269,42 @@ function clearChangeError()   { const el = document.getElementById('change-error
 
 function showNotif(msg, type='') {
   const c = document.getElementById('notif-container');
+  if (!c) return;
+  const cleanType = (type || 'gold').toLowerCase();
+
+  // Deduplication
+  const existing = Array.from(c.querySelectorAll('.notif-toast:not(.hiding)')).find(t => t.dataset.msg === msg);
+  if (existing) {
+    existing.classList.remove('show');
+    void existing.offsetWidth;
+    existing.classList.add('show');
+    if (existing._dismissTimer) clearTimeout(existing._dismissTimer);
+    existing._dismissTimer = setTimeout(() => dismiss(existing), 3800);
+    return;
+  }
+
+  const visible = c.querySelectorAll('.notif-toast:not(.hiding)');
+  if (visible.length >= 2) dismiss(visible[0]);
+
+  function dismiss(el) {
+    if (!el || el.classList.contains('hiding')) return;
+    el.classList.add('hiding');
+    el.classList.remove('show');
+    if (el._dismissTimer) clearTimeout(el._dismissTimer);
+    setTimeout(() => { if (el.parentNode) el.remove(); }, 320);
+  }
+
   const t = document.createElement('div');
-  t.className = `notif-toast ${type}`;
-  t.innerHTML = `<span class="notif-dot"></span>${msg}`;
+  t.className = 'notif-toast ' + cleanType;
+  t.dataset.msg = msg;
+  t.innerHTML = '<span class="notif-dot"></span><span style="flex:1;">' + msg + '</span><button type="button" class="notif-close" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:15px;line-height:1;padding:0 3px;">&times;</button>';
+  
+  const closeBtn = t.querySelector('.notif-close');
+  if (closeBtn) closeBtn.onclick = () => dismiss(t);
+
   c.appendChild(t);
-  requestAnimationFrame(() => t.classList.add('show'));
-  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3800);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
+  t._dismissTimer = setTimeout(() => dismiss(t), 3800);
 }
 </script>
 </body>
